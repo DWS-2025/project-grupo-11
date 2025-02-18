@@ -1,6 +1,6 @@
 body
 {
-background-color:#c0c0c0;
+background-color:#ffffff;
 font-family:Arial, Helvetica, sans-serif;
 padding:0;
 font-size:12px;
@@ -43,11 +43,15 @@ background-color:#FFFFFF;
 .header{
 width:900px;
 height:181px;
+<<<<<<< HEAD
 padding:50px 0px 0px 0px; 
 background:url(images/jugadores2.jpg) no-repeat center;
+=======
+/*background:url(images/header.jpg) no-repeat center;*/
+>>>>>>> 3583c61e8ba217d0d3a9fcc773c08b87aab633e1
 }
 .logo{
-padding:0 0 0 30px;
+padding:15px 0 0 725px;
 width:10px;
 height:10px;
 }
@@ -56,7 +60,11 @@ height:10px;
 width:628px;
 height:41px;
 margin:55px 0 0 26px;
+<<<<<<< HEAD
 background:url(images/negro.jpg) no-repeat center;
+=======
+/*background:url(images/menu_bg.jpg) no-repeat center;*/
+>>>>>>> 3583c61e8ba217d0d3a9fcc773c08b87aab633e1
 }
 #menu ul{
 display:block;
@@ -79,7 +87,7 @@ _margin:0 2px 0 2px;
 float:left;
 text-decoration:none;
 text-align:center;
-color:#fff;
+color:#000000;
 font-size:13px;
 line-height:27px;
 }
