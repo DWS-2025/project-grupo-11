@@ -6,12 +6,14 @@ public class User {
     private String username;
     private String password;
     private List<Order> orders;
+    private Cart cart;
 
     // Constructor
     public User(String username, String password, List<Order> orders) {
         this.username = username;
         this.password = password;
         this.orders = orders;
+        this.cart = new Cart();
     }
 
     // Getter and setter methods
@@ -39,6 +41,14 @@ public class User {
         this.orders = orders;
     }
 
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setBasket(Cart cart) {
+        this.cart = cart;
+    }
+
     // Method to display user information
     public void displayUserInformation() {
         System.out.println("Username: " + username);
@@ -47,5 +57,14 @@ public class User {
             order.displayOrderInformation();
             System.out.println("=====");
         }
+        System.out.println("Basket:");
+        cart.displayCartInformation();
+    }
+
+    // Method to checkout the basket and create an order
+    public void checkoutBasket() {
+        Order newOrder = cart.checkout();
+        orders.add(newOrder);
+        cart.clearCart();
     }
 }

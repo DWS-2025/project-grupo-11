@@ -2,12 +2,12 @@ package grupo11.bcf_store;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Basket {
+public class Cart {
     // Attributes
     private List<Product> products;
 
     // Constructor
-    public Basket() {
+    public Cart() {
         this.products = new ArrayList<>();
     }
 
@@ -21,12 +21,12 @@ public class Basket {
     }
 
     // Method to clear the basket
-    public void clearBasket() {
+    public void clearCart() {
         products.clear();
     }
 
     // Method to display basket information
-    public void displayBasketInformation() {
+    public void displayCartInformation() {
         for (Product product : products) {
             product.displayInformation();
             System.out.println("-----");
