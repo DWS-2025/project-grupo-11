@@ -2,6 +2,7 @@ package grupo11.bcf_store;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Cart {
     // Attributes
     private List<Product> products;
