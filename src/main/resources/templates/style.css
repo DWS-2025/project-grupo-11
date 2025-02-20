@@ -45,7 +45,6 @@ width:900px;
 height:181px;
 padding:50px 0px 0px 0px; 
 background:url(images/jugadores2.jpg) no-repeat center;
-/*background:url(images/header.jpg) no-repeat center;*/
 }
 .logo{
 padding:15px 0 0 725px;
@@ -58,7 +57,6 @@ width:530px;
 height:41px;
 margin:55px 0 0 26px;
 background:url(images/negro.jpg) no-repeat center;
-/*background:url(images/menu_bg.jpg) no-repeat center;*/
 }
 #menu ul{
 display:block;
