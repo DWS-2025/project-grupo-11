@@ -182,7 +182,7 @@ display: flex;
 align-items: center;
 padding:10px 0 10px 0;
 margin:0 20px 20px 0;
-border-bottom:1px #b2b2b2 dashed;
+border-bottom:1px #ffffff;
 clear:both;
 }
 .feat_prod_box_details{
@@ -225,7 +225,7 @@ padding:10px;
 }
 .new_prod_box a{
 padding:5px 0 5px 0;
-color:#b5b5b6;
+color:#ffffff;
 text-decoration:none;
 display:block;
 }
@@ -305,7 +305,7 @@ display: block;
 padding: 5px 25px;
 border: 1px solid #DFDFDF;
 border-bottom: 0;
-color: #666;
+color: #ffffff;
 background: #eee;
 text-decoration: none;
 font-weight: bold;
@@ -545,7 +545,7 @@ color: #ccc;
 }
 /*---------------footer------------------------*/
 .footer{
-height:100px;
+height:90px;
 border-top:1px #b2b2b2 dashed;
 position: fixed;
 bottom: 0;
