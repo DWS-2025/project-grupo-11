@@ -123,6 +123,7 @@ padding:2px 2px 0 2px;
 
 /*------------------------------------center content--------------------*/
 .center_content{
+display: flex;
 width:900px;
 padding:0px 0 0 0;
 background:url(images/center_bg.gif) repeat-y center;
@@ -134,7 +135,7 @@ padding:20px 0 20px 20px;
 }
 .right_content{
 width:370px;
-float:left;
+float:right;
 padding:20px 0 20px 20px;
 }
 .title{
@@ -179,6 +180,8 @@ padding:10px 0 0 0;
 
 /*--------feat_prod_box-----------*/
 .feat_prod_box{
+display: flex;
+align-items: center;
 padding:10px 0 10px 0;
 margin:0 20px 20px 0;
 border-bottom:1px #b2b2b2 dashed;
@@ -199,6 +202,7 @@ width:295px;
 float:left;
 padding:0 0 0 15px;
 position:relative;
+height: 100%;
 }
 .box_top{
 width:295px;
@@ -545,6 +549,13 @@ color: #ccc;
 .footer{
 height:100px;
 border-top:1px #b2b2b2 dashed;
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+background-color: #fff; /* Ajusta el color según tu diseño */
+padding: 10px;
+text-align: left;
 }
 .left_footer{
 float:left;
@@ -559,3 +570,7 @@ text-decoration:none;
 padding:0 5px 0 5px;
 color:#afaeaf;
 }
+
+
+
+  
