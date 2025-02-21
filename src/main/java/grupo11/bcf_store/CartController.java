@@ -49,12 +49,6 @@ public class CartController {
         return "clothes";
     }
 
-    @GetMapping("/accesories.html")
-    public String accesories(Model model) {
-        model.addAttribute("products", products.values());
-        return "accesories";
-    }
-
     @PostMapping("/add-to-cart/{id}")
     public ResponseEntity<String> addToCart(@PathVariable String id) {
         Product product = products.get(id);
