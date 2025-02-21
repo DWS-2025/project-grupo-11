@@ -21,14 +21,14 @@ public class CartController {
         this.cart = cart;
         this.products = products;
 
-        products.put("product1", new Product("1ª EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido.", "http://example.com/laptop.jpg"));
-        products.put("product2", new Product("3ª EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido.", "http://example.com/smartphone.jpg"));
-        products.put("product3", new Product("CHUBASQUERO NEGRO 23/24", 60, "Chubasquero del Burgos CF.", "http://example.com/laptop.jpg"));
-        products.put("product4", new Product("PARKA BURGOS CF 23/24", 60, "Parka con el escudo del equipo.", "http://example.com/laptop.jpg"));
-        products.put("product5", new Product("BANDERA BURGOS CF", 20, "Bandera con el escudo del equipo", "http://example.com/laptop.jpg"));
-        products.put("product6", new Product("BUFANDA BURGOS CF", 20, "Bufanda con el nombre y escudo del equipo", "http://example.com/smartphone.jpg"));
-        products.put("product7", new Product("BALON BLANQUINEGRO", 20, "Disfruta del balón de tu equipo", "http://example.com/smartphone.jpg"));
-        products.put("product8", new Product("BABERO BLANQUINEGRO", 20, "Babero con escudo del equipo", "http://example.com/laptop.jpg"));
+        products.put("product1", new Product("1ª EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido.", "/images/shirt0.png"));
+        products.put("product2", new Product("3ª EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido.", "/images/shirt1.png"));
+        products.put("product3", new Product("CHUBASQUERO NEGRO 23/24", 60, "Chubasquero del Burgos CF.", "/images/chubasquero.jpg"));
+        products.put("product4", new Product("PARKA BURGOS CF 23/24", 60, "Parka con el escudo del equipo.", "/images/parka.jpg"));
+        products.put("product5", new Product("BANDERA BURGOS CF", 20, "Bandera con el escudo del equipo", "/images/chubasquero.jpg"));
+        products.put("product6", new Product("BUFANDA BURGOS CF", 20, "Bufanda con el nombre y escudo del equipo", "/images/scarf.jpg"));
+        products.put("product7", new Product("BALON BLANQUINEGRO", 20, "Disfruta del balón de tu equipo", "/images/balon.jpg"));
+        products.put("product8", new Product("BABERO BLANQUINEGRO", 20, "Babero con escudo del equipo", "/images/babero.jpg"));
     }
 
     @GetMapping("/cart.html")
