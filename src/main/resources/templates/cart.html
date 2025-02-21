@@ -24,7 +24,16 @@
       <div class="right_content">
         <div class="cart">
           <div class="title"><span class="title_icon"><img src="images/cart.png" alt="" /></span>CESTA</div>
-          <div class="home_cart_content"> 0 x items | <span class="red">TOTAL: 0€</span> </div>
+          <div class="home_cart_content"> {{totalItems}} x items | <span class="red">TOTAL: {{totalPrice}}€</span> </div>
+        </div>
+        <div class="cart_items">
+          {{#products}}
+          <div class="cart_item">
+            <h2>{{name}}</h2>
+            <p>Price: {{price}}€</p>
+            <img src="{{imageUrl}}" alt="{{name}}">
+          </div>
+          {{/products}}
         </div>
         <div class="clear"></div>
       </div>

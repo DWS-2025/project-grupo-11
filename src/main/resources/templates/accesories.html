@@ -23,63 +23,42 @@
     <div class="center_content">
       <div class="left_content">
         <div class="title"><span class="title_icon"><img src="images/bullet0.jpg" alt="" /></span>ACCESORIOS</div>
-        <div class="feat_prod_box">
-          <div class="prod_img"><a href="#"><img src="images/flag.jpg" alt="" border="0" /></a></div>
-          <div class="prod_det_box">
-            <div class="box_top"></div>
-            <div class="box_center">
-              <div class="prod_title">BANDERA BURGOS CF</div>
-              <p class="details">Bandera con el escudo del equipo.</p>
-              <button class="add_to_cart">Añadir a la cesta</button>
-              <div class="clear"></div>
-            </div>
-            <div class="box_bottom"></div>
-          </div>
-          <div class="clear"></div>
-        </div>
-        <div class="feat_prod_box">
-          <div class="prod_img"><a href="#"><img src="images/scarf.jpg" alt="" border="0" /></a></div>
-          <div class="prod_det_box">
-            <div class="box_top"></div>
-            <div class="box_center">
-              <div class="prod_title">BUFANDA BURGOS CF</div>
-              <p class="details">Bufanda con el nombre y escudo del equipo.</p>
-              <button class="add_to_cart">Añadir a la cesta</button>
-              <div class="clear"></div>
-            </div>
-            <div class="box_bottom"></div>
-          </div>
-          <div class="clear"></div>
-        </div>
-      </div>
-      <div class="right_content">
-        <div class="feat_prod_box">
-          <div class="prod_img"><a href="#"><img src="images/balon.jpg" alt="" border="0" /></a></div>
-          <div class="prod_det_box">
-            <div class="box_top"></div>
-            <div class="box_center">
-              <div class="prod_title">BALON BLANQUINEGRO</div>
-              <p class="details">Disfruta del balon de tu equipo.</p>
-              <button class="add_to_cart">Añadir a la cesta</button>
-              <div class="clear"></div>
-            </div>
-            <div class="box_bottom"></div>
-          </div>
-          <div class="clear"></div>
-        </div>
-        <div class="feat_prod_box">
-          <div class="prod_img"><a href="#"><img src="images/babero.jpg" alt="" border="0" /></a></div>
-          <div class="prod_det_box">
-            <div class="box_top"></div>
-            <div class="box_center">
-              <div class="prod_title">BABERO BLANQUINEGRO</div>
-              <p class="details">Babero con escudo del equipo.</p>
-              <button class="add_to_cart">Añadir a la cesta</button>
-              <div class="clear"></div>
+        <!-- Iterar sobre los productos -->
+        <div th:each="product : ${products}">
+          <div class="feat_prod_box">
+            <div class="prod_img"><a href="#"><img th:src="${product.imageUrl}" alt="" border="0" /></a></div>
+            <div class="prod_det_box">
+              <div class="box_top"></div>
+              <div class="box_center">
+                <div class="prod_title" th:text="${product.name}"></div>
+                <p class="details" th:text="${product.description}"></p>
+                <button class="add_to_cart" th:data-product-id="${product.id}">Añadir a la cesta</button>
+                <div class="clear"></div>
+              </div>
+              <div class="box_bottom"></div>
             </div>
             <div class="clear"></div>
           </div>
-          <div class="box_bottom"></div>
+        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="right_content">
+        <!-- Iterar sobre los productos -->
+        <div th:each="product : ${products}">
+          <div class="feat_prod_box">
+            <div class="prod_img"><a href="#"><img th:src="${product.imageUrl}" alt="" border="0" /></a></div>
+            <div class="prod_det_box">
+              <div class="box_top"></div>
+              <div class="box_center">
+                <div class="prod_title" th:text="${product.name}"></div>
+                <p class="details" th:text="${product.description}"></p>
+                <button class="add_to_cart" th:data-product-id="${product.id}">Añadir a la cesta</button>
+                <div class="clear"></div>
+              </div>
+              <div class="box_bottom"></div>
+            </div>
+            <div class="clear"></div>
+          </div>
         </div>
         <div class="clear"></div>
       </div>

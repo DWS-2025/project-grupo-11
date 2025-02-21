@@ -4,15 +4,13 @@ public class Product {
     // Attributes
     private String name;
     private double price;
-    private int quantity;
     private String description;
     private String imageUrl; // URL of the product image
 
     // Constructor
-    public Product(String name, double price, int quantity, String description, String imageUrl) {
+    public Product(String name, double price, String description, String imageUrl) {
         this.name = name;
         this.price = price;
-        this.quantity = quantity;
         this.description = description;
         this.imageUrl = imageUrl;
     }
@@ -32,14 +30,6 @@ public class Product {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 
     public String getDescription() {
@@ -62,7 +52,6 @@ public class Product {
     public void displayInformation() {
         System.out.println("Name: " + name);
         System.out.println("Price: " + price);
-        System.out.println("Quantity: " + quantity);
         System.out.println("Description: " + description);
         System.out.println("Image: " + imageUrl);
     }

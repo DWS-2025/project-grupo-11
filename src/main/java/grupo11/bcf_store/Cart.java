@@ -21,6 +21,20 @@ public class Cart {
         products.remove(product);
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public double getTotalPrice() {
+        double totalPrice = 0;
+
+        for(Product product:products) {
+            totalPrice += product.getPrice();
+        }
+
+        return totalPrice;
+    }
+
     // Method to clear the basket
     public void clearCart() {
         products.clear();
