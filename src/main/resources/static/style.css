@@ -569,5 +569,11 @@ div.pagination span.disabled {
   color: #afaeaf;
 }
 
+.product-image {
+  width: 147px;
+  height: 147px;
+  object-fit: cover; /* Opcional: para mantener la proporción de la imagen */
+}
+
 
 

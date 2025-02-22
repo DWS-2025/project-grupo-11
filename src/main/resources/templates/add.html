@@ -23,19 +23,29 @@
       <div class="left_content">
         <div class="title"><span class="title_icon"><img src="images/bullet0.jpg" alt="" /></span>FORMULARIO</div>
         <div class="clear"></div>
-        <form id="productForm" action="/submit" method="post" enctype="multipart/form-data">
-          <label for="name">Nombre:</label><br>
-          <input type="text" id="name" name="name"><br>
-          <label for="description">Descripción:</label><br>
-          <textarea id="description" name="description"></textarea><br>
-          <label for="price">Precio:</label><br>
-          <input type="text" id="price" name="price"><br>
-          <label for="image">Imagen:</label><br>
-          <input type="file" id="image" name="image"><br>
-        </form>
-      </div>
-      <div class="right_content">
-        <button type="submit" form="productForm">Enviar producto</button>
+        <div class="login_form">
+          <form id="productForm" action="/add-product" method="post" enctype="multipart/form-data">
+            <div class="form_row">
+              <label class="contact"><strong>Nombre:</strong></label>
+              <input type="text" id="name" name="name" class="contact_input" />
+            </div>
+            <div class="form_row">
+              <label class="contact"><strong>Descripción:</strong></label>
+              <textarea id="description" name="description" class="contact_input"></textarea>
+            </div>
+            <div class="form_row">
+              <label class="contact"><strong>Precio:</strong></label>
+              <input type="number" id="price" name="price" class="contact_input" min="0" step="0.01" />
+            </div>
+            <div class="form_row">
+              <label class="contact"><strong>Imagen:</strong></label>
+              <input type="file" id="image" name="image" accept=".jpg, .png" class="contact_input" />
+            </div>
+            <div class="form_row">
+              <button type="submit" form="productForm" class="register">Enviar producto</button>
+            </div>
+          </form>
+        </div>
       </div>
       <div class="clear"></div>
     </div>

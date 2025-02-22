@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class CartController {
@@ -58,5 +60,21 @@ public class CartController {
         } else {
             return ResponseEntity.status(404).body("Product not found");
         }
+    }
+
+    @GetMapping("/add.html")
+    public String addProductForm() {
+        return "add";
+    }
+
+    @PostMapping("/add-product")
+    public String submitProduct(@RequestParam("name") String name,
+                                @RequestParam("description") String description,
+                                @RequestParam("price") double price,
+                                @RequestParam("image") MultipartFile image) {
+        String imageUrl = "/images/" + image.getOriginalFilename();
+        Product newProduct = new Product(name, price, description, imageUrl);
+        products.put(name, newProduct);
+        return "redirect:/clothes.html";
     }
 }
