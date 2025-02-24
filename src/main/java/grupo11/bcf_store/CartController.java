@@ -1,6 +1,7 @@
 package grupo11.bcf_store;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ public class CartController {
 
     private final Cart cart;
     private final Map<String, Product> products;
+    private final AtomicInteger productIdCounter;
 
     @Autowired
     public CartController(Cart cart, Map<String, Product> products) {
@@ -27,9 +29,12 @@ public class CartController {
         products.put("2", new Product("2", "EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido.", "/images/shirt1.png"));
         products.put("3", new Product("3", "CHUBASQUERO NEGRO 23/24", 60, "Chubasquero del Burgos CF.", "/images/chubasquero.jpg"));
         products.put("4", new Product("4", "PARKA BURGOS CF 23/24", 60, "Parka con el escudo del equipo.", "/images/parka.jpg"));
-        products.put("6", new Product("5", "BUFANDA BURGOS CF", 20, "Bufanda con el nombre y escudo del equipo", "/images/scarf.jpg"));
-        products.put("7", new Product("6", "BALON BLANQUINEGRO", 20, "Disfruta del balón de tu equipo", "/images/balon.jpg"));
-        products.put("8", new Product("7", "BABERO BLANQUINEGRO", 20, "Babero con escudo del equipo", "/images/babero.jpg"));
+        products.put("5", new Product("5", "BUFANDA BURGOS CF", 20, "Bufanda con el nombre y escudo del equipo", "/images/scarf.jpg"));
+        products.put("6", new Product("6", "BALON BLANQUINEGRO", 20, "Disfruta del balón de tu equipo", "/images/balon.jpg"));
+        products.put("7", new Product("7", "BABERO BLANQUINEGRO", 20, "Babero con escudo del equipo", "/images/babero.jpg"));
+
+        int maxId = products.keySet().stream().mapToInt(Integer::parseInt).max().orElse(0);
+        this.productIdCounter = new AtomicInteger(maxId + 1);
     }
 
     @GetMapping("/cart.html")
@@ -48,14 +53,14 @@ public class CartController {
     }
 
     @PostMapping("/add-product")
-    public String submitProduct(@RequestParam("id") String id,
-                                @RequestParam("name") String name,
+    public String submitProduct(@RequestParam("name") String name,
                                 @RequestParam("description") String description,
                                 @RequestParam("price") double price,
                                 @RequestParam("image") MultipartFile image) {
+        String id = String.valueOf(productIdCounter.getAndIncrement());
         String imageUrl = "/images/" + image.getOriginalFilename();
         Product newProduct = new Product(id, name, price, description, imageUrl);
-        products.put(name, newProduct);
+        products.put(id, newProduct);
         return "redirect:/clothes.html";
     }
 
