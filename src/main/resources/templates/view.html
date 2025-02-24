@@ -30,6 +30,7 @@
               <p class="details">{{product.description}}</p>
               <div class="price">Precio: {{product.price}}€</div>
               <form action="/add-to-cart/{{product.id}}" method="post"><button type="submit">Añadir al carrito</button></form>
+              <form action="/delete-product/{{product.id}}" method="post"><button type="submit">Eliminar producto</button></form>
               <div class="clear"></div>
             </div>
             <div class="box_bottom"></div>

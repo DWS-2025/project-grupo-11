@@ -88,6 +88,15 @@ public class CartController {
         }
     }
 
+    @PostMapping("/delete-product/{id}")
+    public RedirectView deleteProduct(@PathVariable String id) {
+        Product product = products.remove(id);
+        if (product != null) {
+            cart.removeProduct(product);
+        }
+        return new RedirectView("/clothes.html");
+    }
+
     @GetMapping("/view/{id}")
     public String viewProduct(@PathVariable String id, Model model) {
         Product product = products.get(id);

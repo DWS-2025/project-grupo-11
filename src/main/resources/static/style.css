@@ -547,14 +547,14 @@ div.pagination span.disabled {
 .footer {
   height: 50px;
   border-top: 1px #b2b2b2 dashed;
-  position: fixed;
+  position: static;
   bottom: 0;
   left: 0;
   width: 100%;
   background-color: #fff; /* Ajusta el color según tu diseño */
   padding: 10px;
   text-align: left;
-}
+  }
 .left_footer {
   float: left;
   padding: 10px 0 0 10px;
