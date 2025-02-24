@@ -4,32 +4,6 @@
   <title>Burgos CF Store</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <link rel="stylesheet" type="text/css" href="style.css" />
-
-  <script>
-    function addToCart(productId) {
-        fetch(`/add-to-cart/${productId}`, {
-            method: 'POST'
-        })
-        .then(response => response.text())
-        .then(message => {
-            alert(message);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const buttons = document.querySelectorAll('.add_to_cart');
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                const productId = button.getAttribute('data-product-id');
-                addToCart(productId);
-            });
-        });
-    });
-  </script>
-
 </head>
 <body>
   <div id="wrap">
@@ -56,7 +30,7 @@
               <div class="box_center">
                 <div class="prod_title">{{name}}</div>
                 <p class="details">{{description}}</p>
-                <button class="view">Más información</button>
+                <button onclick="window.location.href='/view/{{id}}'">Más información</button>
                 <div class="clear"></div>
               </div>
             <div class="box_bottom"></div>

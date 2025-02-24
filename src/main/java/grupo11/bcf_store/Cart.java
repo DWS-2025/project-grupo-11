@@ -35,6 +35,10 @@ public class Cart {
         return totalPrice;
     }
 
+    public int getTotalItems() {
+        return products.size();
+    }
+
     // Method to clear the basket
     public void clearCart() {
         products.clear();

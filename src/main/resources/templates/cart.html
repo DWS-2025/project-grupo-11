@@ -26,13 +26,14 @@
           <div class="home_cart_content"> {{totalItems}} x items | <span class="red">TOTAL: {{totalPrice}}€</span> </div>
         </div>
         <div class="cart_items">
-          {{#products}}
+          {{#cart}}
           <div class="cart_item">
             <h2>{{name}}</h2>
-            <p>Price: {{price}}€</p>
             <img src="{{imageUrl}}" alt="{{name}}">
+            <p>Price: {{price}}€</p>
+            <form action="/remove-from-cart/{{id}}" method="post"><button type="submit">Eliminar del carrito</button></form>
           </div>
-          {{/products}}
+          {{/cart}}
         </div>
         <div class="clear"></div>
       </div>

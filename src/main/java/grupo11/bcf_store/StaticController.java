@@ -5,12 +5,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class MustacheController {
+public class StaticController {
 
     @GetMapping("/index.html")
     public String index(Model model) {
         model.addAttribute("name", "Admin");
 
         return "index";
+    }
+
+    @GetMapping("/add.html")
+    public String addProductForm() {
+        return "add";
     }
 }
