@@ -42,7 +42,7 @@ p.more_details {
   width: 900px;
   height: 181px;
   padding: 50px 0px 0px 0px;
-  background: url(images/jugadores2.jpg) no-repeat center;
+  background: url(/images/jugadores2.jpg) no-repeat center;
 }
 .logo {
   padding: 15px 0 0 725px;
@@ -54,7 +54,7 @@ p.more_details {
   width: 430px;
   height: 41px;
   margin: 55px 0 0 26px;
-  background: url(images/negro.jpg) no-repeat center;
+  background: url(/images/negro.jpg) no-repeat center;
 }
 #menu ul {
   display: block;
@@ -92,10 +92,10 @@ p.more_details {
   color: #fff;
   font-size: 13px;
   line-height: 27px;
-  background: url(images/menu_bt_bg.gif) repeat-x center;
+  background: url(/images/menu_bt_bg.gif) repeat-x center;
 }
 #menu ul li a:hover {
-  background: url(images/menu_bt_bg.gif) repeat-x center;
+  background: url(/images/menu_bt_bg.gif) repeat-x center;
 }
 /*----------------crumb_nav------------------*/
 .crumb_nav {
@@ -121,7 +121,7 @@ span.colors {
   display: flex;
   width: 900px;
   padding: 0px 0 0 0;
-  background: url(images/center_bg.gif) repeat-y center;
+  background: url(/images/center_bg.gif) repeat-y center;
 }
 .left_content {
   width: 490px;
@@ -160,7 +160,7 @@ a.more {
 .about {
   width: 337px;
   clear: both;
-  background: url(images/border.gif) no-repeat bottom center;
+  background: url(/images/border.gif) no-repeat bottom center;
   padding: 0 0 20px 0;
 }
 img.right {
@@ -202,17 +202,17 @@ img.right {
 .box_top {
   width: 295px;
   height: 9px;
-  background: url(images/box_top.gif) no-repeat center bottom;
+  background: url(/images/box_top.gif) no-repeat center bottom;
 }
 .box_center {
   width: 295px;
   height: auto;
-  background: url(images/box_center.gif) repeat-y center;
+  background: url(/images/box_center.gif) repeat-y center;
 }
 .box_bottom {
   width: 295px;
   height: 9px;
-  background: url(images/box_bottom.gif) no-repeat center top;
+  background: url(/images/box_bottom.gif) no-repeat center top;
 }
 
 .new_prod_box {
@@ -230,7 +230,7 @@ img.right {
   width: 132px;
   height: 119px;
   text-align: center;
-  background: url(images/new_prod_box.gif) no-repeat center;
+  background: url(/images/new_prod_box.gif) no-repeat center;
   position: relative;
 }
 .new_icon {
@@ -267,7 +267,7 @@ ul.list li a {
   list-style: none;
   text-decoration: none;
   color: #000000;
-  background: url(images/left_menu_bullet.gif) no-repeat left;
+  background: url(/images/left_menu_bullet.gif) no-repeat left;
   padding: 0 0 0 17px;
 }
 ul.list li a:hover {
@@ -362,7 +362,7 @@ ul.demolayout a.active {
   float: left;
   height: 40px;
   margin: 10px 0 10px 0;
-  background: url(images/border.gif) no-repeat bottom center;
+  background: url(/images/border.gif) no-repeat bottom center;
   padding: 0 0 20px 0;
 }
 .home_cart_content {
@@ -431,7 +431,7 @@ input.register {
   text-align: center;
   float: right;
   color: #ffffff;
-  background: url(images/register_bt.gif) no-repeat center;
+  background: url(/images/register_bt.gif) no-repeat center;
 }
 a.contact {
   width: 53px;
@@ -439,7 +439,7 @@ a.contact {
   display: block;
   float: right;
   margin: 0 0 0 10px;
-  background: url(images/contact_bt.gif) no-repeat center;
+  background: url(/images/contact_bt.gif) no-repeat center;
   text-decoration: none;
   text-align: center;
   line-height: 24px;
@@ -451,7 +451,7 @@ a.checkout {
   display: block;
   float: right;
   margin: 10px 30px 0 10px;
-  background: url(images/register_bt.gif) no-repeat center;
+  background: url(/images/register_bt.gif) no-repeat center;
   text-decoration: none;
   text-align: center;
   line-height: 25px;
@@ -463,7 +463,7 @@ a.continue {
   display: block;
   float: left;
   margin: 10px 0 0 0px;
-  background: url(images/register_bt.gif) no-repeat center;
+  background: url(/images/register_bt.gif) no-repeat center;
   text-decoration: none;
   text-align: center;
   line-height: 25px;
