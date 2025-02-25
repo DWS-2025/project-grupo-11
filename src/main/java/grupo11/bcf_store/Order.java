@@ -1,13 +1,16 @@
 package grupo11.bcf_store;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
     // Attributes
     private List<Product> products;
+    private String id;
 
     // Constructor
-    public Order(List<Product> products) {
+    public Order(List<Product> products, String id) {
         this.products = products;
+        this.id = id;
     }
 
     // Getter and setter methods
@@ -19,11 +22,23 @@ public class Order {
         this.products = products;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     // Method to display order information
     public void displayOrderInformation() {
         for (Product product : products) {
             product.displayInformation();
             System.out.println("-----");
         }
+    }
+
+    public Order checkout(Cart cart) {
+        return new Order(new ArrayList<>(cart.getProducts()), "10000");
     }
 }

@@ -39,8 +39,28 @@
           </form>
         </div>
       </div>
-      <div class="clear"></div>
+      <div class="right_content">
+        <div class="title"><span class="title_icon"><img src="images/bullet0.jpg" alt="" /></span>PEDIDOS ANTERIORES</div>
+        <div class="clear"></div>
+        {{#orders}}
+        <div class="feat_prod_box">
+          <div class="prod_det_box">
+            <div class="box_top"></div>
+            <div class="box_center">
+              <div class="prod_title">Pedido Nº{{id}}</div>
+              <button onclick="window.location.href='/view-order/{{id}}'">Más información</button>
+              <div class="clear"></div>
+            </div>
+          <div class="box_bottom"></div>
+        </div>
+        <div class="clear"></div>
+        {{/orders}}
+        <div class="clear"></div>
+      </div>
     </div>
+    <div class="clear"></div>
+    <div class="clear"></div>
+  </div>
     <div class="footer">
       <div class="left_footer"><img src="images/footer_logo.gif" alt="" /><br /></div>
       <div class="right_footer">

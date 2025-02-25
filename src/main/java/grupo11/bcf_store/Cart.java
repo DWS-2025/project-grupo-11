@@ -54,6 +54,6 @@ public class Cart {
 
     // Method to convert basket to order
     public Order checkout() {
-        return new Order(new ArrayList<>(products));
+        return new Order(new ArrayList<>(products), "100");
     }
 }

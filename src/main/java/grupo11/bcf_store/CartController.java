@@ -17,13 +17,16 @@ import org.springframework.web.servlet.view.RedirectView;
 public class CartController {
 
     private final Cart cart;
+    private final Map<String, Order> orders;
     private final Map<String, Product> products;
     private final AtomicInteger productIdCounter;
+    private final AtomicInteger orderIdCounter;
 
     @Autowired
-    public CartController(Cart cart, Map<String, Product> products) {
+    public CartController(Cart cart, Map<String, Product> products, Map<String, Order> orders) {
         this.cart = cart;
         this.products = products;
+        this.orders = orders;
 
         products.put("1", new Product("1", "1ª EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido.", "/images/shirt0.png"));
         products.put("2", new Product("2", "EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido.", "/images/shirt1.png"));
@@ -33,8 +36,10 @@ public class CartController {
         products.put("6", new Product("6", "BALON BLANQUINEGRO", 20, "Disfruta del balón de tu equipo", "/images/balon.jpg"));
         products.put("7", new Product("7", "BABERO BLANQUINEGRO", 20, "Babero con escudo del equipo", "/images/babero.jpg"));
 
-        int maxId = products.keySet().stream().mapToInt(Integer::parseInt).max().orElse(0);
-        this.productIdCounter = new AtomicInteger(maxId + 1);
+        int maxIdProduct = products.keySet().stream().mapToInt(Integer::parseInt).max().orElse(0);
+        this.productIdCounter = new AtomicInteger(maxIdProduct + 1);
+        int maxIdOrder = orders.keySet().stream().mapToInt(Integer::parseInt).max().orElse(0);
+        this.orderIdCounter = new AtomicInteger(maxIdOrder + 1);
     }
 
     @GetMapping("/cart.html")
@@ -88,6 +93,30 @@ public class CartController {
         }
     }
 
+    @PostMapping("/create-order")
+    public RedirectView createOrder() {
+        if (cart.getProducts() != null) {
+            String id = String.valueOf(orderIdCounter.getAndIncrement());
+            orders.put(id, new Order(cart.getProducts(), id));
+            return new RedirectView("/view-order/" + id);
+        } else {
+            return new RedirectView("/error.html");
+        }
+    }
+
+    @GetMapping("/view-order/{id}")
+    public String viewOrder(@PathVariable String id, Model model) {
+        Order order = orders.get(id);
+
+        if (order.getProducts() != null && order.getProducts().size() > 0) {
+            model.addAttribute("order", order);
+            model.addAttribute("products", order.getProducts());
+            return "viewOrder";
+        } else {
+            return "redirect:/error"; // Redirige a una página de error si el producto no se encuentra
+        }
+    }
+
     @PostMapping("/delete-product/{id}")
     public RedirectView deleteProduct(@PathVariable String id) {
         Product product = products.remove(id);
@@ -107,5 +136,11 @@ public class CartController {
         } else {
             return "redirect:/error"; // Redirige a una página de error si el producto no se encuentra
         }
+    }
+
+    @GetMapping("/myaccount.html")
+    public String myAccount(Model model) {
+        model.addAttribute("orders", orders.values());
+        return "myaccount";
     }
 }
