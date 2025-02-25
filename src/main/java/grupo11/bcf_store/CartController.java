@@ -3,7 +3,6 @@ package grupo11.bcf_store;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +21,6 @@ public class CartController {
     private final AtomicInteger productIdCounter;
     private final AtomicInteger orderIdCounter;
 
-    @Autowired
     public CartController(Cart cart, Map<String, Product> products, Map<String, Order> orders) {
         this.cart = cart;
         this.products = products;
@@ -57,15 +55,34 @@ public class CartController {
         return "clothes";
     }
 
+    @GetMapping("/add-product")
+    public RedirectView addProduct() {
+        String newProductId = String.valueOf(productIdCounter.getAndIncrement());
+        return new RedirectView("/add-product/" + newProductId);
+    }
+
+    @GetMapping("/add-product/{id}")
+    public String editProduct(@PathVariable String id, Model model) {
+        Product product = products.get(id);
+        if (product == null) {
+            product = new Product(id, "", 0, "", "");
+        }
+        model.addAttribute("product", product);
+        return "add";
+    }
+
     @PostMapping("/add-product")
-    public String submitProduct(@RequestParam("name") String name,
+    public String submitProduct(@RequestParam("id") String id,
+                                @RequestParam("name") String name,
                                 @RequestParam("description") String description,
                                 @RequestParam("price") double price,
                                 @RequestParam("image") MultipartFile image) {
-        String id = String.valueOf(productIdCounter.getAndIncrement());
+        if (name.isEmpty() || description.isEmpty() || price <= 0 || image.isEmpty()) {
+            return "redirect:/error.html";
+        }
         String imageUrl = "/images/" + image.getOriginalFilename();
-        Product newProduct = new Product(id, name, price, description, imageUrl);
-        products.put(id, newProduct);
+        Product product = new Product(id, name, price, description, imageUrl);
+        products.put(id, product);
         return "redirect:/clothes.html";
     }
 

@@ -572,13 +572,17 @@ div.pagination span.disabled {
 .product-image {
   width: 147px;
   height: 147px;
-  object-fit: cover; /* Opcional: para mantener la proporción de la imagen */
+  object-fit: cover;
 }
 
 .product-view-image {
   width: 500px;
   height: 500px;
   object-fit: cover;
+}
+
+.button-spacing {
+  margin-bottom: 10px;
 }
 
 

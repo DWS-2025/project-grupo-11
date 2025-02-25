@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="center_content">
-      <div class="right_content">
+      <div class="left_content">
         <div class="cart">
           <div class="title"><span class="title_icon"><img src="/images/cart.png" alt="" /></span>CESTA</div>
           <div class="home_cart_content"> {{totalItems}} x items | <span class="red">TOTAL: {{totalPrice}}€</span> </div>
@@ -37,11 +37,13 @@
           {{/cart}}
         </div>
         <div class="clear"></div>
+      </div>
+      <div class="right_content">
+        <div class="title"><span class="title_icon"><img src="/images/bullet0.jpg" alt="" /></span>REALIZAR PEDIDO</div>
+        <div class="clear"></div>
         <form action="/create-order" method="post"><button type="submit">Hacer pedido</button></form>
         <div class="clear"></div>
       </div>
-      <div class="right_content"></div>
-      <div class="clear"></div>
     </div>
     <div class="footer">
       <div class="left_footer"><img src="/images/footer_logo.gif" alt="" /><br /></div>
