@@ -83,7 +83,14 @@ public class CartController {
         String imageUrl = "/images/" + image.getOriginalFilename();
         Product product = new Product(id, name, price, description, imageUrl);
         products.put(id, product);
+        updateCartProduct(product);
         return "redirect:/clothes.html";
+    }
+
+    private void updateCartProduct(Product updatedProduct) {
+        cart.getProducts().replaceAll((product) -> 
+            product.getId().equals(updatedProduct.getId()) ? updatedProduct : product
+        );
     }
 
     @PostMapping("/add-to-cart/{id}")
@@ -130,7 +137,7 @@ public class CartController {
             model.addAttribute("products", order.getProducts());
             return "viewOrder";
         } else {
-            return "redirect:/error"; // Redirige a una página de error si el producto no se encuentra
+            return "redirect:/error";
         }
     }
 
