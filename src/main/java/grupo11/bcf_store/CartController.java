@@ -26,7 +26,7 @@ public class CartController {
         this.products = products;
 
         products.put("1", new Product("1", "1ª EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido.", "/images/shirt0.png"));
-        products.put("2", new Product("2", "EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido.", "/images/shirt1.png"));
+        products.put("2", new Product("2", "3º EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido.", "/images/shirt1.png"));
         products.put("3", new Product("3", "CHUBASQUERO NEGRO 23/24", 60, "Chubasquero del Burgos CF.", "/images/chubasquero.jpg"));
         products.put("4", new Product("4", "PARKA BURGOS CF 23/24", 60, "Parka con el escudo del equipo.", "/images/parka.jpg"));
         products.put("5", new Product("5", "BUFANDA BURGOS CF", 20, "Bufanda con el nombre y escudo del equipo", "/images/scarf.jpg"));
@@ -105,7 +105,7 @@ public class CartController {
             model.addAttribute("product", product);
             return "view";
         } else {
-            return "redirect:/error"; // Redirige a una página de error si el producto no se encuentra
+            return "redirect:/error";
         }
     }
 }
