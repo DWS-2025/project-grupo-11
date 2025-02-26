@@ -49,6 +49,10 @@ p.more_details {
   width: 10px;
   height: 10px;
 }
+.logo img {
+  height: 133px;
+  width: 133px;
+}
 /*-----------------------------menu-------------------*/
 #menu {
   width: 430px;
@@ -143,6 +147,10 @@ span.colors {
 span.title_icon {
   float: left;
   padding: 0 5px 0 0;
+}
+.title_icon img {
+  width: 22px;
+  height: 26px;
 }
 .prod_title {
   color: #a81f22;
@@ -551,13 +559,17 @@ div.pagination span.disabled {
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: #fff; /* Ajusta el color según tu diseño */
+  background-color: #fff; 
   padding: 10px;
   text-align: left;
   }
 .left_footer {
   float: left;
   padding: 10px 0 0 10px;
+}
+.left_footer img {
+  width: 124px;
+  height: 49px;
 }
 .right_footer {
   float: right;

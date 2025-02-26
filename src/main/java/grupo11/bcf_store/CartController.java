@@ -76,9 +76,10 @@ public class CartController {
                                 @RequestParam("name") String name,
                                 @RequestParam("description") String description,
                                 @RequestParam("price") double price,
-                                @RequestParam("image") MultipartFile image) {
+                                @RequestParam("image") MultipartFile image, Model model) {
         if (name.isEmpty() || description.isEmpty() || price <= 0 || image.isEmpty()) {
-            return "redirect:/error.html";
+            model.addAttribute("errorMessage", "Error de validación: Todos los campos tienen que ser rellenados y el precio tiene que ser mayor que 0.");
+            return "error";
         }
         String imageUrl = "/images/" + image.getOriginalFilename();
         Product product = new Product(id, name, price, description, imageUrl);
@@ -94,26 +95,28 @@ public class CartController {
     }
 
     @PostMapping("/add-to-cart/{id}")
-    public RedirectView addToCart(@PathVariable String id) {
+    public String addToCart(@PathVariable String id, Model model) {
         Product product = products.get(id);
 
         if (product != null) {
             cart.addProduct(product);
-            return new RedirectView("/cart.html");
+            return "redirect:/cart.html";
         } else {
-            return new RedirectView("/error.html");
+            model.addAttribute("errorMessage", "Producto no encontrado.");
+            return "error";
         }
     }
 
     @PostMapping("/remove-from-cart/{id}")
-    public RedirectView removeFromCart(@PathVariable String id) {
+    public String removeFromCart(@PathVariable String id, Model model) {
         Product product = products.get(id);
 
         if (product != null) {
             cart.removeProduct(product);
-            return new RedirectView("/cart.html");
+            return "redirect:/cart.html";
         } else {
-            return new RedirectView("/error.html");
+            model.addAttribute("errorMessage", "Producto no encontrado.");
+            return "error";
         }
     }
 
@@ -137,7 +140,8 @@ public class CartController {
             model.addAttribute("products", order.getProducts());
             return "viewOrder";
         } else {
-            return "redirect:/error";
+            model.addAttribute("errorMessage", "Pedido no encontrado.");
+            return "error";
         }
     }
 
@@ -158,7 +162,8 @@ public class CartController {
             model.addAttribute("product", product);
             return "view";
         } else {
-            return "redirect:/error";
+            model.addAttribute("errorMessage", "Producto no encontrado.");
+            return "error";
         }
     }
 
