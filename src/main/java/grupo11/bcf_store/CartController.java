@@ -140,7 +140,7 @@ public class CartController {
             model.addAttribute("products", order.getProducts());
             return "viewOrder";
         } else {
-            model.addAttribute("errorMessage", "Pedido no encontrado.");
+            model.addAttribute("errorMessage", "Pedido no encontrado o vacío.");
             return "error";
         }
     }
