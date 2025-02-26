@@ -1,5 +1,4 @@
 package grupo11.bcf_store;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
@@ -38,7 +37,7 @@ public class Order {
         }
     }
 
-    public Order checkout(Cart cart) {
-        return new Order(new ArrayList<>(cart.getProducts()), "10000");
+    public void deleteOrder() {
+        products.clear();
     }
 }

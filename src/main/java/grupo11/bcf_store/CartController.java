@@ -1,5 +1,7 @@
 package grupo11.bcf_store;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -121,14 +123,24 @@ public class CartController {
     }
 
     @PostMapping("/create-order")
-    public RedirectView createOrder() {
-        if (cart.getProducts() != null) {
+    public String createOrder(Model model) {
+        if (cart.getProducts() != null && !cart.getProducts().isEmpty()) {
             String id = String.valueOf(orderIdCounter.getAndIncrement());
-            orders.put(id, new Order(cart.getProducts(), id));
-            return new RedirectView("/view-order/" + id);
+            List<Product> productsCopy = new ArrayList<>(cart.getProducts());
+            orders.put(id, new Order(productsCopy, id));
+            cart.clearCart();
+            return "redirect:/view-order/" + id;
         } else {
-            return new RedirectView("/error.html");
+            model.addAttribute("errorMessage", "Pedido no encontrado o vacío.");
+            return "/error";
         }
+    }
+
+    @PostMapping("/delete-order/{id}")
+    public String deleteOrder(@PathVariable String id, Model model) {
+        orders.get(id).deleteOrder();
+        orders.remove(id);
+        return "redirect:/myaccount.html";
     }
 
     @GetMapping("/view-order/{id}")
