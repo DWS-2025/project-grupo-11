@@ -46,7 +46,7 @@ public class CartController {
         this.orderIdCounter = new AtomicInteger(maxIdOrder + 1);
     }
 
-    @GetMapping("/cart.html")
+    @GetMapping("/cart")
     public String cart(Model model) {
         model.addAttribute("cart", cart.getProducts());
         model.addAttribute("totalItems", cart.getTotalItems());
@@ -55,7 +55,7 @@ public class CartController {
         return "cart";
     }
 
-    @GetMapping("/clothes.html")
+    @GetMapping("/clothes")
     public String clothes(Model model) {
         model.addAttribute("products", products.values());
         return "clothes";
@@ -91,7 +91,7 @@ public class CartController {
         Product product = new Product(id, name, price, description, imageUrl);
         products.put(id, product);
         updateCartProduct(product);
-        return "redirect:/clothes.html";
+        return "redirect:/clothes";
     }
 
     private void updateCartProduct(Product updatedProduct) {
@@ -106,7 +106,7 @@ public class CartController {
 
         if (product != null) {
             cart.addProduct(product);
-            return "redirect:/cart.html";
+            return "redirect:/cart";
         } else {
             model.addAttribute("errorMessage", "Producto no encontrado.");
             return "error";
@@ -119,7 +119,7 @@ public class CartController {
 
         if (product != null) {
             cart.removeProduct(product);
-            return "redirect:/cart.html";
+            return "redirect:/cart";
         } else {
             model.addAttribute("errorMessage", "Producto no encontrado.");
             return "error";
@@ -144,7 +144,7 @@ public class CartController {
     public String deleteOrder(@PathVariable String id, Model model) {
         orders.get(id).deleteOrder();
         orders.remove(id);
-        return "redirect:/myaccount.html";
+        return "redirect:/myaccount";
     }
 
     @GetMapping("/view-order/{id}")
@@ -167,7 +167,7 @@ public class CartController {
         if (product != null) {
             cart.removeProduct(product);
         }
-        return new RedirectView("/clothes.html");
+        return new RedirectView("/clothes");
     }
 
     @GetMapping("/view/{id}")
@@ -183,7 +183,7 @@ public class CartController {
         }
     }
 
-    @GetMapping("/myaccount.html")
+    @GetMapping("/myaccount")
     public String myAccount(Model model) {
         model.addAttribute("orders", orders.values());
         return "myaccount";
