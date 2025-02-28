@@ -1,4 +1,4 @@
-package grupo11.bcf_store;
+package grupo11.bcf_store.model;
 import java.util.List;
 
 public class User {

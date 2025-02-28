@@ -1,4 +1,4 @@
-package grupo11.bcf_store;
+package grupo11.bcf_store.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
+
+import grupo11.bcf_store.model.Cart;
+import grupo11.bcf_store.model.Order;
+import grupo11.bcf_store.model.Product;
 
 @Controller
 public class CartController {
