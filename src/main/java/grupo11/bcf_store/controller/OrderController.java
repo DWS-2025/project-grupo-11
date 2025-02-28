@@ -30,7 +30,7 @@ public class OrderController {
             List<Product> productsCopy = new ArrayList<>(cartService.getProducts());
             String id = orderService.createOrder(productsCopy);
             cartService.clearCart();
-            return "view-order/" + id;
+            return "redirect:/view-order/" + id;
         } else {
             model.addAttribute("errorMessage", "Pedido no encontrado o vacío.");
             return "error";
@@ -40,7 +40,7 @@ public class OrderController {
     @PostMapping("/delete-order/{id}")
     public String deleteOrder(@PathVariable String id, Model model) {
         orderService.remove(id);
-        return "myaccount";
+        return "redirect:/myaccount";
     }
 
     @GetMapping("/view-order/{id}")

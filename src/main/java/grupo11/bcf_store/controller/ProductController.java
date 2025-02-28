@@ -31,13 +31,13 @@ public class ProductController {
     @GetMapping("/add-product")
     public String addProduct() {
         String newProductId = String.valueOf(productService.getAndIncrement());
-        return ("add-product/" + newProductId);
+        return "redirect:/add-product/" + newProductId;
     }
 
     @PostMapping("/delete-product/{id}")
     public String deleteProduct(@PathVariable String id) {
         productService.removeProduct(id);
-        return ("clothes");
+        return "redirect:/clothes";
     }
 
     @GetMapping("/add-product/{id}")
@@ -57,7 +57,7 @@ public class ProductController {
         if (!name.isEmpty() || description.isEmpty() || price <= 0 || image.isEmpty()) {
             Product product = productService.submitProduct(id, name, description, price, image);
             cartService.updateCartProduct(product);
-            return "clothes";
+            return "redirect:/clothes";
         } else {
             model.addAttribute("errorMessage", "Error al añadir producto. Por favor, rellene todos los campos.");
             return "error";

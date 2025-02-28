@@ -36,7 +36,7 @@ public class CartController {
 
         if (product != null) {
             cartService.addProduct(product);
-            return "cart";
+            return "redirect:/cart";
         } else {
             model.addAttribute("errorMessage", "Producto no encontrado.");
             return "error";
@@ -49,7 +49,7 @@ public class CartController {
 
         if (product != null) {
             cartService.removeProduct(product);
-            return "cart";
+            return "redirect:/cart";
         } else {
             model.addAttribute("errorMessage", "Producto no encontrado.");
             return "error";
