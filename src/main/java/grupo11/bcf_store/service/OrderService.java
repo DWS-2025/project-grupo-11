@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import grupo11.bcf_store.model.Order;
 import grupo11.bcf_store.model.Product;
 
-
 @Service
 public class OrderService {
     private final Map<String, Order> orders = new HashMap<>();
@@ -43,7 +42,11 @@ public class OrderService {
 
     public String createOrder(List<Product> products) {
         String id = String.valueOf(this.getAndIncrement());
-        this.put(id, new Order(products, id));
+        Order newOrder = new Order(products, id);
+        this.put(id, newOrder);
+        for (Product product : products) {
+            product.getOrders().add(newOrder);
+        }
         return id;
     }
 }

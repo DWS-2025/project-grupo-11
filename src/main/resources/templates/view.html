@@ -33,6 +33,10 @@
               <form action="/add-product/{{product.id}}" method="get"><button type="submit" class="button-spacing">Editar producto</button></form>
               <form action="/delete-product/{{product.id}}" method="post"><button type="submit" class="button-spacing">Eliminar producto</button></form>
               <div class="clear"></div>
+              <div class="orders">Pedidos a los que pertenece:</div>
+              {{#productOrders}}
+              <div class="price">Pedido {{id}}</div>
+              {{/productOrders}}
             </div>
             <div class="box_bottom"></div>
           </div>

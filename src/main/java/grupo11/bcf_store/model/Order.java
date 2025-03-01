@@ -2,11 +2,11 @@ package grupo11.bcf_store.model;
 import java.util.List;
 
 public class Order {
-    // Attributes
+// Attributes
     private List<Product> products;
     private String id;
 
-    // Constructor
+// Constructor
     public Order(List<Product> products, String id) {
         this.products = products;
         this.id = id;

@@ -1,5 +1,8 @@
 package grupo11.bcf_store.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Product {
     // Attributes
     private String id;
@@ -7,6 +10,7 @@ public class Product {
     private double price;
     private String description;
     private String imageUrl; // URL of the product image
+    private List<Order> orders; // Orders that contain this product
 
     // Constructor
     public Product(String id, String name, double price, String description, String imageUrl) {
@@ -15,6 +19,7 @@ public class Product {
         this.price = price;
         this.description = description;
         this.imageUrl = imageUrl;
+        this.orders = new ArrayList<>();
     }
 
     // Getter and setter methods
@@ -56,6 +61,14 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
     // Method to display product information

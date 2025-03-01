@@ -1,5 +1,7 @@
 package grupo11.bcf_store.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import grupo11.bcf_store.model.Product;
+import grupo11.bcf_store.model.Order;
 import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.ProductService;
 
@@ -62,5 +65,22 @@ public class ProductController {
             model.addAttribute("errorMessage", "Error al añadir producto. Por favor, rellene todos los campos.");
             return "error";
         }  
+    }
+
+    @GetMapping("/view/{id}")
+    public String viewProduct(@PathVariable String id, Model model) {
+        Product product = productService.getProduct(id);
+        List<Order> productOrders = productService.getProductOrders(product);
+
+        if (product != null) {
+            model.addAttribute("product", product);
+            if(productOrders != null && !productOrders.isEmpty()) {
+                model.addAttribute("productOrders", productOrders);
+            }
+            return "view";
+        } else {
+            model.addAttribute("errorMessage", "Producto no encontrado.");
+            return "error";
+        }
     }
 }

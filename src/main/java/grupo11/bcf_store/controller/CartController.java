@@ -55,17 +55,4 @@ public class CartController {
             return "error";
         }
     }
-
-    @GetMapping("/view/{id}")
-    public String viewProduct(@PathVariable String id, Model model) {
-        Product product = productService.getProduct(id);
-
-        if (product != null) {
-            model.addAttribute("product", product);
-            return "view";
-        } else {
-            model.addAttribute("errorMessage", "Producto no encontrado.");
-            return "error";
-        }
-    }
 }

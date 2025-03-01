@@ -1,12 +1,14 @@
 package grupo11.bcf_store.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import grupo11.bcf_store.model.Order;
 import grupo11.bcf_store.model.Product;
 
 
@@ -77,5 +79,8 @@ public class ProductService {
 
         return this.getProduct(id);
     }
-    
+
+    public List<Order> getProductOrders(Product product) {
+        return product.getOrders();
+    }
 }
