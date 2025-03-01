@@ -25,7 +25,13 @@ public class OrderService {
     }
 
     public void remove(String id) {
-        orders.remove(id);
+        Order order = orders.get(id);
+        if (order != null) {
+            for (Product product : order.getProducts()) {
+                product.getOrders().remove(order);
+            }
+            orders.remove(id);
+        }
     }
 
     public int getAndIncrement() {
