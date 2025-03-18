@@ -40,7 +40,7 @@ public class OrderController {
     @PostMapping("/delete-order/{id}")
     public String deleteOrder(@PathVariable String id, Model model) {
         orderService.remove(id);
-        return "myaccount";
+        return "redirect:/myaccount";
     }
 
     @GetMapping("/view-order/{id}")

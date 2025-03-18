@@ -57,7 +57,7 @@ public class ProductController {
                                 @RequestParam("description") String description,
                                 @RequestParam("price") double price,
                                 @RequestParam("image") MultipartFile image, Model model) {
-        if (!name.isEmpty() || description.isEmpty() || price <= 0 || image.isEmpty()) {
+        if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
             Product product = productService.submitProduct(id, name, description, price, image);
             cartService.updateCartProduct(product);
             return "redirect:/clothes";
