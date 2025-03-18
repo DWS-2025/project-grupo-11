@@ -31,7 +31,7 @@ public class CartController {
     }
 
     @PostMapping("/add-to-cart/{id}")
-    public String addToCart(@PathVariable String id, Model model) {
+    public String addToCart(@PathVariable Long id, Model model) {
         Product product = productService.getProduct(id);
 
         if (product != null) {
@@ -44,7 +44,7 @@ public class CartController {
     }
 
     @PostMapping("/remove-from-cart/{id}")
-    public String removeFromCart(@PathVariable String id, Model model) {
+    public String removeFromCart(@PathVariable Long id, Model model) {
         Product product = productService.getProduct(id);
 
         if (product != null) {

@@ -3,13 +3,15 @@ import java.util.List;
 
 public class User {
     // Attributes
+    private String id;
     private String username;
     private String password;
     private List<Order> orders;
     private Cart cart;
 
     // Constructor
-    public User(String username, String password, List<Order> orders) {
+    public User(String id, String username, String password, List<Order> orders) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.orders = orders;
@@ -17,6 +19,14 @@ public class User {
     }
 
     // Getter and setter methods
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getUsername() {
         return username;
     }

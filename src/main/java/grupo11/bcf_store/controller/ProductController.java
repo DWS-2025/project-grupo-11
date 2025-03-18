@@ -27,7 +27,7 @@ public class ProductController {
 
     @GetMapping("/clothes")
     public String clothes(Model model) {
-        model.addAttribute("products", productService.getProducts().values());
+        model.addAttribute("products", productService.getProducts());
         return "clothes";
     }
 
@@ -38,13 +38,13 @@ public class ProductController {
     }
 
     @PostMapping("/delete-product/{id}")
-    public String deleteProduct(@PathVariable String id) {
-        productService.removeProduct(id);
+    public String deleteProduct(@PathVariable Long id) {
+        productService.removeProductById(id);
         return "redirect:/clothes";
     }
 
     @GetMapping("/add-product/{id}")
-    public String editProduct(@PathVariable String id, Model model) {
+    public String editProduct(@PathVariable Long id, Model model) {
         Product product = productService.editProduct(id);
 
         model.addAttribute("product", product);
@@ -58,7 +58,7 @@ public class ProductController {
                                 @RequestParam("price") double price,
                                 @RequestParam("image") MultipartFile image, Model model) {
         if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
-            Product product = productService.submitProduct(id, name, description, price, image);
+            Product product = productService.submitProduct(name, description, price, image);
             cartService.updateCartProduct(product);
             return "redirect:/clothes";
         } else {
@@ -68,7 +68,7 @@ public class ProductController {
     }
 
     @GetMapping("/view/{id}")
-    public String viewProduct(@PathVariable String id, Model model) {
+    public String viewProduct(@PathVariable Long id, Model model) {
         Product product = productService.getProduct(id);
         List<Order> productOrders = productService.getProductOrders(product);
 

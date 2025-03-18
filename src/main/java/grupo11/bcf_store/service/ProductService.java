@@ -5,54 +5,50 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import grupo11.bcf_store.model.Order;
 import grupo11.bcf_store.model.Product;
+import grupo11.bcf_store.repository.ProductRepository;
 
 
 @Service
 public class ProductService {
     
+    @Autowired
+    private ProductRepository productRepository;
+
     private final Map<String, Product> products = new HashMap<>();
     private final AtomicInteger productIdCounter;
 
     public ProductService() {
-        products.put("1", new Product("1", "1ª EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido.", "/images/shirt0.png"));
-        products.put("2", new Product("2", "3º EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido.", "/images/shirt1.png"));
-        products.put("3", new Product("3", "CHUBASQUERO NEGRO 23/24", 60, "Chubasquero del Burgos CF.", "/images/chubasquero.jpg"));
-        products.put("4", new Product("4", "PARKA BURGOS CF 23/24", 60, "Parka con el escudo del equipo.", "/images/parka.jpg"));
-        products.put("5", new Product("5", "BUFANDA BURGOS CF", 20, "Bufanda con el nombre y escudo del equipo", "/images/scarf.jpg"));
-        products.put("6", new Product("6", "BALON BLANQUINEGRO", 20, "Disfruta del balón de tu equipo", "/images/balon.jpg"));
-        products.put("7", new Product("7", "BABERO BLANQUINEGRO", 20, "Babero con escudo del equipo", "/images/babero.jpg"));
-
         int maxIdProduct = products.keySet().stream().mapToInt(Integer::parseInt).max().orElse(0);
         this.productIdCounter = new AtomicInteger(maxIdProduct + 1);
     }
 
-    public Map<String, Product> getProducts() {
-        return products;
+    public List<Product> getProducts() {
+        return productRepository.findAll();
     }
 
-    public Product getProduct(String id) {
-        return products.get(id);
+    public Product getProduct(Long id) {
+        return productRepository.findById(id).orElse(null);
     }
 
-    public void put(String id, Product product) {
-        products.put(id, product);
+    public void put(Product product) {
+        productRepository.save(product);
     }
 
     public void removeProduct(Product product) {
         if(product != null) {
-            String id = product.getId();
-            products.remove(id);
+            productRepository.delete(product);
         }
     }
 
-    public void removeProduct(String id) {
-        if(this.getProduct(id) != null) {
-            products.remove(id);
+    public void removeProductById(Long id) {
+        if(productRepository.findById(id) != null) {
+            productRepository.deleteById(id);
         }
     }
 
@@ -60,24 +56,24 @@ public class ProductService {
         return productIdCounter.getAndIncrement();
     }
 
-    public Product editProduct(String id) {
-        Product product = this.getProduct(id);
+    public Product editProduct(Long id) {
+        Product product = productRepository.findById(id).orElse(null);
 
         if (product == null) {
-            product = new Product(id, "", 0, "", "");
+            product = new Product("", 0, "", "");
         }
 
         return product;
     }
 
-    public Product submitProduct(String id, String name, String description, double price, MultipartFile image) {
+    public Product submitProduct(String name, String description, double price, MultipartFile image) {
         if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
             String imageUrl = "/images/" + image.getOriginalFilename();
-            Product product = new Product(id, name, price, description, imageUrl);
-            this.put(id, product);
+            Product product = new Product(name, price, description, imageUrl);
+            this.put(product);
         }
 
-        return this.getProduct(id);
+        return null;
     }
 
     public List<Order> getProductOrders(Product product) {

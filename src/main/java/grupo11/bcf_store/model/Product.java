@@ -3,9 +3,15 @@ package grupo11.bcf_store.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Product {
     // Attributes
-    private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    
     private String name;
     private double price;
     private String description;
@@ -13,8 +19,7 @@ public class Product {
     private List<Order> orders; // Orders that contain this product
 
     // Constructor
-    public Product(String id, String name, double price, String description, String imageUrl) {
-        this.id = id;
+    public Product(String name, double price, String description, String imageUrl) {
         this.name = name;
         this.price = price;
         this.description = description;
@@ -31,11 +36,11 @@ public class Product {
         this.name = name;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
