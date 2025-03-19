@@ -2,47 +2,41 @@ package grupo11.bcf_store.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import grupo11.bcf_store.model.Cart;
-import grupo11.bcf_store.model.Product;
+import grupo11.bcf_store.repository.CartRepository;
 
 
 @Service
 public class CartService {
-    private final Cart cart = new Cart();
 
-    public List<Product> getProducts() {
-        return cart.getProducts();
+    @Autowired
+    private CartRepository cartRepository;
+
+    public List<Cart> getCarts() {
+        return cartRepository.findAll();
     }
 
     public int getTotalItems() {
-        return cart.getProducts().size();
+        return cartRepository.findAll().size();
     }
 
-    public double getTotalPrice() {
-        return cart.getProducts().stream().mapToDouble(Product::getPrice).sum();
-    }
-
-    public void addProduct(Product product) {
-        if(product != null) {
-            cart.addProduct(product);
+    public void addCart(Cart cart) {
+        if(cart != null && cart.getTotalItems() > 0) {
+            cartRepository.save(cart);
         }
     }
 
-    public void removeProduct(Product product) {
-        if(product != null) {
-            cart.removeProduct(product);
+    public void removeCart(Cart cart) {
+        if(cart != null && cart.getTotalItems() > 0) {
+            cartRepository.delete(cart);
         }
     }
 
     public void clearCart() {
-        cart.clearCart();
+        cartRepository.deleteAll();
     }
 
-    public void updateCartProduct(Product updatedProduct) {
-        cart.getProducts().replaceAll((product) -> 
-            product.getId().equals(updatedProduct.getId()) ? updatedProduct : product
-        );
-    }
 }

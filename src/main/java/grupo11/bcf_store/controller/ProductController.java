@@ -1,6 +1,7 @@
 package grupo11.bcf_store.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,69 +13,73 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import grupo11.bcf_store.model.Product;
+import grupo11.bcf_store.repository.ProductRepository;
 import grupo11.bcf_store.model.Order;
-import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.ProductService;
 
 
 @Controller
 public class ProductController {
+
     @Autowired
-	private CartService cartService;
+    private ProductRepository productRepository;
 
 	@Autowired
 	private ProductService productService;
 
     @GetMapping("/clothes")
     public String clothes(Model model) {
-        model.addAttribute("products", productService.getProducts());
+        model.addAttribute("products", productRepository.findAll());
         return "clothes";
     }
 
     @GetMapping("/add-product")
     public String addProduct() {
-        String newProductId = String.valueOf(productService.getAndIncrement());
-        return "redirect:/add-product/" + newProductId;
+        return "redirect:/add-product/";
     }
 
     @PostMapping("/delete-product/{id}")
     public String deleteProduct(@PathVariable Long id) {
-        productService.removeProductById(id);
+        productRepository.deleteById(id);
         return "redirect:/clothes";
     }
 
     @GetMapping("/add-product/{id}")
     public String editProduct(@PathVariable Long id, Model model) {
-        Product product = productService.editProduct(id);
-
-        model.addAttribute("product", product);
-        return "add";
+        Optional<Product> productOptional = productRepository.findById(id);
+        if (productOptional.isPresent()) {
+            model.addAttribute("product", productOptional.get());
+            return "add";
+        } else {
+            model.addAttribute("errorMessage", "Producto no encontrado.");
+            return "error";
+        }
     }
 
     @PostMapping("/add-product")
-    public String submitProduct(@RequestParam("id") String id,
+    public String submitProduct(@RequestParam("id") Long id,
                                 @RequestParam("name") String name,
                                 @RequestParam("description") String description,
                                 @RequestParam("price") double price,
                                 @RequestParam("image") MultipartFile image, Model model) {
         if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
-            Product product = productService.submitProduct(name, description, price, image);
-            cartService.updateCartProduct(product);
+            Product product = new Product(name, price, description, image.getOriginalFilename());
+            productRepository.save(product);
             return "redirect:/clothes";
         } else {
             model.addAttribute("errorMessage", "Error al añadir producto. Por favor, rellene todos los campos.");
             return "error";
-        }  
+        }
     }
 
     @GetMapping("/view/{id}")
     public String viewProduct(@PathVariable Long id, Model model) {
-        Product product = productService.getProduct(id);
-        List<Order> productOrders = productService.getProductOrders(product);
-
-        if (product != null) {
+        Optional<Product> productOptional = productRepository.findById(id);
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+            List<Order> productOrders = productService.getProductOrders(product);
             model.addAttribute("product", product);
-            if(productOrders != null && !productOrders.isEmpty()) {
+            if (productOrders != null && !productOrders.isEmpty()) {
                 model.addAttribute("productOrders", productOrders);
             }
             return "view";

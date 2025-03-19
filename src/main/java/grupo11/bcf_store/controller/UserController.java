@@ -5,16 +5,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import grupo11.bcf_store.service.UserService;
+import grupo11.bcf_store.repository.UserRepository;
 
 @Controller
 public class UserController {
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @GetMapping("/users")
     public String getUsers(Model model){
-        model.addAttribute("users", userService.findAll());
+        model.addAttribute("users", userRepository.findAll());
         return "users";
     }
 }

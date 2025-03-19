@@ -16,6 +16,8 @@ public class Product {
     private double price;
     private String description;
     private String imageUrl; // URL of the product image
+
+    @ManyToMany
     private List<Order> orders; // Orders that contain this product
 
     // Constructor

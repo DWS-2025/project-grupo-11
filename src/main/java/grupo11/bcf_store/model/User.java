@@ -1,13 +1,22 @@
 package grupo11.bcf_store.model;
 import java.util.List;
 
+import jakarta.persistence.*;
+
 public class User {
     // Attributes
+    @Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
+    
     private String username;
     private String password;
-    private List<Order> orders;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
+
+    @ManyToMany
+    private List<Order> orders;
 
     // Constructor
     public User(String id, String username, String password, List<Order> orders) {

@@ -1,9 +1,6 @@
 package grupo11.bcf_store.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import grupo11.bcf_store.model.Order;
 import grupo11.bcf_store.model.Product;
+import grupo11.bcf_store.repository.CartRepository;
 import grupo11.bcf_store.repository.ProductRepository;
 
 
@@ -18,14 +16,16 @@ import grupo11.bcf_store.repository.ProductRepository;
 public class ProductService {
     
     @Autowired
+    private CartRepository cartRepository;
+    
+    @Autowired
     private ProductRepository productRepository;
 
-    private final Map<String, Product> products = new HashMap<>();
-    private final AtomicInteger productIdCounter;
+    //private final AtomicInteger productIdCounter;
 
     public ProductService() {
-        int maxIdProduct = products.keySet().stream().mapToInt(Integer::parseInt).max().orElse(0);
-        this.productIdCounter = new AtomicInteger(maxIdProduct + 1);
+        /*int maxIdProduct = products.keySet().stream().mapToInt(Integer::parseInt).max().orElse(0);
+        this.productIdCounter = new AtomicInteger(maxIdProduct + 1);*/
     }
 
     public List<Product> getProducts() {
@@ -52,9 +52,9 @@ public class ProductService {
         }
     }
 
-    public int getAndIncrement() {
+    /*public int getAndIncrement() {
         return productIdCounter.getAndIncrement();
-    }
+    }*/
 
     public Product editProduct(Long id) {
         Product product = productRepository.findById(id).orElse(null);
@@ -78,5 +78,13 @@ public class ProductService {
 
     public List<Order> getProductOrders(Product product) {
         return product.getOrders();
+    }
+
+    public void updateCartProduct(Product updatedProduct) {
+        cartRepository.findAll().forEach(cart -> {
+            cart.getProducts().replaceAll(product -> 
+                product.getId().equals(updatedProduct.getId()) ? updatedProduct : product
+            );
+        });
     }
 }

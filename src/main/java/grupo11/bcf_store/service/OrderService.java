@@ -42,7 +42,7 @@ public class OrderService {
 
     public String createOrder(List<Product> products) {
         String id = String.valueOf(this.getAndIncrement());
-        Order newOrder = new Order(products, id);
+        Order newOrder = new Order(products);
         this.put(id, newOrder);
         for (Product product : products) {
             product.getOrders().add(newOrder);

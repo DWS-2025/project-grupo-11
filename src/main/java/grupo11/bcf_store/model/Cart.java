@@ -2,9 +2,16 @@ package grupo11.bcf_store.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.*;
 
+@Entity
 public class Cart {
     // Attributes
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @OneToMany
     private List<Product> products;
 
     // Constructor
@@ -39,12 +46,10 @@ public class Cart {
         return products.size();
     }
 
-    // Method to clear the basket
     public void clearCart() {
         products.clear();
     }
 
-    // Method to display basket information
     public void displayCartInformation() {
         for (Product product : products) {
             product.displayInformation();
@@ -52,8 +57,13 @@ public class Cart {
         }
     }
 
-    // Method to convert basket to order
     public Order checkout() {
-        return new Order(new ArrayList<>(products), "100");
+        return new Order(new ArrayList<>(products));
+    }
+
+    public void updateCartProduct(Product updatedProduct) {
+        this.getProducts().replaceAll((product) -> 
+            product.getId().equals(updatedProduct.getId()) ? updatedProduct : product
+        );
     }
 }
