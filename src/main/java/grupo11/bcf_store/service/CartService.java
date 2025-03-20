@@ -15,15 +15,23 @@ public class CartService {
     @Autowired
     private CartRepository cartRepository;
 
+    /**
+     * Returns always the same cart for simplicity before adding authentication
+     * @return Cart
+     */
     public List<Cart> getCarts() {
         return cartRepository.findAll();
+    }
+
+    public Cart getCart(Long id) {
+        return cartRepository.findById(id).orElse(null);
     }
 
     public int getTotalItems() {
         return cartRepository.findAll().size();
     }
 
-    public void addCart(Cart cart) {
+    public void saveCart(Cart cart) {
         if(cart != null && cart.getTotalItems() > 0) {
             cartRepository.save(cart);
         }

@@ -26,21 +26,5 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    /*public void likeOrUnlikePost(Long userId, Post post) {
-        User user = getLoggedUser();
-        if(user.getLikedPosts().contains(post)) {
-            user.getLikedPosts().remove(post);
-        }else{
-            user.getLikedPosts().add(post);
-        }
-        userRepository.save(user);
-    }
-
-    public boolean isPostLikedByCurrentUser(Post post) {
-        User user = getLoggedUser();
-        return user.getLikedPosts().contains(post);
-    }*/
-
-
 }
 

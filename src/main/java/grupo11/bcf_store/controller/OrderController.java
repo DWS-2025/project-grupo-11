@@ -2,7 +2,6 @@ package grupo11.bcf_store.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,34 +13,36 @@ import org.springframework.web.bind.annotation.PostMapping;
 import grupo11.bcf_store.model.Cart;
 import grupo11.bcf_store.model.Order;
 import grupo11.bcf_store.model.Product;
-import grupo11.bcf_store.repository.CartRepository;
-import grupo11.bcf_store.repository.OrderRepository;
+import grupo11.bcf_store.service.CartService;
+import grupo11.bcf_store.service.OrderService;
 
 
 @Controller
 public class OrderController {
     @Autowired
-	private CartRepository cartRepository;
+	private CartService cartService;
 
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderService orderService;
 
     @PostMapping("/create-order")
-    public String createOrder(Long cartId, Model model) {
-        Optional<Cart> cartOptional = cartRepository.findById(cartId);
-        if (cartOptional.isPresent()) {
-            Cart cart = cartOptional.get();
-            if (cart.getProducts() != null && !cart.getProducts().isEmpty()) {
+    public String createOrder(Model model) {
+        Cart cart = cartService.getCart(1L);
+
+        if (cart != null) {
+
+            if(cart.getProducts() != null && !cart.getProducts().isEmpty()) {
                 List<Product> productsCopy = new ArrayList<>(cart.getProducts());
-                Order newOrder = new Order(productsCopy);
-                orderRepository.save(newOrder);
-                cart.clearCart(); // Vacía el carrito sin afectar el pedido
-                cartRepository.save(cart); // Guarda el carrito actualizado en la base de datos
+                Order newOrder = orderService.createOrder(productsCopy);
+                cart.clearCart();
+                cartService.saveCart(cart);
+
                 return "redirect:/view-order/" + newOrder.getId();
             } else {
                 model.addAttribute("errorMessage", "El carrito está vacío.");
                 return "error";
             }
+
         } else {
             model.addAttribute("errorMessage", "Carrito no encontrado.");
             return "error";
@@ -50,9 +51,10 @@ public class OrderController {
 
     @PostMapping("/delete-order/{id}")
     public String deleteOrder(@PathVariable Long id, Model model) {
-        Optional<Order> orderOptional = orderRepository.findById(id);
-        if (orderOptional.isPresent()) {
-            orderRepository.delete(orderOptional.get());
+        Order order_to_delete = orderService.getOrder(id);
+
+        if (order_to_delete != null) {
+            orderService.remove(id);
             return "redirect:/myaccount";
         } else {
             model.addAttribute("errorMessage", "Pedido no encontrado.");
@@ -62,9 +64,8 @@ public class OrderController {
 
     @GetMapping("/view-order/{id}")
     public String viewOrder(@PathVariable Long id, Model model) {
-        Optional<Order> orderOptional = orderRepository.findById(id);
-        if (orderOptional.isPresent()) {
-            Order order = orderOptional.get();
+        Order order = orderService.getOrder(id);
+        if (order != null) {
             model.addAttribute("order", order);
             model.addAttribute("products", order.getProducts());
             return "viewOrder";
@@ -76,7 +77,7 @@ public class OrderController {
 
     @GetMapping("/myaccount")
     public String myAccount(Model model) {
-        model.addAttribute("orders", orderRepository.findAll());
+        model.addAttribute("orders", orderService.getOrders());
         return "myaccount";
     }
 }

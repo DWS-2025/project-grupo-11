@@ -3,16 +3,24 @@ import java.util.List;
 
 import jakarta.persistence.*;
 
+@Entity
+@Table(name = "OrderTable")
 public class Order {
     // Attributes
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToMany(mappedBy = "order")
+    @ManyToMany(mappedBy = "orders")
     private List<Product> products;
 
-    // Constructor
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    // Constructors
+    public Order() {}
+    
     public Order(List<Product> products) {
         this.products = products;
     }

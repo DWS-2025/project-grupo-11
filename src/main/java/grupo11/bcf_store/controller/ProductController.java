@@ -1,7 +1,6 @@
 package grupo11.bcf_store.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import grupo11.bcf_store.model.Product;
-import grupo11.bcf_store.repository.ProductRepository;
 import grupo11.bcf_store.model.Order;
 import grupo11.bcf_store.service.ProductService;
 
@@ -21,15 +19,12 @@ import grupo11.bcf_store.service.ProductService;
 @Controller
 public class ProductController {
 
-    @Autowired
-    private ProductRepository productRepository;
-
 	@Autowired
 	private ProductService productService;
 
     @GetMapping("/clothes")
     public String clothes(Model model) {
-        model.addAttribute("products", productRepository.findAll());
+        model.addAttribute("products", productService.getProducts());
         return "clothes";
     }
 
@@ -40,31 +35,26 @@ public class ProductController {
 
     @PostMapping("/delete-product/{id}")
     public String deleteProduct(@PathVariable Long id) {
-        productRepository.deleteById(id);
+        productService.removeProductById(id);
         return "redirect:/clothes";
     }
 
     @GetMapping("/add-product/{id}")
     public String editProduct(@PathVariable Long id, Model model) {
-        Optional<Product> productOptional = productRepository.findById(id);
-        if (productOptional.isPresent()) {
-            model.addAttribute("product", productOptional.get());
-            return "add";
-        } else {
-            model.addAttribute("errorMessage", "Producto no encontrado.");
-            return "error";
-        }
+        Product new_product = productService.getProduct(id);
+        model.addAttribute("product", new_product);
+        
+        return "add";
     }
 
     @PostMapping("/add-product")
-    public String submitProduct(@RequestParam("id") Long id,
-                                @RequestParam("name") String name,
+    public String submitProduct(@RequestParam("name") String name,
                                 @RequestParam("description") String description,
                                 @RequestParam("price") double price,
                                 @RequestParam("image") MultipartFile image, Model model) {
+        productService.submitProduct(name, description, price, image);
+        
         if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
-            Product product = new Product(name, price, description, image.getOriginalFilename());
-            productRepository.save(product);
             return "redirect:/clothes";
         } else {
             model.addAttribute("errorMessage", "Error al añadir producto. Por favor, rellene todos los campos.");
@@ -74,11 +64,11 @@ public class ProductController {
 
     @GetMapping("/view/{id}")
     public String viewProduct(@PathVariable Long id, Model model) {
-        Optional<Product> productOptional = productRepository.findById(id);
-        if (productOptional.isPresent()) {
-            Product product = productOptional.get();
-            List<Order> productOrders = productService.getProductOrders(product);
-            model.addAttribute("product", product);
+        Product product_to_view = productService.getProduct(id);
+        List<Order> productOrders = productService.getProductOrders(id);
+
+        if (product_to_view != null) {
+            model.addAttribute("product", product_to_view);
             if (productOrders != null && !productOrders.isEmpty()) {
                 model.addAttribute("productOrders", productOrders);
             }

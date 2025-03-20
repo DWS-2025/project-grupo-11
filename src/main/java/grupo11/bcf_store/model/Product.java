@@ -6,6 +6,7 @@ import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "ProductTable")
 public class Product {
     // Attributes
     @Id
@@ -18,9 +19,16 @@ public class Product {
     private String imageUrl; // URL of the product image
 
     @ManyToMany
+    @JoinTable(name = "Order_Products",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "order_id"))
     private List<Order> orders; // Orders that contain this product
 
-    // Constructor
+    // Constructors
+    public Product() {
+        this.orders = new ArrayList<>();
+    }
+    
     public Product(String name, double price, String description, String imageUrl) {
         this.name = name;
         this.price = price;

@@ -1,7 +1,5 @@
 package grupo11.bcf_store.controller;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,9 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import grupo11.bcf_store.model.Cart;
 import grupo11.bcf_store.model.Product;
-import grupo11.bcf_store.repository.CartRepository;
+import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.ProductService;
-import jakarta.annotation.PostConstruct;
 
 
 @Controller
@@ -23,20 +20,13 @@ public class CartController {
     private ProductService productService;
 
     @Autowired
-    private CartRepository cartRepository;  
+    private CartService cartService;
 
-    @PostConstruct
-    public void init() {
-        // Inicializa un carrito vacío y guárdalo en la base de datos
-        Cart cart = new Cart();
-        cartRepository.save(cart);
-    }
+    @GetMapping("/cart/{cartId}")
+    public String cart(@PathVariable Long cartId, Model model) {
+        Cart cart = cartService.getCart(cartId);
 
-    @GetMapping("/cart/{id}")
-    public String cart(@PathVariable Long id, Model model) {
-        Optional<Cart> cartOptional = cartRepository.findById(id);
-        if (cartOptional.isPresent()) {
-            Cart cart = cartOptional.get();
+        if (cart != null) {
             model.addAttribute("cart", cart.getProducts());
             model.addAttribute("totalItems", cart.getTotalItems());
             model.addAttribute("totalPrice", cart.getTotalPrice());
@@ -49,15 +39,15 @@ public class CartController {
 
     @PostMapping("/add-to-cart/{productId}")
     public String addToCart(@PathVariable Long productId, Long cartId, Model model) {
+        cartId = 1L; // El carrito siempre será el mismo
         Product product = productService.getProduct(productId);
 
         if (product != null) {
-            Optional<Cart> cartOptional = cartRepository.findById(cartId);
-            if (cartOptional.isPresent()) {
-                Cart cart = cartOptional.get();
+            Cart cart = cartService.getCart(cartId);
+            if (cart != null) {
                 cart.addProduct(product);
-                cartRepository.save(cart); // Guarda el carrito actualizado en la base de datos
-                return "redirect:/cart/" + cartId;
+                cartService.saveCart(cart); // Guarda el carrito actualizado en la base de datos
+                return "redirect:/cart/" + cart.getId();
             } else {
                 model.addAttribute("errorMessage", "Carrito no encontrado.");
                 return "error";
@@ -73,11 +63,10 @@ public class CartController {
         Product product = productService.getProduct(productId);
 
         if (product != null) {
-            Optional<Cart> cartOptional = cartRepository.findById(cartId);
-            if (cartOptional.isPresent()) {
-                Cart cart = cartOptional.get();
+            Cart cart = cartService.getCart(cartId);
+            if (cart != null && cart.getProducts().contains(product)) {
                 cart.removeProduct(product);
-                cartRepository.save(cart); // Guarda el carrito actualizado en la base de datos
+                cartService.saveCart(cart);
                 return "redirect:/cart/" + cartId;
             } else {
                 model.addAttribute("errorMessage", "Carrito no encontrado.");

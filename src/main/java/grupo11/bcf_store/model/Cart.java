@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "CartTable")
 public class Cart {
     // Attributes
     @Id
@@ -12,7 +13,13 @@ public class Cart {
     private Long id;
 
     @OneToMany
+    @JoinTable(name = "Cart_Products",
+            joinColumns = @JoinColumn(name = "cart_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> products;
+
+    @OneToOne(mappedBy = "cart")
+    private User user;
 
     // Constructor
     public Cart() {
@@ -20,6 +27,10 @@ public class Cart {
     }
 
     // Methods to add and remove products
+    public Long getId() {
+        return id;
+    }
+    
     public void addProduct(Product product) {
         products.add(product);
     }

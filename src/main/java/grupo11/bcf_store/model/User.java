@@ -1,38 +1,43 @@
 package grupo11.bcf_store.model;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
 
+@Entity
+@Table (name = "UserTable")
 public class User {
     // Attributes
     @Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private Long id;
     
     private String username;
     private String password;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    @ManyToMany
+    @OneToMany(mappedBy = "user")
     private List<Order> orders;
 
-    // Constructor
-    public User(String id, String username, String password, List<Order> orders) {
-        this.id = id;
+    // Constructors
+    public User() {}
+
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.orders = orders;
+        this.orders = new ArrayList<>();
         this.cart = new Cart();
     }
 
     // Getter and setter methods
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

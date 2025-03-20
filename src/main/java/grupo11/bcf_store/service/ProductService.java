@@ -21,13 +21,6 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    //private final AtomicInteger productIdCounter;
-
-    public ProductService() {
-        /*int maxIdProduct = products.keySet().stream().mapToInt(Integer::parseInt).max().orElse(0);
-        this.productIdCounter = new AtomicInteger(maxIdProduct + 1);*/
-    }
-
     public List<Product> getProducts() {
         return productRepository.findAll();
     }
@@ -36,7 +29,7 @@ public class ProductService {
         return productRepository.findById(id).orElse(null);
     }
 
-    public void put(Product product) {
+    public void save(Product product) {
         productRepository.save(product);
     }
 
@@ -52,10 +45,6 @@ public class ProductService {
         }
     }
 
-    /*public int getAndIncrement() {
-        return productIdCounter.getAndIncrement();
-    }*/
-
     public Product editProduct(Long id) {
         Product product = productRepository.findById(id).orElse(null);
 
@@ -70,14 +59,16 @@ public class ProductService {
         if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
             String imageUrl = "/images/" + image.getOriginalFilename();
             Product product = new Product(name, price, description, imageUrl);
-            this.put(product);
+            this.save(product);
         }
 
         return null;
     }
 
-    public List<Order> getProductOrders(Product product) {
-        return product.getOrders();
+    public List<Order> getProductOrders(Long id) {
+        return productRepository.findById(id)
+                                .map(Product::getOrders)
+                                .orElse(null);
     }
 
     public void updateCartProduct(Product updatedProduct) {
