@@ -55,14 +55,24 @@ public class ProductService {
         return product;
     }
 
-    public Product submitProduct(String name, String description, double price, MultipartFile image) {
+    public Product submitProduct(Long id, String name, String description, double price, MultipartFile image) {
+        Product product;
+        if (id != null) {
+            product = productRepository.findById(id).orElse(new Product());
+        } else {
+            product = new Product();
+        }
+
         if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
             String imageUrl = "/images/" + image.getOriginalFilename();
-            Product product = new Product(name, price, description, imageUrl);
+            product.setName(name);
+            product.setDescription(description);
+            product.setPrice(price);
+            product.setImageUrl(imageUrl);
             this.save(product);
         }
 
-        return null;
+        return product;
     }
 
     public List<Order> getProductOrders(Long id) {

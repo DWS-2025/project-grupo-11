@@ -15,12 +15,11 @@ import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.model.Order;
 import grupo11.bcf_store.service.ProductService;
 
-
 @Controller
 public class ProductController {
 
-	@Autowired
-	private ProductService productService;
+    @Autowired
+    private ProductService productService;
 
     @GetMapping("/clothes")
     public String clothes(Model model) {
@@ -48,11 +47,12 @@ public class ProductController {
     }
 
     @PostMapping("/add-product")
-    public String submitProduct(@RequestParam("name") String name,
+    public String submitProduct(@RequestParam("id") Long id,
+                                @RequestParam("name") String name,
                                 @RequestParam("description") String description,
                                 @RequestParam("price") double price,
                                 @RequestParam("image") MultipartFile image, Model model) {
-        productService.submitProduct(name, description, price, image);
+        productService.submitProduct(id, name, description, price, image);
         
         if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
             return "redirect:/clothes";
