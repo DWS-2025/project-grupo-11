@@ -67,7 +67,7 @@ public class CartController {
             Cart cart = cartService.getCart(cartId);
             if (cart != null && cart.getProducts().contains(product)) {
                 cart.removeProduct(product);
-                cartService.saveCart(cart);
+                cartService.saveCart(cart); // Save the cart even if it's empty
                 return "redirect:/cart";
             } else {
                 model.addAttribute("errorMessage", "Carrito no encontrado.");

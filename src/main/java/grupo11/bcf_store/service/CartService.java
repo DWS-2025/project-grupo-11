@@ -32,7 +32,7 @@ public class CartService {
     }
 
     public void saveCart(Cart cart) {
-        if(cart != null && cart.getTotalItems() > 0) {
+        if(cart != null) {
             cartRepository.save(cart);
         }
     }
@@ -45,6 +45,13 @@ public class CartService {
 
     public void clearCart() {
         cartRepository.deleteAll();
+    }
+
+    public void clearCart(Cart cart) {
+        if (cart != null) {
+            cart.getProducts().clear();
+            cartRepository.save(cart);
+        }
     }
 
 }

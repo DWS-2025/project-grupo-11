@@ -34,7 +34,7 @@ public class OrderController {
             if(cart.getProducts() != null && !cart.getProducts().isEmpty()) {
                 List<Product> productsCopy = new ArrayList<>(cart.getProducts());
                 Order newOrder = orderService.createOrder(productsCopy);
-                cart.clearCart();
+                cartService.clearCart(cart); // Ensure the cart is cleared
                 cartService.saveCart(cart);
 
                 return "redirect:/view-order/" + newOrder.getId();
