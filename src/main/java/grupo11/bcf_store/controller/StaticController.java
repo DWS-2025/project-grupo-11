@@ -15,7 +15,6 @@ public class StaticController {
 
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("cart_id", cartRepository.findById(1L).get().getId());
         return "index";
     }
 

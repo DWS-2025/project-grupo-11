@@ -51,14 +51,15 @@ public class OrderController {
 
     @PostMapping("/delete-order/{id}")
     public String deleteOrder(@PathVariable Long id, Model model) {
-        Order order_to_delete = orderService.getOrder(id);
+                    Order order_to_delete = orderService.getOrder(id);
 
-        if (order_to_delete != null) {
-            orderService.remove(id);
-            return "redirect:/myaccount";
-        } else {
-            model.addAttribute("errorMessage", "Pedido no encontrado.");
-            return "error";
+            if (order_to_delete != null) {
+                order_to_delete.removeOrderFromUser();
+                orderService.remove(id);
+                return "redirect:/myaccount";
+            } else {
+                model.addAttribute("errorMessage", "Pedido no encontrado.");
+                            return "error";
         }
     }
 

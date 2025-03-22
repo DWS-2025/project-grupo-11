@@ -33,9 +33,15 @@ public class ProductController {
     }
 
     @PostMapping("/delete-product/{id}")
-    public String deleteProduct(@PathVariable Long id) {
-        productService.removeProductById(id);
-        return "redirect:/clothes";
+    public String deleteProduct(@PathVariable Long id, Model model) {
+        Product product = productService.getProduct(id);
+        if (product != null) {
+            productService.removeProduct(product);
+            return "redirect:/clothes";
+        } else {
+            model.addAttribute("errorMessage", "Producto no encontrado.");
+            return "error";
+        }
     }
 
     @GetMapping("/add-product/{id}")

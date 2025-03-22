@@ -12,7 +12,6 @@ import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.ProductService;
 
-
 @Controller
 public class CartController {
 
@@ -22,8 +21,9 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    @GetMapping("/cart/{cartId}")
-    public String cart(@PathVariable Long cartId, Model model) {
+    @GetMapping("/cart")
+    public String cart(Model model) {
+        Long cartId = 1L; // Default cart ID
         Cart cart = cartService.getCart(cartId);
 
         if (cart != null) {
@@ -38,16 +38,16 @@ public class CartController {
     }
 
     @PostMapping("/add-to-cart/{productId}")
-    public String addToCart(@PathVariable Long productId, Long cartId, Model model) {
-        cartId = 1L; // El carrito siempre será el mismo
+    public String addToCart(@PathVariable Long productId, Model model) {
+        Long cartId = 1L; // Default cart ID
         Product product = productService.getProduct(productId);
 
         if (product != null) {
             Cart cart = cartService.getCart(cartId);
             if (cart != null) {
                 cart.addProduct(product);
-                cartService.saveCart(cart); // Guarda el carrito actualizado en la base de datos
-                return "redirect:/cart/" + cart.getId();
+                cartService.saveCart(cart); // Save the updated cart to the database
+                return "redirect:/cart";
             } else {
                 model.addAttribute("errorMessage", "Carrito no encontrado.");
                 return "error";
@@ -59,7 +59,8 @@ public class CartController {
     }
 
     @PostMapping("/remove-from-cart/{productId}")
-    public String removeFromCart(@PathVariable Long productId, Long cartId, Model model) {
+    public String removeFromCart(@PathVariable Long productId, Model model) {
+        Long cartId = 1L; // Default cart ID
         Product product = productService.getProduct(productId);
 
         if (product != null) {
@@ -67,7 +68,7 @@ public class CartController {
             if (cart != null && cart.getProducts().contains(product)) {
                 cart.removeProduct(product);
                 cartService.saveCart(cart);
-                return "redirect:/cart/" + cartId;
+                return "redirect:/cart";
             } else {
                 model.addAttribute("errorMessage", "Carrito no encontrado.");
                 return "error";
@@ -77,5 +78,4 @@ public class CartController {
             return "error";
         }
     }
-
 }

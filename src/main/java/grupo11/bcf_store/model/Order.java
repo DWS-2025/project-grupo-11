@@ -53,4 +53,13 @@ public class Order {
     public void deleteOrder() {
         products.clear();
     }
+
+    public void removeOrderFromUser() {
+        if (user != null) {
+            user.getOrders().remove(this);
+        }
+        for (Product product : products) {
+            product.getOrders().remove(this);
+        }
+    }
 }
