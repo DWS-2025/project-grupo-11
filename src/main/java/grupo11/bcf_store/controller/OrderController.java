@@ -16,11 +16,10 @@ import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.OrderService;
 
-
 @Controller
 public class OrderController {
     @Autowired
-	private CartService cartService;
+    private CartService cartService;
 
     @Autowired
     private OrderService orderService;
@@ -31,7 +30,7 @@ public class OrderController {
 
         if (cart != null) {
 
-            if(cart.getProducts() != null && !cart.getProducts().isEmpty()) {
+            if (cart.getProducts() != null && !cart.getProducts().isEmpty()) {
                 List<Product> productsCopy = new ArrayList<>(cart.getProducts());
                 Order newOrder = orderService.createOrder(productsCopy);
                 cartService.clearCart(cart); // Ensure the cart is cleared
@@ -51,15 +50,15 @@ public class OrderController {
 
     @PostMapping("/delete-order/{id}")
     public String deleteOrder(@PathVariable Long id, Model model) {
-                    Order order_to_delete = orderService.getOrder(id);
+        Order order_to_delete = orderService.getOrder(id);
 
-            if (order_to_delete != null) {
-                order_to_delete.removeOrderFromUser();
-                orderService.remove(id);
-                return "redirect:/myaccount";
-            } else {
-                model.addAttribute("errorMessage", "Pedido no encontrado.");
-                            return "error";
+        if (order_to_delete != null) {
+            order_to_delete.removeOrderFromUser();
+            orderService.remove(id);
+            return "redirect:/myaccount";
+        } else {
+            model.addAttribute("errorMessage", "Pedido no encontrado.");
+            return "error";
         }
     }
 

@@ -26,7 +26,7 @@ public class ProductController {
         model.addAttribute("products", productService.getProducts());
         return "clothes";
     }
-    
+
     @PostMapping("/delete-product/{id}")
     public String deleteProduct(@PathVariable Long id, Model model) {
         Product product = productService.getProduct(id);
@@ -50,17 +50,17 @@ public class ProductController {
     public String editProductRedirect(@PathVariable Long id, Model model) {
         Product product_to_edit = productService.getProduct(id);
         model.addAttribute("product", product_to_edit);
-        
+
         return "add";
     }
 
     @PostMapping("/add-product")
     public String addProduct(@RequestParam("name") String name,
-                            @RequestParam("description") String description,
-                            @RequestParam("price") double price,
-                            @RequestParam("image") MultipartFile image, Model model) {
+            @RequestParam("description") String description,
+            @RequestParam("price") double price,
+            @RequestParam("image") MultipartFile image, Model model) {
         productService.submitProductAdded(name, description, price, image);
-        
+
         if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
             return "redirect:/clothes";
         } else {
@@ -71,16 +71,16 @@ public class ProductController {
 
     @PostMapping("/edit-product")
     public String editProduct(@RequestParam("id") Long id,
-                                @RequestParam("name") String name,
-                                @RequestParam("description") String description,
-                                @RequestParam("price") double price,
-                                @RequestParam("image") MultipartFile image, Model model) {
+            @RequestParam("name") String name,
+            @RequestParam("description") String description,
+            @RequestParam("price") double price,
+            @RequestParam("image") MultipartFile image, Model model) {
         productService.submitProductEdited(id, name, description, price, image);
-        
-        if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
+
+        if (!name.isEmpty() && !description.isEmpty() && price > 0) {
             return "redirect:/clothes";
         } else {
-            model.addAttribute("errorMessage", "Error al añadir producto. Por favor, rellene todos los campos.");
+            model.addAttribute("errorMessage", "Error al editar producto. Por favor, rellene todos los campos.");
             return "error";
         }
     }

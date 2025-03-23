@@ -1,4 +1,5 @@
 package grupo11.bcf_store.model;
+
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -19,8 +20,9 @@ public class Order {
     private User user;
 
     // Constructors
-    public Order() {}
-    
+    public Order() {
+    }
+
     public Order(List<Product> products) {
         this.products = products;
     }

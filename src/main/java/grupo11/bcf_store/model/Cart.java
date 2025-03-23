@@ -1,4 +1,5 @@
 package grupo11.bcf_store.model;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,9 +14,7 @@ public class Cart {
     private Long id;
 
     @OneToMany
-    @JoinTable(name = "Cart_Products",
-            joinColumns = @JoinColumn(name = "cart_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
+    @JoinTable(name = "Cart_Products", joinColumns = @JoinColumn(name = "cart_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> products;
 
     @OneToOne(mappedBy = "cart")
@@ -30,7 +29,7 @@ public class Cart {
     public Long getId() {
         return id;
     }
-    
+
     public void addProduct(Product product) {
         products.add(product);
     }
@@ -46,7 +45,7 @@ public class Cart {
     public double getTotalPrice() {
         double totalPrice = 0;
 
-        for(Product product:products) {
+        for (Product product : products) {
             totalPrice += product.getPrice();
         }
 
@@ -73,8 +72,7 @@ public class Cart {
     }
 
     public void updateCartProduct(Product updatedProduct) {
-        this.getProducts().replaceAll((product) -> 
-            product.getId().equals(updatedProduct.getId()) ? updatedProduct : product
-        );
+        this.getProducts()
+                .replaceAll((product) -> product.getId().equals(updatedProduct.getId()) ? updatedProduct : product);
     }
 }

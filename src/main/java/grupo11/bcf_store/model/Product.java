@@ -12,23 +12,21 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     private String name;
     private double price;
     private String description;
     private String imageUrl; // URL of the product image
 
     @ManyToMany
-    @JoinTable(name = "Order_Products",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "order_id"))
+    @JoinTable(name = "Order_Products", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "order_id"))
     private List<Order> orders; // Orders that contain this product
 
     // Constructors
     public Product() {
         this.orders = new ArrayList<>();
     }
-    
+
     public Product(String name, double price, String description, String imageUrl) {
         this.name = name;
         this.price = price;

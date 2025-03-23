@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <title>Burgos CF Store</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <link rel="stylesheet" type="text/css" href="/css/style.css" />
 </head>
+
 <body>
   <div id="wrap">
     <div class="header">
@@ -23,7 +25,8 @@
       <div class="left_content">
         <div class="cart">
           <div class="title"><span class="title_icon"><img src="/images/cart.png" alt="" /></span>CESTA</div>
-          <div class="home_cart_content"> {{totalItems}} x items | <span class="red">TOTAL: {{totalPrice}}€</span> </div>
+          <div class="home_cart_content"> {{totalItems}} x items | <span class="red">TOTAL: {{totalPrice}}€</span>
+          </div>
         </div>
         <div class="cart_items">
           {{#cart}}
@@ -32,7 +35,8 @@
             <h2>{{name}}</h2>
             <img src="{{imageUrl}}" alt="{{name}}" class="product-image">
             <p>Price: {{price}}€</p>
-            <form action="/remove-from-cart/{{id}}" method="post"><button type="submit">Eliminar del carrito</button></form>
+            <form action="/remove-from-cart/{{id}}" method="post"><button type="submit">Eliminar del carrito</button>
+            </form>
           </div>
           {{/cart}}
         </div>
@@ -57,4 +61,5 @@
     </div>
   </div>
 </body>
+
 </html>

@@ -1,17 +1,18 @@
 package grupo11.bcf_store.model;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table (name = "UserTable")
+@Table(name = "UserTable")
 public class User {
     // Attributes
     @Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     private String username;
     private String password;
 
@@ -23,7 +24,8 @@ public class User {
     private List<Order> orders;
 
     // Constructors
-    public User() {}
+    public User() {
+    }
 
     public User(String username, String password) {
         this.username = username;

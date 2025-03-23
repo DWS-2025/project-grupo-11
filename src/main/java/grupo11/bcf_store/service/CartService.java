@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import grupo11.bcf_store.model.Cart;
 import grupo11.bcf_store.repository.CartRepository;
 
-
 @Service
 public class CartService {
 
@@ -17,6 +16,7 @@ public class CartService {
 
     /**
      * Returns always the same cart for simplicity before adding authentication
+     * 
      * @return Cart
      */
     public List<Cart> getCarts() {
@@ -32,13 +32,13 @@ public class CartService {
     }
 
     public void saveCart(Cart cart) {
-        if(cart != null) {
+        if (cart != null) {
             cartRepository.save(cart);
         }
     }
 
     public void removeCart(Cart cart) {
-        if(cart != null && cart.getTotalItems() > 0) {
+        if (cart != null && cart.getTotalItems() > 0) {
             cartRepository.delete(cart);
         }
     }

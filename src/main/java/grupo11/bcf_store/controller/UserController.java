@@ -13,7 +13,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("/users")
-    public String getUsers(Model model){
+    public String getUsers(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "users";
     }
