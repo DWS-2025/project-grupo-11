@@ -30,7 +30,7 @@
               <p class="details">{{product.description}}</p>
               <div class="price">Precio: {{product.price}}€</div>
               <form action="/add-to-cart/{{product.id}}" method="post"><button type="submit" class="button-spacing">Añadir al carrito</button></form>
-              <form action="/add-product/{{product.id}}" method="get"><button type="submit" class="button-spacing">Editar producto</button></form>
+              <form action="/edit-product/{{product.id}}" method="get"><button type="submit" class="button-spacing">Editar producto</button></form>
               <form action="/delete-product/{{product.id}}" method="post"><button type="submit" class="button-spacing">Eliminar producto</button></form>
               <div class="clear"></div>
               <div class="price">Pedidos a los que pertenece:</div>

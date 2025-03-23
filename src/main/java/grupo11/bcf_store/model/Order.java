@@ -42,6 +42,10 @@ public class Order {
         this.id = id;
     }
 
+    public int getTotalItems() {
+        return products.size();
+    }
+
     // Method to display order information
     public void displayOrderInformation() {
         for (Product product : products) {

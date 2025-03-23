@@ -26,12 +26,7 @@ public class ProductController {
         model.addAttribute("products", productService.getProducts());
         return "clothes";
     }
-
-    @GetMapping("/add-product")
-    public String addProduct() {
-        return "redirect:/add-product/";
-    }
-
+    
     @PostMapping("/delete-product/{id}")
     public String deleteProduct(@PathVariable Long id, Model model) {
         Product product = productService.getProduct(id);
@@ -44,21 +39,43 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/add-product/{id}")
-    public String editProduct(@PathVariable Long id, Model model) {
-        Product new_product = productService.getProduct(id);
+    @GetMapping("/add-product")
+    public String addProductRedirect(Model model) {
+        Product new_product = new Product("", 0, "", "");
         model.addAttribute("product", new_product);
+        return "add";
+    }
+
+    @GetMapping("/edit-product/{id}")
+    public String editProductRedirect(@PathVariable Long id, Model model) {
+        Product product_to_edit = productService.getProduct(id);
+        model.addAttribute("product", product_to_edit);
         
         return "add";
     }
 
     @PostMapping("/add-product")
-    public String submitProduct(@RequestParam("id") Long id,
+    public String addProduct(@RequestParam("name") String name,
+                            @RequestParam("description") String description,
+                            @RequestParam("price") double price,
+                            @RequestParam("image") MultipartFile image, Model model) {
+        productService.submitProductAdded(name, description, price, image);
+        
+        if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
+            return "redirect:/clothes";
+        } else {
+            model.addAttribute("errorMessage", "Error al añadir producto. Por favor, rellene todos los campos.");
+            return "error";
+        }
+    }
+
+    @PostMapping("/edit-product")
+    public String editProduct(@RequestParam("id") Long id,
                                 @RequestParam("name") String name,
                                 @RequestParam("description") String description,
                                 @RequestParam("price") double price,
                                 @RequestParam("image") MultipartFile image, Model model) {
-        productService.submitProduct(id, name, description, price, image);
+        productService.submitProductEdited(id, name, description, price, image);
         
         if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
             return "redirect:/clothes";

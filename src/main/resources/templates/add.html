@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <title>Burgos CF Store</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <link rel="stylesheet" type="text/css" href="/css/style.css" />
 </head>
+
 <body>
   <div id="wrap">
     <div class="header">
@@ -24,8 +26,10 @@
         <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>FORMULARIO</div>
         <div class="clear"></div>
         <div class="login_form">
-          <form id="productForm" action="/add-product" method="post" enctype="multipart/form-data">
+          <form id="productForm" action="{{#product.id}}/edit-product{{/product.id}}{{^product.id}}/add-product{{/product.id}}" method="post" enctype="multipart/form-data">
+            {{#product.id}}
             <input type="hidden" id="id" name="id" value="{{product.id}}" />
+            {{/product.id}}
             <div class="form_row">
               <label class="contact"><strong>Nombre:</strong></label>
               <input type="text" id="name" name="name" class="contact_input" value="{{product.name}}" required />
@@ -62,4 +66,5 @@
     </div>
   </div>
 </body>
+
 </html>
