@@ -1,7 +1,11 @@
 package grupo11.bcf_store.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
 import java.util.List;
 
+import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -72,41 +76,39 @@ public class ProductService {
         Product product = productRepository.findById(id).orElse(null);
 
         if (product == null) {
-            product = new Product("", 0, "", "");
+            product = new Product("", 0, "", null);
         }
 
         return product;
     }
 
-    public Product submitProductAdded(String name, String description, double price, MultipartFile image) {
+    public Product submitProductAdded(String name, String description, double price, MultipartFile imageFile)
+            throws Exception {
         Product product = new Product();
 
-        if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
-            String imageUrl = "/images/" + image.getOriginalFilename();
+        if (!name.isEmpty() && !description.isEmpty() && price > 0 && !imageFile.isEmpty()) {
             product.setName(name);
             product.setDescription(description);
             product.setPrice(price);
-            product.setImageUrl(imageUrl);
-            this.save(product);
+            this.save(product, imageFile);
         }
-
         return product;
     }
 
-    public Product submitProductEdited(Long id, String name, String description, double price, MultipartFile image) {
+    public Product submitProductEdited(Long id, String name, String description, double price, MultipartFile imageFile)
+            throws Exception {
         Product product = productRepository.findById(id).orElse(new Product());
 
         if (!name.isEmpty() && !description.isEmpty() && price > 0) {
             product.setName(name);
             product.setDescription(description);
             product.setPrice(price);
-            if (!image.isEmpty()) {
-                String imageUrl = "/images/" + image.getOriginalFilename();
-                product.setImageUrl(imageUrl);
+            if (!imageFile.isEmpty()) {
+                this.save(product, imageFile);
+            } else {
+                this.save(product);
             }
-            this.save(product);
         }
-
         return product;
     }
 
@@ -121,5 +123,22 @@ public class ProductService {
             cart.getProducts()
                     .replaceAll(product -> product.getId().equals(updatedProduct.getId()) ? updatedProduct : product);
         });
+    }
+
+    public void save(Product product, MultipartFile imageFile) throws IOException {
+        if (!imageFile.isEmpty()) {
+            product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+        }
+        this.save(product);
+    }
+
+    public Blob getImageBlob(String path) throws Exception {
+        try (InputStream inputStream = getClass().getResourceAsStream(path)) {
+            if (inputStream == null) {
+                throw new Exception("Image not found: " + path);
+            }
+            byte[] bytes = inputStream.readAllBytes();
+            return BlobProxy.generateProxy(bytes);
+        }
     }
 }

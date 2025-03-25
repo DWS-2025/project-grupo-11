@@ -1,6 +1,11 @@
 package grupo11.bcf_store.model;
 
+import java.sql.Blob;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -16,7 +21,7 @@ public class Product {
     private String name;
     private double price;
     private String description;
-    private String imageUrl; // URL of the product image
+    private Blob imageFile; 
 
     @ManyToMany
     @JoinTable(name = "Order_Products", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "order_id"))
@@ -27,11 +32,11 @@ public class Product {
         this.orders = new ArrayList<>();
     }
 
-    public Product(String name, double price, String description, String imageUrl) {
+    public Product(String name, double price, String description, Blob imageFile) {
         this.name = name;
         this.price = price;
         this.description = description;
-        this.imageUrl = imageUrl;
+        this.imageFile = imageFile;
         this.orders = new ArrayList<>();
     }
 
@@ -68,12 +73,12 @@ public class Product {
         this.description = description;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public Blob getImageFile() {
+        return imageFile;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageFile(Blob imageFile) {
+        this.imageFile = imageFile;
     }
 
     public List<Order> getOrders() {
@@ -89,6 +94,19 @@ public class Product {
         System.out.println("Name: " + name);
         System.out.println("Price: " + price);
         System.out.println("Description: " + description);
-        System.out.println("Image: " + imageUrl);
+        System.out.println("Image: " + imageFile);
+    }
+
+    public String getImageBase64() {
+        if (this.imageFile == null) {
+            return null;
+        }
+        try (InputStream inputStream = this.imageFile.getBinaryStream()) {
+            byte[] bytes = inputStream.readAllBytes();
+            return Base64.getEncoder().encodeToString(bytes);
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

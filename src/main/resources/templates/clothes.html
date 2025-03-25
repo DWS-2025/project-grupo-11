@@ -26,7 +26,9 @@
         <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>PRODUCTOS</div>
         {{#products}}
         <div class="feat_prod_box">
-          <div class="prod_img"><img src="{{imageUrl}}" alt="" border="0" class="product-image" /></a></div>
+          <div class="prod_img">
+            <img src="data:image/jpeg;base64,{{imageBase64}}" alt="" border="0" class="product-image" />
+          </div>
           <div class="prod_det_box">
             <div class="box_top"></div>
             <div class="box_center">

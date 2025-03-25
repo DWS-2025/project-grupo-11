@@ -41,7 +41,7 @@ public class ProductController {
 
     @GetMapping("/add-product")
     public String addProductRedirect(Model model) {
-        Product new_product = new Product("", 0, "", "");
+        Product new_product = new Product("", 0, "", null);
         model.addAttribute("product", new_product);
         return "add";
     }
@@ -56,9 +56,9 @@ public class ProductController {
 
     @PostMapping("/add-product")
     public String addProduct(@RequestParam("name") String name,
-            @RequestParam("description") String description,
-            @RequestParam("price") double price,
-            @RequestParam("image") MultipartFile image, Model model) {
+                             @RequestParam("description") String description,
+                             @RequestParam("price") double price,
+                             @RequestParam("image") MultipartFile image, Model model) throws Exception{
         productService.submitProductAdded(name, description, price, image);
 
         if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
@@ -71,10 +71,10 @@ public class ProductController {
 
     @PostMapping("/edit-product")
     public String editProduct(@RequestParam("id") Long id,
-            @RequestParam("name") String name,
-            @RequestParam("description") String description,
-            @RequestParam("price") double price,
-            @RequestParam("image") MultipartFile image, Model model) {
+                              @RequestParam("name") String name,
+                              @RequestParam("description") String description,
+                              @RequestParam("price") double price,
+                              @RequestParam("image") MultipartFile image, Model model) throws Exception{
         productService.submitProductEdited(id, name, description, price, image);
 
         if (!name.isEmpty() && !description.isEmpty() && price > 0) {
