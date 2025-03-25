@@ -107,7 +107,7 @@ public class ProductService {
             product.setPrice(price);
             if (!imageFile.isEmpty()) {
                 this.save(product, imageFile);
-            } else {
+            } else if (product.getImageFile() != null) {
                 this.save(product);
             }
         }
