@@ -43,10 +43,6 @@ public class CartService {
         }
     }
 
-    public void clearCart() {
-        cartRepository.deleteAll();
-    }
-
     public void clearCart(Cart cart) {
         if (cart != null) {
             cart.getProducts().clear();

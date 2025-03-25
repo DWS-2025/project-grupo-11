@@ -89,11 +89,12 @@ public class ProductController {
     public String viewProduct(@PathVariable Long id, Model model) {
         Product product_to_view = productService.getProduct(id);
         List<Order> productOrders = productService.getProductOrders(id);
+        List<Order> uniqueProductOrders = productService.getUniqueProductOrders(id);
 
         if (product_to_view != null) {
             model.addAttribute("product", product_to_view);
             if (productOrders != null && !productOrders.isEmpty()) {
-                model.addAttribute("productOrders", productOrders);
+                model.addAttribute("uniqueProductOrders", uniqueProductOrders);
             }
             return "view";
         } else {

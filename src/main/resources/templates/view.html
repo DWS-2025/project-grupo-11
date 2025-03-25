@@ -3,7 +3,7 @@
 
 <head>
   <title>Detalles del Producto</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="Content-Type"="text/html; charset=UTF-8" />
   <link rel="stylesheet" type="text/css" href="/css/style.css" />
 </head>
 
@@ -41,9 +41,9 @@
                   class="button-spacing">Eliminar producto</button></form>
               <div class="clear"></div>
               <div class="price">Pedidos a los que pertenece:</div>
-              {{#productOrders}}
+              {{#uniqueProductOrders}}
               <div class="price"><a href="/view-order/{{id}}">Pedido {{id}}</a></div>
-              {{/productOrders}}
+              {{/uniqueProductOrders}}
             </div>
             <div class="box_bottom"></div>
           </div>

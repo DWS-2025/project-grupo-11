@@ -48,6 +48,22 @@ public class Order {
         return products.size();
     }
 
+    public boolean isSimpleOrder() {
+        if (this.products.isEmpty()) {
+            return true;
+        }
+
+        Long firstProductId = products.get(0).getId();
+
+        for (Product product : products) {
+            if (!product.getId().equals(firstProductId)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
     // Method to display order information
     public void displayOrderInformation() {
         for (Product product : products) {
