@@ -1,6 +1,7 @@
 package grupo11.bcf_store.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class ProductService {
     public void removeProduct(Product product) {
         if (product != null) {
             for (Order order : product.getOrders()) {
-                if (order.getTotalItems() == 1) {
+                if (order.getTotalItems() == 1 || order.isSimpleOrder()) {
                     orderRepository.delete(order);
                     productRepository.delete(product);
                 } else {
@@ -53,12 +54,13 @@ public class ProductService {
         }
     }
 
+    @Transactional
     public void removeProductById(Long id) {
         Product product = productRepository.findById(id).orElse(null);
 
         if (product != null) {
             for (Order order : product.getOrders()) {
-                if (order.getTotalItems() == 1) {
+                if (order.getTotalItems() == 1 || order.isSimpleOrder()) {
                     orderRepository.delete(order);
                     productRepository.delete(product);
                 } else {
@@ -113,6 +115,12 @@ public class ProductService {
     public List<Order> getProductOrders(Long id) {
         return productRepository.findById(id)
                 .map(Product::getOrders)
+                .orElse(null);
+    }
+
+    public List<Order> getUniqueProductOrders(Long id) {
+        return productRepository.findById(id)
+                .map(product -> product.getOrders().stream().distinct().collect(Collectors.toList()))
                 .orElse(null);
     }
 
