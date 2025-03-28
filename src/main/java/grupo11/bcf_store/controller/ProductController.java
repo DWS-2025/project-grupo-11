@@ -56,9 +56,9 @@ public class ProductController {
 
     @PostMapping("/add-product")
     public String addProduct(@RequestParam("name") String name,
-                             @RequestParam("description") String description,
-                             @RequestParam("price") double price,
-                             @RequestParam("image") MultipartFile image, Model model) throws Exception{
+            @RequestParam("description") String description,
+            @RequestParam("price") double price,
+            @RequestParam("image") MultipartFile image, Model model) throws Exception {
         productService.submitProductAdded(name, description, price, image);
 
         if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
@@ -71,10 +71,10 @@ public class ProductController {
 
     @PostMapping("/edit-product")
     public String editProduct(@RequestParam("id") Long id,
-                              @RequestParam("name") String name,
-                              @RequestParam("description") String description,
-                              @RequestParam("price") double price,
-                              @RequestParam("image") MultipartFile image, Model model) throws Exception{
+            @RequestParam("name") String name,
+            @RequestParam("description") String description,
+            @RequestParam("price") double price,
+            @RequestParam("image") MultipartFile image, Model model) throws Exception {
         productService.submitProductEdited(id, name, description, price, image);
 
         if (!name.isEmpty() && !description.isEmpty() && price > 0) {
@@ -102,4 +102,34 @@ public class ProductController {
             return "error";
         }
     }
+
+    @GetMapping("/search-products")
+    public String showProducts(Model model, 
+                                @RequestParam(required = false) String name, 
+                                @RequestParam(required = false) String description, 
+                                @RequestParam(required = false) Double price) {
+        List<Product> products;
+
+        if (name != null && !name.isEmpty() && description != null && !description.isEmpty() && price != null) {
+            products = productService.findByNameAndDescriptionAndPrice(name, description, price);
+        } else if (name != null && !name.isEmpty() && description != null && !description.isEmpty()) {
+            products = productService.findByNameAndDescription(name, description);
+        } else if (name != null && !name.isEmpty() && price != null) {
+            products = productService.findByNameAndPrice(name, price);
+        } else if (description != null && !description.isEmpty() && price != null) {
+            products = productService.findByDescriptionAndPrice(description, price);
+        } else if (name != null && !name.isEmpty()) {
+            products = productService.findByName(name);
+        } else if (description != null && !description.isEmpty()) {
+            products = productService.findByDescription(description);
+        } else if (price != null) {
+            products = productService.findByPrice(price);
+        } else {
+            products = productService.getProducts();
+        }
+
+        model.addAttribute("products", products);
+        return "clothes";
+    }
+
 }

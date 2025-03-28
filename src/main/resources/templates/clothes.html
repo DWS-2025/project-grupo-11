@@ -27,13 +27,14 @@
         {{#products}}
         <div class="feat_prod_box">
           <div class="prod_img">
-            <img src="data:image/jpeg;base64,{{imageBase64}}" alt="" border="0" class="product-image" />
+            <img src="data:image/jpeg;base64,{{imageBase64}}" alt="{{name}}" border="0" class="product-image" />
           </div>
           <div class="prod_det_box">
             <div class="box_top"></div>
             <div class="box_center">
               <div class="prod_title">{{name}}</div>
               <p class="details">{{description}}</p>
+              <p class="price">Precio: {{price}}€</p>
               <button onclick="window.location.href='/view/{{id}}'">Más información</button>
               <div class="clear"></div>
             </div>
@@ -43,10 +44,25 @@
         </div>
         {{/products}}
         <div class="clear"></div>
+        <button onclick="window.location.href='/more-results'" class="button-spacing">Más resultados</button>
       </div>
       <div class="right_content">
-        <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>AÑADIR PRODUCTOS
-        </div>
+        <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>BUSCAR PRODUCTOS</div>
+        <div class="clear"></div>
+        <form action="/search-products" method="get">
+          <label for="name">Nombre:</label>
+          <input type="text" id="name" name="name" />
+          <div class="clear"></div>
+          <label for="description">Descripción:</label>
+          <input type="text" id="description" name="description" />
+          <div class="clear"></div>
+          <label for="price">Precio:</label>
+          <input type="number" id="price" name="price" step="0.01" min="0.01" />
+          <div class="clear"></div>
+          <button type="submit" class="button-spacing">Buscar</button>
+        </form>
+        <div class="clear"></div>
+        <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>AÑADIR PRODUCTOS</div>
         <div class="clear"></div>
         <form action="/add-product" method="get"><button type="submit" class="button-spacing">Añadir</button></form>
         <div class="clear"></div>
