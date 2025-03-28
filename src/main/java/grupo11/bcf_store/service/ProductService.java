@@ -149,4 +149,32 @@ public class ProductService {
             return BlobProxy.generateProxy(bytes);
         }
     }
+
+    public List<Product> findByName(String name) {
+        return productRepository.findByNameContainingIgnoreCase(name);
+    }
+
+    public List<Product> findByDescription(String description) {
+        return productRepository.findByDescriptionContainingIgnoreCase(description);
+    }
+
+    public List<Product> findByPrice(double price) {
+        return productRepository.findByPrice(price);
+    }
+
+    public List<Product> findByNameAndDescription(String name, String description) {
+        return productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(name, description);
+    }
+
+    public List<Product> findByNameAndPrice(String name, double price) {
+        return productRepository.findByNameContainingIgnoreCaseAndPrice(name, price);
+    }
+
+    public List<Product> findByDescriptionAndPrice(String description, double price) {
+        return productRepository.findByDescriptionContainingIgnoreCaseAndPrice(description, price);
+    }
+
+    public List<Product> findByNameAndDescriptionAndPrice(String name, String description, double price) {
+        return productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCaseAndPrice(name, description, price);
+    }
 }
