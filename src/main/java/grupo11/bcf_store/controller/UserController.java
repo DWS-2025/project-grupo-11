@@ -12,7 +12,7 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/users")
+    @GetMapping("/users/")
     public String getUsers(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "users";

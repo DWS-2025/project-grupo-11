@@ -14,10 +14,10 @@
       <div id="menu">
         <ul>
           <li><a href="/">INICIO</a></li>
-          <li><a href="/clothes">ROPA</a></li>
-          <li><a href="/myaccount">MI CUENTA</a></li>
-          <li><a href="/contact">CONTACTO</a></li>
-          <li class="selected"><a href="/cart">CESTA</a></li>
+          <li><a href="/clothes/">ROPA</a></li>
+          <li><a href="/myaccount/">MI CUENTA</a></li>
+          <li><a href="/contact/">CONTACTO</a></li>
+          <li class="selected"><a href="/cart/">CESTA</a></li>
         </ul>
       </div>
     </div>
@@ -35,7 +35,7 @@
             <h2>{{name}}</h2>
             <img src="data:image/jpeg;base64,{{imageBase64}}" alt="{{name}}" class="product-image">
             <p>Price: {{price}}€</p>
-            <form action="/remove-from-cart/{{id}}" method="post"><button type="submit">Eliminar del carrito</button>
+            <form action="/remove-from-cart/{{id}}/" method="post"><button type="submit">Eliminar del carrito</button>
             </form>
           </div>
           {{/cart}}
@@ -45,7 +45,7 @@
       <div class="right_content">
         <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>REALIZAR PEDIDO</div>
         <div class="clear"></div>
-        <form action="/create-order" method="post"><button type="submit">Hacer pedido</button></form>
+        <form action="/create-order/" method="post"><button type="submit">Hacer pedido</button></form>
         <div class="clear"></div>
       </div>
     </div>
@@ -53,10 +53,10 @@
       <div class="left_footer"><img src="/images/footer_logo.jpg" alt="" /><br /></div>
       <div class="right_footer">
         <a href="/">Inicio</a>
-        <a href="/clothes">Ropa</a>
-        <a href="/myaccount">Mi cuenta</a>
-        <a href="/contact">Contacto</a>
-        <a href="/cart">Cesta</a>
+        <a href="/clothes/">Ropa</a>
+        <a href="/myaccount/">Mi cuenta</a>
+        <a href="/contact/">Contacto</a>
+        <a href="/cart/">Cesta</a>
       </div>
     </div>
   </div>

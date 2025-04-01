@@ -21,7 +21,7 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    @GetMapping("/cart")
+    @GetMapping("/cart/")
     public String cart(Model model) {
         Long cartId = 1L; // Default cart ID
         Cart cart = cartService.getCart(cartId);
@@ -37,7 +37,7 @@ public class CartController {
         }
     }
 
-    @PostMapping("/add-to-cart/{productId}")
+    @PostMapping("/add-to-cart/{productId}/")
     public String addToCart(@PathVariable Long productId, Model model) {
         Long cartId = 1L; // Default cart ID
         Product product = productService.getProduct(productId);
@@ -47,7 +47,7 @@ public class CartController {
             if (cart != null) {
                 cart.addProduct(product);
                 cartService.saveCart(cart); // Save the updated cart to the database
-                return "redirect:/cart";
+                return "redirect:/cart/";
             } else {
                 model.addAttribute("errorMessage", "Carrito no encontrado.");
                 return "error";
@@ -58,7 +58,7 @@ public class CartController {
         }
     }
 
-    @PostMapping("/remove-from-cart/{productId}")
+    @PostMapping("/remove-from-cart/{productId}/")
     public String removeFromCart(@PathVariable Long productId, Model model) {
         Long cartId = 1L; // Default cart ID
         Product product = productService.getProduct(productId);
@@ -68,7 +68,7 @@ public class CartController {
             if (cart != null && cart.getProducts().contains(product)) {
                 cart.removeProduct(product);
                 cartService.saveCart(cart); // Save the cart even if it's empty
-                return "redirect:/cart";
+                return "redirect:/cart/";
             } else {
                 model.addAttribute("errorMessage", "Carrito no encontrado.");
                 return "error";

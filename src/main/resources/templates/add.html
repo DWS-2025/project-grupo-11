@@ -14,10 +14,10 @@
       <div id="menu">
         <ul>
           <li><a href="/">INICIO</a></li>
-          <li class="selected"><a href="/clothes">ROPA</a></li>
-          <li><a href="/myaccount">MI CUENTA</a></li>
-          <li><a href="/contact">CONTACTO</a></li>
-          <li><a href="/cart">CESTA</a></li>
+          <li class="selected"><a href="/clothes/">ROPA</a></li>
+          <li><a href="/myaccount/">MI CUENTA</a></li>
+          <li><a href="/contact/">CONTACTO</a></li>
+          <li><a href="/cart/">CESTA</a></li>
         </ul>
       </div>
     </div>
@@ -27,7 +27,7 @@
         <div class="clear"></div>
         <div class="login_form">
           <form id="productForm"
-            action="{{#product.id}}/edit-product{{/product.id}}{{^product.id}}/add-product{{/product.id}}" method="post"
+            action="{{#product.id}}/edit-product/{{/product.id}}{{^product.id}}/add-product/{{/product.id}}" method="post"
             enctype="multipart/form-data">
             {{#product.id}}
             <input type="hidden" id="id" name="id" value="{{product.id}}" />
@@ -63,10 +63,10 @@
       <div class="left_footer"><img src="/images/footer_logo.jpg" alt="" /><br /></div>
       <div class="right_footer">
         <a href="/">Inicio</a>
-        <a href="/clothes">Ropa</a>
-        <a href="/myaccount">Mi cuenta</a>
-        <a href="/contact">Contacto</a>
-        <a href="/cart">Cesta</a>
+        <a href="/clothes/">Ropa</a>
+        <a href="/myaccount/">Mi cuenta</a>
+        <a href="/contact/">Contacto</a>
+        <a href="/cart/">Cesta</a>
       </div>
     </div>
   </div>

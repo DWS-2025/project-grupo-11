@@ -24,7 +24,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/create-order")
+    @PostMapping("/create-order/")
     public String createOrder(Model model) {
         Cart cart = cartService.getCart(1L);
 
@@ -36,7 +36,7 @@ public class OrderController {
                 cartService.clearCart(cart); // Ensure the cart is cleared
                 cartService.saveCart(cart);
 
-                return "redirect:/view-order/" + newOrder.getId();
+                return "redirect:/view-order/" + newOrder.getId() + "/";
             } else {
                 model.addAttribute("errorMessage", "El carrito está vacío.");
                 return "error";
@@ -48,21 +48,21 @@ public class OrderController {
         }
     }
 
-    @PostMapping("/delete-order/{id}")
+    @PostMapping("/delete-order/{id}/")
     public String deleteOrder(@PathVariable Long id, Model model) {
         Order order_to_delete = orderService.getOrder(id);
 
         if (order_to_delete != null) {
             order_to_delete.removeOrderFromUser();
             orderService.remove(id);
-            return "redirect:/myaccount";
+            return "redirect:/myaccount/";
         } else {
             model.addAttribute("errorMessage", "Pedido no encontrado.");
             return "error";
         }
     }
 
-    @GetMapping("/view-order/{id}")
+    @GetMapping("/view-order/{id}/")
     public String viewOrder(@PathVariable Long id, Model model) {
         Order order = orderService.getOrder(id);
         if (order != null) {
@@ -75,7 +75,7 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/myaccount")
+    @GetMapping("/myaccount/")
     public String myAccount(Model model) {
         model.addAttribute("orders", orderService.getOrders());
         return "myaccount";

@@ -3,6 +3,9 @@ package grupo11.bcf_store.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.lang.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import grupo11.bcf_store.model.Product;
 
@@ -21,4 +24,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByDescriptionContainingIgnoreCaseAndPrice(String description, double price);
 
     List<Product> findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCaseAndPrice(String name, String description, double price);
+
+    @NonNull
+    Page<Product> findAll(Pageable pageable);
 }
