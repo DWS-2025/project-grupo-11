@@ -13,8 +13,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import grupo11.bcf_store.model.CartMapper;
 import grupo11.bcf_store.model.Order;
+import grupo11.bcf_store.model.OrderMapper;
 import grupo11.bcf_store.model.Product;
+import grupo11.bcf_store.model.ProductMapper;
+import grupo11.bcf_store.model.CartDTO;
+import grupo11.bcf_store.model.OrderDTO;
+import grupo11.bcf_store.model.ProductDTO;
 import grupo11.bcf_store.repository.CartRepository;
 import grupo11.bcf_store.repository.OrderRepository;
 import grupo11.bcf_store.repository.ProductRepository;
@@ -32,20 +38,32 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<Product> getProducts() {
-        return productRepository.findAll();
+    @Autowired
+    private OrderMapper orderMapper;
+
+    @Autowired
+    private CartMapper cartMapper;
+
+    @Autowired
+    private ProductMapper productMapper;
+
+    public List<ProductDTO> getProducts() {
+        return productMapper.toDTOs(productRepository.findAll());
     }
 
-    public Product getProduct(Long id) {
-        return productRepository.findById(id).orElse(null);
+    public ProductDTO getProduct(Long id) {
+        return productRepository.findById(id)
+                .map(productMapper::toDTO)
+                .orElse(null);
     }
 
-    public void save(Product product) {
-        productRepository.save(product);
+    public void save(ProductDTO productDTO) {
+        productRepository.save(productMapper.toDomain(productDTO));
     }
 
     @Transactional
-    public void removeProduct(Product product) {
+    public void removeProduct(ProductDTO productDTO) {
+        Product product = productMapper.toDomain(productDTO);
         if (product != null) {
             for (Order order : product.getOrders()) {
                 if (order.getTotalItems() == 1 || order.isSimpleOrder()) {
@@ -76,17 +94,12 @@ public class ProductService {
         }
     }
 
-    public Product editProduct(Long id) {
-        Product product = productRepository.findById(id).orElse(null);
-
-        if (product == null) {
-            product = new Product("", 0, "", null);
-        }
-
-        return product;
+    public ProductDTO editProduct(Long id) {
+        Product product = productRepository.findById(id).orElse(new Product("", 0, "", null));
+        return productMapper.toDTO(product);
     }
 
-    public Product submitProductAdded(String name, String description, double price, MultipartFile imageFile)
+    public ProductDTO submitProductAdded(String name, String description, double price, MultipartFile imageFile)
             throws Exception {
         Product product = new Product();
 
@@ -94,12 +107,12 @@ public class ProductService {
             product.setName(name);
             product.setDescription(description);
             product.setPrice(price);
-            this.save(product, imageFile);
+            this.save(productMapper.toDTO(product), imageFile);
         }
-        return product;
+        return productMapper.toDTO(product);
     }
 
-    public Product submitProductEdited(Long id, String name, String description, double price, MultipartFile imageFile)
+    public ProductDTO submitProductEdited(Long id, String name, String description, double price, MultipartFile imageFile)
             throws Exception {
         Product product = productRepository.findById(id).orElse(new Product());
 
@@ -108,38 +121,42 @@ public class ProductService {
             product.setDescription(description);
             product.setPrice(price);
             if (!imageFile.isEmpty()) {
-                this.save(product, imageFile);
+                this.save(productMapper.toDTO(product), imageFile);
             } else if (product.getImageFile() != null) {
-                this.save(product);
+                this.save(productMapper.toDTO(product));
             }
         }
-        return product;
+        return productMapper.toDTO(product);
     }
 
-    public List<Order> getProductOrders(Long id) {
+    public List<OrderDTO> getProductOrders(Long id) {
         return productRepository.findById(id)
                 .map(Product::getOrders)
+                .map(orderMapper::toDTOs)
                 .orElse(null);
     }
 
-    public List<Order> getUniqueProductOrders(Long id) {
+    public List<OrderDTO> getUniqueProductOrders(Long id) {
         return productRepository.findById(id)
                 .map(product -> product.getOrders().stream().distinct().collect(Collectors.toList()))
+                .map(orderMapper::toDTOs)
                 .orElse(null);
     }
 
-    public void updateCartProduct(Product updatedProduct) {
+    public void updateCartProduct(ProductDTO updatedProductDTO) {
+        Product updatedProduct = productMapper.toDomain(updatedProductDTO);
         cartRepository.findAll().forEach(cart -> {
             cart.getProducts()
                     .replaceAll(product -> product.getId().equals(updatedProduct.getId()) ? updatedProduct : product);
         });
     }
 
-    public void save(Product product, MultipartFile imageFile) throws IOException {
+    public void save(ProductDTO productDTO, MultipartFile imageFile) throws IOException {
+        Product product = productMapper.toDomain(productDTO);
         if (!imageFile.isEmpty()) {
             product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
         }
-        this.save(product);
+        this.save(productMapper.toDTO(product));
     }
 
     public Blob getImageBlob(String path) throws Exception {
@@ -152,35 +169,35 @@ public class ProductService {
         }
     }
 
-    public List<Product> findByName(String name) {
-        return productRepository.findByNameContainingIgnoreCase(name);
+    public List<ProductDTO> findByName(String name) {
+        return productMapper.toDTOs(productRepository.findByNameContainingIgnoreCase(name));
     }
 
-    public List<Product> findByDescription(String description) {
-        return productRepository.findByDescriptionContainingIgnoreCase(description);
+    public List<ProductDTO> findByDescription(String description) {
+        return productMapper.toDTOs(productRepository.findByDescriptionContainingIgnoreCase(description));
     }
 
-    public List<Product> findByPrice(double price) {
-        return productRepository.findByPrice(price);
+    public List<ProductDTO> findByPrice(double price) {
+        return productMapper.toDTOs(productRepository.findByPrice(price));
     }
 
-    public List<Product> findByNameAndDescription(String name, String description) {
-        return productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(name, description);
+    public List<ProductDTO> findByNameAndDescription(String name, String description) {
+        return productMapper.toDTOs(productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(name, description));
     }
 
-    public List<Product> findByNameAndPrice(String name, double price) {
-        return productRepository.findByNameContainingIgnoreCaseAndPrice(name, price);
+    public List<ProductDTO> findByNameAndPrice(String name, double price) {
+        return productMapper.toDTOs(productRepository.findByNameContainingIgnoreCaseAndPrice(name, price));
     }
 
-    public List<Product> findByDescriptionAndPrice(String description, double price) {
-        return productRepository.findByDescriptionContainingIgnoreCaseAndPrice(description, price);
+    public List<ProductDTO> findByDescriptionAndPrice(String description, double price) {
+        return productMapper.toDTOs(productRepository.findByDescriptionContainingIgnoreCaseAndPrice(description, price));
     }
 
-    public List<Product> findByNameAndDescriptionAndPrice(String name, String description, double price) {
-        return productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCaseAndPrice(name, description, price);
+    public List<ProductDTO> findByNameAndDescriptionAndPrice(String name, String description, double price) {
+        return productMapper.toDTOs(productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCaseAndPrice(name, description, price));
     }
 
-    public Page<Product> getProducts(Pageable pageable) {
-        return productRepository.findAll(pageable);
+    public Page<ProductDTO> getProducts(Pageable pageable) {
+        return productRepository.findAll(pageable).map(productMapper::toDTO);
     }
 }

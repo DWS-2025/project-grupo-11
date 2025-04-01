@@ -1,12 +1,17 @@
 package grupo11.bcf_store.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import grupo11.bcf_store.model.Order;
+import grupo11.bcf_store.model.OrderDTO;
+import grupo11.bcf_store.model.OrderMapper;
 import grupo11.bcf_store.model.Product;
+import grupo11.bcf_store.model.ProductDTO;
+import grupo11.bcf_store.model.ProductMapper;
 import grupo11.bcf_store.repository.OrderRepository;
 
 @Service
@@ -15,23 +20,48 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    public Order save(Order order) {
-        return orderRepository.save(order);
+    @Autowired
+    private ProductMapper productMapper;
+
+    @Autowired
+    private OrderMapper orderMapper;
+
+    public OrderDTO save(OrderDTO orderDTO) {
+        Order order = orderMapper.toDomain(orderDTO);
+        return orderMapper.toDTO(orderRepository.save(order));
     }
 
-    public Order getOrder(Long id) {
-        return orderRepository.findById(id).orElse(null);
+    public OrderDTO getOrder(Long id) {
+        return orderRepository.findById(id)
+                .map(orderMapper::toDTO)
+                .orElse(null);
     }
 
     public void remove(Long id) {
         orderRepository.deleteById(id);
     }
 
-    public List<Order> getOrders() {
-        return orderRepository.findAll();
+    public List<OrderDTO> getOrders() {
+        return orderRepository.findAll()
+                .stream()
+                .map(orderMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public Order createOrder(List<Product> products) {
+    public List<ProductDTO> getProductsInOrder(OrderDTO orderDTO) {
+        Order order = orderMapper.toDomain(orderDTO);
+        return productMapper.toDTOs(order.getProducts());
+    }
+
+    public List<OrderDTO> getOrdersByUserId(Long userId) {
+        return orderRepository.findById(userId)
+                .stream()
+                .map(orderMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public OrderDTO createOrder(List<ProductDTO> productsDTO) {
+        List<Product> products = productMapper.toDomain(productsDTO);
         Order newOrder = new Order(products);
 
         for (Product product : products) {
@@ -39,7 +69,12 @@ public class OrderService {
         }
 
         orderRepository.save(newOrder);
-        return newOrder;
+        return orderMapper.toDTO(newOrder);
     }
 
+    public void removeOrderFromUser(OrderDTO orderDTO) {
+        Order order = orderMapper.toDomain(orderDTO);
+        order.getProducts().forEach(product -> product.getOrders().remove(order));
+        orderRepository.delete(order);
+    }
 }

@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import grupo11.bcf_store.model.Cart;
+import grupo11.bcf_store.model.CartDTO;
 import grupo11.bcf_store.model.Product;
+import grupo11.bcf_store.model.ProductDTO;
 import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.ProductService;
 
@@ -24,12 +26,12 @@ public class CartController {
     @GetMapping("/cart/")
     public String cart(Model model) {
         Long cartId = 1L; // Default cart ID
-        Cart cart = cartService.getCart(cartId);
+        CartDTO cart = cartService.getCart(cartId);
 
         if (cart != null) {
-            model.addAttribute("cart", cart.getProducts());
-            model.addAttribute("totalItems", cart.getTotalItems());
-            model.addAttribute("totalPrice", cart.getTotalPrice());
+            model.addAttribute("cart", cartService.getProductsInCart(cartId));
+            model.addAttribute("totalItems", cartService.getTotalItemsInCart(cartId));
+            model.addAttribute("totalPrice", cartService.getTotalPrice(cartId));
             return "cart";
         } else {
             model.addAttribute("errorMessage", "Carrito no encontrado.");
@@ -40,12 +42,12 @@ public class CartController {
     @PostMapping("/add-to-cart/{productId}/")
     public String addToCart(@PathVariable Long productId, Model model) {
         Long cartId = 1L; // Default cart ID
-        Product product = productService.getProduct(productId);
+        ProductDTO product = productService.getProduct(productId);
 
         if (product != null) {
-            Cart cart = cartService.getCart(cartId);
+            CartDTO cart = cartService.getCart(cartId);
             if (cart != null) {
-                cart.addProduct(product);
+                cartService.addProductToCart(cartId, product);
                 cartService.saveCart(cart); // Save the updated cart to the database
                 return "redirect:/cart/";
             } else {
@@ -61,12 +63,12 @@ public class CartController {
     @PostMapping("/remove-from-cart/{productId}/")
     public String removeFromCart(@PathVariable Long productId, Model model) {
         Long cartId = 1L; // Default cart ID
-        Product product = productService.getProduct(productId);
+        ProductDTO product = productService.getProduct(productId);
 
         if (product != null) {
-            Cart cart = cartService.getCart(cartId);
-            if (cart != null && cart.getProducts().contains(product)) {
-                cart.removeProduct(product);
+            CartDTO cart = cartService.getCart(cartId);
+            if (cart != null && cartService.getProductsInCart(cartId).contains(product)) {
+                cartService.removeProductFromCart(cartId, product);
                 cartService.saveCart(cart); // Save the cart even if it's empty
                 return "redirect:/cart/";
             } else {

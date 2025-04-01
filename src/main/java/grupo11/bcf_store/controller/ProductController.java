@@ -14,7 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import grupo11.bcf_store.model.Product;
-import grupo11.bcf_store.model.Order;
+import grupo11.bcf_store.model.ProductDTO;
+import grupo11.bcf_store.model.OrderDTO;
 import grupo11.bcf_store.service.ProductService;
 
 @Controller
@@ -31,7 +32,7 @@ public class ProductController {
             page = 0;
         }
 
-        Page<Product> productPage = productService.getProducts(PageRequest.of(page, pageSize));
+        Page<ProductDTO> productPage = productService.getProducts(PageRequest.of(page, pageSize));
 
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("currentPage", page);
@@ -46,7 +47,7 @@ public class ProductController {
 
     @PostMapping("/delete-product/{id}/")
     public String deleteProduct(@PathVariable Long id, Model model) {
-        Product product = productService.getProduct(id);
+        ProductDTO product = productService.getProduct(id);
         if (product != null) {
             productService.removeProduct(product);
             return "redirect:/clothes/";
@@ -65,7 +66,7 @@ public class ProductController {
 
     @GetMapping("/edit-product/{id}/")
     public String editProductRedirect(@PathVariable Long id, Model model) {
-        Product product_to_edit = productService.getProduct(id);
+        ProductDTO product_to_edit = productService.getProduct(id);
         model.addAttribute("product", product_to_edit);
 
         return "add";
@@ -104,9 +105,9 @@ public class ProductController {
 
     @GetMapping("/view/{id}/")
     public String viewProduct(@PathVariable Long id, Model model) {
-        Product product_to_view = productService.getProduct(id);
-        List<Order> productOrders = productService.getProductOrders(id);
-        List<Order> uniqueProductOrders = productService.getUniqueProductOrders(id);
+        ProductDTO product_to_view = productService.getProduct(id);
+        List<OrderDTO> productOrders = productService.getProductOrders(id);
+        List<OrderDTO> uniqueProductOrders = productService.getUniqueProductOrders(id);
 
         if (product_to_view != null) {
             model.addAttribute("product", product_to_view);
@@ -125,7 +126,7 @@ public class ProductController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String description,
             @RequestParam(required = false) Double price) {
-        List<Product> products;
+        List<ProductDTO> products;
 
         if (name != null && !name.isEmpty() && description != null && !description.isEmpty() && price != null) {
             products = productService.findByNameAndDescriptionAndPrice(name, description, price);

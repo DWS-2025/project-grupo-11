@@ -6,6 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import grupo11.bcf_store.model.Cart;
+import grupo11.bcf_store.model.CartDTO;
+import grupo11.bcf_store.model.CartMapper;
+import grupo11.bcf_store.model.Product;
+import grupo11.bcf_store.model.ProductDTO;
+import grupo11.bcf_store.model.ProductMapper;
 import grupo11.bcf_store.repository.CartRepository;
 
 @Service
@@ -14,40 +19,104 @@ public class CartService {
     @Autowired
     private CartRepository cartRepository;
 
-    /**
-     * Returns always the same cart for simplicity before adding authentication
-     * 
-     * @return Cart
-     */
-    public List<Cart> getCarts() {
-        return cartRepository.findAll();
+    @Autowired
+    private CartMapper cartMapper;
+
+    @Autowired
+    private ProductMapper productMapper;
+
+    public List<CartDTO> getCarts() {
+        return cartMapper.toDTOs(cartRepository.findAll());
     }
 
-    public Cart getCart(Long id) {
-        return cartRepository.findById(id).orElse(null);
+    public CartDTO getCart(Long id) {
+        Cart cart = cartRepository.findById(id).orElse(null);
+        return cart != null ? cartMapper.toDTO(cart) : null;
     }
 
     public int getTotalItems() {
         return cartRepository.findAll().size();
     }
 
-    public void saveCart(Cart cart) {
-        if (cart != null) {
+    public void saveCart(CartDTO cartDTO) {
+        if (cartDTO != null) {
+            Cart cart = cartMapper.toDomain(cartDTO);
             cartRepository.save(cart);
         }
     }
 
-    public void removeCart(Cart cart) {
-        if (cart != null && cart.getTotalItems() > 0) {
-            cartRepository.delete(cart);
+    public void removeCart(CartDTO cartDTO) {
+        if (cartDTO != null) {
+            Cart cart = cartMapper.toDomain(cartDTO);
+            if (cart.getTotalItems() > 0) {
+                cartRepository.delete(cart);
+            }
         }
     }
 
-    public void clearCart(Cart cart) {
-        if (cart != null) {
+    public void clearCart(CartDTO cartDTO) {
+        if (cartDTO != null) {
+            Cart cart = cartMapper.toDomain(cartDTO);
             cart.getProducts().clear();
             cartRepository.save(cart);
         }
     }
 
+    public List<ProductDTO> getProductsInCart(Long cartId) {
+        Cart cart = cartRepository.findById(cartId).orElse(null);
+        if (cart != null) {
+            List<Product> products = cart.getProducts();
+            if (products != null) {
+                return productMapper.toDTOs(products);
+            }
+        }
+        return null;
+    }
+
+    public List<ProductDTO> getProductsInCart(CartDTO cartDTO) {
+        if (cartDTO != null) {
+            Cart cart = cartMapper.toDomain(cartDTO);
+            List<Product> products = cart.getProducts();
+            if (products != null) {
+                return productMapper.toDTOs(products);
+            }
+        }
+        return null;
+    }
+
+    public double getTotalPrice(Long cartId) {
+        Cart cart = cartRepository.findById(cartId).orElse(null);
+        if (cart != null) {
+            return cart.getTotalPrice();
+        }
+        return 0;
+    }
+
+    public int getTotalItemsInCart(Long cartId) {
+        Cart cart = cartRepository.findById(cartId).orElse(null);
+        if (cart != null) {
+            return cart.getTotalItems();
+        }
+        return 0;
+    }
+
+    public void addProductToCart(Long cartId, ProductDTO productDTO) {
+        Cart cart = cartRepository.findById(cartId).orElse(null);
+        if (cart != null && productDTO != null) {
+            Product product = productMapper.toDomain(productDTO);
+            cart.addProduct(product);
+            cartRepository.save(cart);
+        }
+    }
+
+    public void removeProductFromCart(Long cartId, ProductDTO productDTO) {
+        Cart cart = cartRepository.findById(cartId).orElse(null);
+        if (cart != null && productDTO != null) {
+            Product product = productMapper.toDomain(productDTO);
+            cart.removeProduct(product);
+            cartRepository.save(cart);
+        }
+    }
+
+    
 }
