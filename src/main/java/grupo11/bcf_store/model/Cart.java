@@ -30,6 +30,10 @@ public class Cart {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void addProduct(Product product) {
         products.add(product);
     }
