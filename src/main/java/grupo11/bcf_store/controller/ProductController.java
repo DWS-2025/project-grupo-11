@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 
 import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.model.ProductDTO;
@@ -165,6 +167,18 @@ public class ProductController {
         model.addAttribute("isSearch", true); 
         
         return "clothes";
+    }
+
+    @GetMapping("/product-image/{id}/")
+    public ResponseEntity<byte[]> getProductImage(@PathVariable Long id) throws Exception {
+        byte[] image = productService.getProductImage(id);
+        if (image != null) {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
+                    .body(image);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

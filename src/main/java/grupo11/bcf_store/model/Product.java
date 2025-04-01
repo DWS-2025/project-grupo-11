@@ -1,11 +1,7 @@
 package grupo11.bcf_store.model;
 
 import java.sql.Blob;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -95,18 +91,5 @@ public class Product {
         System.out.println("Price: " + price);
         System.out.println("Description: " + description);
         System.out.println("Image: " + imageFile);
-    }
-
-    public String getImageBase64() {
-        if (this.imageFile == null) {
-            return null;
-        }
-        try (InputStream inputStream = this.imageFile.getBinaryStream()) {
-            byte[] bytes = inputStream.readAllBytes();
-            return Base64.getEncoder().encodeToString(bytes);
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

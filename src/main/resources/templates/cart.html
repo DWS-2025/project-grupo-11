@@ -33,7 +33,7 @@
           <div class="cart_item">
             <div class="clear"></div>
             <h2>{{name}}</h2>
-            <img src="data:image/jpeg;base64,{{imageBase64}}" alt="{{name}}" class="product-image">
+            <img src="/product-image/{{id}}/" alt="{{name}}" class="product-image">
             <p>Price: {{price}}€</p>
             <form action="/remove-from-cart/{{id}}/" method="post"><button type="submit">Eliminar del carrito</button>
             </form>

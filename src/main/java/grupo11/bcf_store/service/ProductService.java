@@ -3,6 +3,7 @@ package grupo11.bcf_store.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -211,5 +212,13 @@ public class ProductService {
     public Page<ProductDTO> findByNameAndDescriptionAndPrice(String name, String description, double price, Pageable pageable) {
         Page<Product> productPage = productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCaseAndPrice(name, description, price, pageable);
         return convertToDTOPage(productPage);
+    }
+
+    public byte[] getProductImage(Long id) throws SQLException {
+        Product product = productRepository.findById(id).orElse(null);
+        if (product != null && product.getImageFile() != null) {
+            return product.getImageFile().getBytes(1, (int) product.getImageFile().length());
+        }
+        return null;
     }
 }
