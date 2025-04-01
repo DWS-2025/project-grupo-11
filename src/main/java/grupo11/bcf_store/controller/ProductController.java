@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.model.Order;
@@ -40,6 +41,7 @@ public class ProductController {
         model.addAttribute("next", page < productPage.getTotalPages() - 1 ? page + 1 : page);
         model.addAttribute("hasPrev", page > 0);
         model.addAttribute("hasNext", page < productPage.getTotalPages() - 1);
+        model.addAttribute("isSearch", false); // Indica que no es una búsqueda
 
         return "clothes";
     }
@@ -124,28 +126,43 @@ public class ProductController {
     public String showProducts(Model model,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String description,
-            @RequestParam(required = false) Double price) {
-        List<Product> products;
+            @RequestParam(required = false) Double price,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> productPage;
 
         if (name != null && !name.isEmpty() && description != null && !description.isEmpty() && price != null) {
-            products = productService.findByNameAndDescriptionAndPrice(name, description, price);
+            productPage = productService.findByNameAndDescriptionAndPrice(name, description, price, pageable);
         } else if (name != null && !name.isEmpty() && description != null && !description.isEmpty()) {
-            products = productService.findByNameAndDescription(name, description);
+            productPage = productService.findByNameAndDescription(name, description, pageable);
         } else if (name != null && !name.isEmpty() && price != null) {
-            products = productService.findByNameAndPrice(name, price);
+            productPage = productService.findByNameAndPrice(name, price, pageable);
         } else if (description != null && !description.isEmpty() && price != null) {
-            products = productService.findByDescriptionAndPrice(description, price);
+            productPage = productService.findByDescriptionAndPrice(description, price, pageable);
         } else if (name != null && !name.isEmpty()) {
-            products = productService.findByName(name);
+            productPage = productService.findByName(name, pageable);
         } else if (description != null && !description.isEmpty()) {
-            products = productService.findByDescription(description);
+            productPage = productService.findByDescription(description, pageable);
         } else if (price != null) {
-            products = productService.findByPrice(price);
+            productPage = productService.findByPrice(price, pageable);
         } else {
-            products = productService.getProducts();
+            productPage = productService.getProducts(pageable);
         }
 
-        model.addAttribute("products", products);
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("prev", page > 0 ? page - 1 : 0);
+        model.addAttribute("next", page < productPage.getTotalPages() - 1 ? page + 1 : page);
+        model.addAttribute("hasPrev", page > 0);
+        model.addAttribute("hasNext", page < productPage.getTotalPages() - 1);
+        model.addAttribute("name", name);
+        model.addAttribute("description", description);
+        model.addAttribute("price", price);
+        model.addAttribute("isSearch", true); 
+        
         return "clothes";
     }
 

@@ -46,8 +46,16 @@
         <div class="clear"></div>
         <div>
           <nobr>
-            {{#hasPrev}}<a href="/clothes/?page={{prev}}">Anterior</a>&nbsp;&nbsp;&nbsp;{{/hasPrev}}
-            {{#hasNext}}<a href="/clothes/?page={{next}}">Siguiente</a>{{/hasNext}}
+            {{#hasPrev}}
+            <a href="{{#isSearch}}/search-products/{{/isSearch}}{{^isSearch}}/clothes/{{/isSearch}}?page={{prev}}{{#isSearch}}&name={{#name}}{{name}}{{/name}}&description={{#description}}{{description}}{{/description}}&price={{#price}}{{price}}{{/price}}{{/isSearch}}">
+              Anterior
+            </a>&nbsp;&nbsp;&nbsp;
+            {{/hasPrev}}
+            {{#hasNext}}
+            <a href="{{#isSearch}}/search-products/{{/isSearch}}{{^isSearch}}/clothes/{{/isSearch}}?page={{next}}{{#isSearch}}&name={{#name}}{{name}}{{/name}}&description={{#description}}{{description}}{{/description}}&price={{#price}}{{price}}{{/price}}{{/isSearch}}">
+              Siguiente
+            </a>
+            {{/hasNext}}
           </nobr>
         </div>
       </div>
