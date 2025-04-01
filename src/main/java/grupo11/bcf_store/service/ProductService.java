@@ -9,16 +9,15 @@ import java.util.stream.Collectors;
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import grupo11.bcf_store.model.CartMapper;
 import grupo11.bcf_store.model.Order;
 import grupo11.bcf_store.model.OrderMapper;
 import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.model.ProductMapper;
-import grupo11.bcf_store.model.CartDTO;
 import grupo11.bcf_store.model.OrderDTO;
 import grupo11.bcf_store.model.ProductDTO;
 import grupo11.bcf_store.repository.CartRepository;
@@ -40,9 +39,6 @@ public class ProductService {
 
     @Autowired
     private OrderMapper orderMapper;
-
-    @Autowired
-    private CartMapper cartMapper;
 
     @Autowired
     private ProductMapper productMapper;
@@ -169,68 +165,51 @@ public class ProductService {
         }
     }
 
-<<<<<<< HEAD
-    public List<ProductDTO> findByName(String name) {
-        return productMapper.toDTOs(productRepository.findByNameContainingIgnoreCase(name));
-    }
-
-    public List<ProductDTO> findByDescription(String description) {
-        return productMapper.toDTOs(productRepository.findByDescriptionContainingIgnoreCase(description));
-    }
-
-    public List<ProductDTO> findByPrice(double price) {
-        return productMapper.toDTOs(productRepository.findByPrice(price));
-    }
-
-    public List<ProductDTO> findByNameAndDescription(String name, String description) {
-        return productMapper.toDTOs(productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(name, description));
-    }
-
-    public List<ProductDTO> findByNameAndPrice(String name, double price) {
-        return productMapper.toDTOs(productRepository.findByNameContainingIgnoreCaseAndPrice(name, price));
-    }
-
-    public List<ProductDTO> findByDescriptionAndPrice(String description, double price) {
-        return productMapper.toDTOs(productRepository.findByDescriptionContainingIgnoreCaseAndPrice(description, price));
-    }
-
-    public List<ProductDTO> findByNameAndDescriptionAndPrice(String name, String description, double price) {
-        return productMapper.toDTOs(productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCaseAndPrice(name, description, price));
+    public Page<ProductDTO> convertToDTOPage(Page<Product> productPage) {
+        return new PageImpl<>(
+            productPage.getContent().stream().map(productMapper::toDTO).collect(Collectors.toList()),
+            productPage.getPageable(),
+            productPage.getTotalElements()
+        );
     }
 
     public Page<ProductDTO> getProducts(Pageable pageable) {
-        return productRepository.findAll(pageable).map(productMapper::toDTO);
-=======
-    public Page<Product> getProducts(Pageable pageable) {
-        return productRepository.findAll(pageable);
->>>>>>> b363d389d68a2b088bd082b0c0fb733d11907c97
+        Page<Product> productPage = productRepository.findAll(pageable);
+        return convertToDTOPage(productPage);
     }
 
-    public Page<Product> findByName(String name, Pageable pageable) {
-        return productRepository.findByNameContainingIgnoreCase(name, pageable);
+    public Page<ProductDTO> findByName(String name, Pageable pageable) {
+        Page<Product> productPage = productRepository.findByNameContainingIgnoreCase(name, pageable);
+        return convertToDTOPage(productPage);
     }
 
-    public Page<Product> findByDescription(String description, Pageable pageable) {
-        return productRepository.findByDescriptionContainingIgnoreCase(description, pageable);
+    public Page<ProductDTO> findByDescription(String description, Pageable pageable) {
+        Page<Product> productPage = productRepository.findByDescriptionContainingIgnoreCase(description, pageable);
+        return convertToDTOPage(productPage);
     }
 
-    public Page<Product> findByPrice(double price, Pageable pageable) {
-        return productRepository.findByPrice(price, pageable);
+    public Page<ProductDTO> findByPrice(double price, Pageable pageable) {
+        Page<Product> productPage = productRepository.findByPrice(price, pageable);
+        return convertToDTOPage(productPage);
     }
 
-    public Page<Product> findByNameAndDescription(String name, String description, Pageable pageable) {
-        return productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(name, description, pageable);
+    public Page<ProductDTO> findByNameAndDescription(String name, String description, Pageable pageable) {
+        Page<Product> productPage = productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(name, description, pageable);
+        return convertToDTOPage(productPage);
     }
 
-    public Page<Product> findByNameAndPrice(String name, double price, Pageable pageable) {
-        return productRepository.findByNameContainingIgnoreCaseAndPrice(name, price, pageable);
+    public Page<ProductDTO> findByNameAndPrice(String name, double price, Pageable pageable) {
+        Page<Product> productPage = productRepository.findByNameContainingIgnoreCaseAndPrice(name, price, pageable);
+        return convertToDTOPage(productPage);
     }
 
-    public Page<Product> findByDescriptionAndPrice(String description, double price, Pageable pageable) {
-        return productRepository.findByDescriptionContainingIgnoreCaseAndPrice(description, price, pageable);
+    public Page<ProductDTO> findByDescriptionAndPrice(String description, double price, Pageable pageable) {
+        Page<Product> productPage = productRepository.findByDescriptionContainingIgnoreCaseAndPrice(description, price, pageable);
+        return convertToDTOPage(productPage);
     }
 
-    public Page<Product> findByNameAndDescriptionAndPrice(String name, String description, double price, Pageable pageable) {
-        return productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCaseAndPrice(name, description, price, pageable);
+    public Page<ProductDTO> findByNameAndDescriptionAndPrice(String name, String description, double price, Pageable pageable) {
+        Page<Product> productPage = productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCaseAndPrice(name, description, price, pageable);
+        return convertToDTOPage(productPage);
     }
 }

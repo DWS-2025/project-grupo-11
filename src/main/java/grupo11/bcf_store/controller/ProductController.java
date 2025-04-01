@@ -42,7 +42,7 @@ public class ProductController {
         model.addAttribute("next", page < productPage.getTotalPages() - 1 ? page + 1 : page);
         model.addAttribute("hasPrev", page > 0);
         model.addAttribute("hasNext", page < productPage.getTotalPages() - 1);
-        model.addAttribute("isSearch", false); // Indica que no es una búsqueda
+        model.addAttribute("isSearch", false);
 
         return "clothes";
     }
@@ -127,17 +127,12 @@ public class ProductController {
     public String showProducts(Model model,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String description,
-<<<<<<< HEAD
-            @RequestParam(required = false) Double price) {
-        List<ProductDTO> products;
-=======
             @RequestParam(required = false) Double price,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<Product> productPage;
->>>>>>> b363d389d68a2b088bd082b0c0fb733d11907c97
+        Page<ProductDTO> productPage;
 
         if (name != null && !name.isEmpty() && description != null && !description.isEmpty() && price != null) {
             productPage = productService.findByNameAndDescriptionAndPrice(name, description, price, pageable);

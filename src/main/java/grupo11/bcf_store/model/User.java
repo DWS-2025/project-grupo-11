@@ -71,7 +71,7 @@ public class User {
         return cart;
     }
 
-    public void setBasket(Cart cart) {
+    public void setCart(Cart cart) {
         this.cart = cart;
     }
 
@@ -83,12 +83,12 @@ public class User {
             order.displayOrderInformation();
             System.out.println("=====");
         }
-        System.out.println("Basket:");
+        System.out.println("Cart:");
         cart.displayCartInformation();
     }
 
-    // Method to checkout the basket and create an order
-    public void checkoutBasket() {
+    // Method to checkout the cart and create an order
+    public void checkoutCart() {
         Order newOrder = cart.checkout();
         orders.add(newOrder);
         cart.clearCart();

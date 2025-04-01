@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import grupo11.bcf_store.model.Cart;
 import grupo11.bcf_store.model.CartDTO;
-import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.model.ProductDTO;
 import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.ProductService;
