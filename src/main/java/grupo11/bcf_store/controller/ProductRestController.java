@@ -26,7 +26,7 @@ import grupo11.bcf_store.model.ProductMapper;
 import grupo11.bcf_store.repository.ProductRepository;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/products/")
 public class ProductRestController {
 
     @Autowired
@@ -42,7 +42,7 @@ public class ProductRestController {
 		return toDTOs(productRepository.findAll());
 	}
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/")
 	public ProductDTO getProduct(@PathVariable long id) {
         return toDTO(productRepository.findById(id).orElseThrow());	
 }
@@ -59,7 +59,7 @@ public class ProductRestController {
 		return ResponseEntity.created(location).body(toDTO(product));
 	}
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/")
 	public ProductDTO replaceProduct(@PathVariable long id, @RequestBody ProductDTO updatedProductDTO) {
 
 		if (productRepository.existsById(id)) {
@@ -76,7 +76,7 @@ public class ProductRestController {
 		}
 	}
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/")
 	public ProductDTO deleteProduct(@PathVariable long id) {
 
 		Product product = productRepository.findById(id).orElseThrow();

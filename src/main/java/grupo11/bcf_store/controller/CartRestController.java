@@ -26,7 +26,7 @@ import grupo11.bcf_store.model.CartDTO;
 import grupo11.bcf_store.repository.CartRepository;
 
 @RestController
-@RequestMapping("/carts")
+@RequestMapping("/api/carts/")
 public class CartRestController {
 
     @Autowired
@@ -41,7 +41,7 @@ public class CartRestController {
         return toDTOs(cartRepository.findAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/")
     public CartDTO getCart(@PathVariable long id) {
         return toDTO(cartRepository.findById(id).orElseThrow());
     }
@@ -57,7 +57,7 @@ public class CartRestController {
         return ResponseEntity.created(location).body(toDTO(cart));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/")
     public CartDTO replaceCart(@PathVariable long id, @RequestBody CartDTO updatedCartDTO) {
         if (cartRepository.existsById(id)) {
             Cart updatedCart = toDomain(updatedCartDTO);
@@ -71,7 +71,7 @@ public class CartRestController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/")
     public CartDTO deleteCart(@PathVariable long id) {
         Cart cart = cartRepository.findById(id).orElseThrow();
 

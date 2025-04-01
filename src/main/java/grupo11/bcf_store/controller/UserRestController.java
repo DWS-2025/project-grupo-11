@@ -26,7 +26,7 @@ import grupo11.bcf_store.model.UserMapper;
 import grupo11.bcf_store.repository.UserRepository;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users/")
 public class UserRestController {
 
     @Autowired
@@ -41,7 +41,7 @@ public class UserRestController {
         return toDTOs(userRepository.findAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/")
     public UserDTO getUser(@PathVariable long id) {
         return toDTO(userRepository.findById(id).orElseThrow());
     }
@@ -55,7 +55,7 @@ public class UserRestController {
         return ResponseEntity.created(location).body(toDTO(user));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/")
     public UserDTO replaceUser(@PathVariable long id, @RequestBody UserDTO updatedUserDTO) {
         if (userRepository.existsById(id)) {
             User updatedUser = toDomain(updatedUserDTO);
@@ -67,7 +67,7 @@ public class UserRestController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/")
     public UserDTO deleteUser(@PathVariable long id) {
         User user = userRepository.findById(id).orElseThrow();
         userRepository.deleteById(id);

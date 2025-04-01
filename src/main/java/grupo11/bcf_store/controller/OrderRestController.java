@@ -26,7 +26,7 @@ import grupo11.bcf_store.model.OrderDTO;
 import grupo11.bcf_store.repository.OrderRepository;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/api/orders/")
 public class OrderRestController {
 
     @Autowired
@@ -41,7 +41,7 @@ public class OrderRestController {
         return toDTOs(orderRepository.findAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/")
     public OrderDTO getOrder(@PathVariable long id) {
         return toDTO(orderRepository.findById(id).orElseThrow());
     }
@@ -57,7 +57,7 @@ public class OrderRestController {
         return ResponseEntity.created(location).body(toDTO(order));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/")
     public OrderDTO replaceOrder(@PathVariable long id, @RequestBody OrderDTO updatedOrderDTO) {
         if (orderRepository.existsById(id)) {
             Order updatedOrder = toDomain(updatedOrderDTO);
@@ -71,7 +71,7 @@ public class OrderRestController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/")
     public OrderDTO deleteOrder(@PathVariable long id) {
         Order order = orderRepository.findById(id).orElseThrow();
 
