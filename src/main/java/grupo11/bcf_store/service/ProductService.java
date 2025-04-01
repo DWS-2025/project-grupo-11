@@ -169,6 +169,7 @@ public class ProductService {
         }
     }
 
+<<<<<<< HEAD
     public List<ProductDTO> findByName(String name) {
         return productMapper.toDTOs(productRepository.findByNameContainingIgnoreCase(name));
     }
@@ -199,5 +200,37 @@ public class ProductService {
 
     public Page<ProductDTO> getProducts(Pageable pageable) {
         return productRepository.findAll(pageable).map(productMapper::toDTO);
+=======
+    public Page<Product> getProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
+>>>>>>> b363d389d68a2b088bd082b0c0fb733d11907c97
+    }
+
+    public Page<Product> findByName(String name, Pageable pageable) {
+        return productRepository.findByNameContainingIgnoreCase(name, pageable);
+    }
+
+    public Page<Product> findByDescription(String description, Pageable pageable) {
+        return productRepository.findByDescriptionContainingIgnoreCase(description, pageable);
+    }
+
+    public Page<Product> findByPrice(double price, Pageable pageable) {
+        return productRepository.findByPrice(price, pageable);
+    }
+
+    public Page<Product> findByNameAndDescription(String name, String description, Pageable pageable) {
+        return productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(name, description, pageable);
+    }
+
+    public Page<Product> findByNameAndPrice(String name, double price, Pageable pageable) {
+        return productRepository.findByNameContainingIgnoreCaseAndPrice(name, price, pageable);
+    }
+
+    public Page<Product> findByDescriptionAndPrice(String description, double price, Pageable pageable) {
+        return productRepository.findByDescriptionContainingIgnoreCaseAndPrice(description, price, pageable);
+    }
+
+    public Page<Product> findByNameAndDescriptionAndPrice(String name, String description, double price, Pageable pageable) {
+        return productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCaseAndPrice(name, description, price, pageable);
     }
 }
