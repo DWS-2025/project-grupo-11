@@ -112,11 +112,15 @@ public class CartService {
     public void removeProductFromCart(Long cartId, ProductDTO productDTO) {
         Cart cart = cartRepository.findById(cartId).orElse(null);
         if (cart != null && productDTO != null) {
-            Product product = productMapper.toDomain(productDTO);
-            cart.removeProduct(product);
+            Product productToRemove = cart.getProducts().stream()
+                .filter(product -> product.getId().equals(productDTO.id()))
+                .findFirst()
+                .orElse(null);
+            if (productToRemove != null) {
+                cart.getProducts().remove(productToRemove);
+            }
             cartRepository.save(cart);
         }
     }
 
-    
 }

@@ -46,7 +46,6 @@ public class CartController {
             CartDTO cart = cartService.getCart(cartId);
             if (cart != null) {
                 cartService.addProductToCart(cartId, product);
-                cartService.saveCart(cart); // Save the updated cart to the database
                 return "redirect:/cart/";
             } else {
                 model.addAttribute("errorMessage", "Carrito no encontrado.");
@@ -65,9 +64,8 @@ public class CartController {
 
         if (product != null) {
             CartDTO cart = cartService.getCart(cartId);
-            if (cart != null && cartService.getProductsInCart(cartId).contains(product)) {
+            if (cart != null) {
                 cartService.removeProductFromCart(cartId, product);
-                cartService.saveCart(cart); // Save the cart even if it's empty
                 return "redirect:/cart/";
             } else {
                 model.addAttribute("errorMessage", "Carrito no encontrado.");
