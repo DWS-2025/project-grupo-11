@@ -28,14 +28,15 @@
             <div class="box_top"></div>
             <div class="box_center">
               <div class="prod_title">Pedido Nº{{order.id}}</div>
-              <p class="details">
+              <div class="details">
                 {{#products}}
-              <div class="product-item">
-                <div class="prod_title">{{name}}</div>
-                <p class="details">{{description}}</p>
-                <p class="price">Precio: {{price}}€</p>
+                <div class="product-item">
+                  <div class="prod_title">{{name}}</div>
+                  <p class="details">{{description}}</p>
+                  <p class="price">Precio: {{price}}€</p>
+                </div>
+                {{/products}}
               </div>
-              {{/products}}
               <div class="clear"></div>
             </div>
             <div class="box_bottom"></div>

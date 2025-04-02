@@ -1,6 +1,5 @@
 package grupo11.bcf_store.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import grupo11.bcf_store.model.CartDTO;
 import grupo11.bcf_store.model.OrderDTO;
-import grupo11.bcf_store.model.OrderMapper;
 import grupo11.bcf_store.model.ProductDTO;
 import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.OrderService;
@@ -25,27 +23,20 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @Autowired
-    private OrderMapper orderMapper;
-
     @PostMapping("/create-order/")
     public String createOrder(Model model) {
         CartDTO cart = cartService.getCart(1L);
 
         if (cart != null) {
-
-            if (cartService.getProductsInCart(cart) != null && !cartService.getProductsInCart(cart).isEmpty()) {
-                List<ProductDTO> productsCopy = new ArrayList<>(cartService.getProductsInCart(cart));
-                OrderDTO newOrder = orderService.createOrder(productsCopy);
-                cartService.clearCart(cart); // Ensure the cart is cleared
-                cartService.saveCart(cart);
-
-                return "redirect:/view-order/" + orderMapper.toDomain(newOrder).getId() + "/";
+            List<ProductDTO> productsInCart = cartService.getProductsInCart(cart);
+            if (productsInCart != null && !productsInCart.isEmpty()) {
+                OrderDTO newOrder = orderService.createOrder(productsInCart);
+                cartService.clearCart(cart);
+                return "redirect:/view-order/" + newOrder.id() + "/";
             } else {
                 model.addAttribute("errorMessage", "El carrito está vacío.");
                 return "error";
             }
-
         } else {
             model.addAttribute("errorMessage", "Carrito no encontrado.");
             return "error";

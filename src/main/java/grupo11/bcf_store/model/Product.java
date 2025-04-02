@@ -19,8 +19,7 @@ public class Product {
     private String description;
     private Blob imageFile; 
 
-    @ManyToMany
-    @JoinTable(name = "Order_Products", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "order_id"))
+    @ManyToMany(mappedBy = "products")
     private List<Order> orders; // Orders that contain this product
 
     // Constructors

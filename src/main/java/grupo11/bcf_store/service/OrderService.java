@@ -62,13 +62,21 @@ public class OrderService {
 
     public OrderDTO createOrder(List<ProductDTO> productsDTO) {
         List<Product> products = productMapper.toDomain(productsDTO);
+
+        for (Product product : products) {
+            if (product.getId() == null) {
+                throw new IllegalStateException("El producto no está guardado en la base de datos: " + product.getName());
+            }
+        }
+
         Order newOrder = new Order(products);
 
         for (Product product : products) {
             product.getOrders().add(newOrder);
         }
 
-        orderRepository.save(newOrder);
+        newOrder = orderRepository.save(newOrder);
+
         return orderMapper.toDTO(newOrder);
     }
 
