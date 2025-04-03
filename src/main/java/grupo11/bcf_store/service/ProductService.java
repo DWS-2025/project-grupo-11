@@ -174,7 +174,7 @@ public class ProductService {
     }
 
     // Image methods
-    public void createPostImage(long id, URI location, InputStream inputStream, long size) {
+    public void createProductImage(long id, URI location, InputStream inputStream, long size) {
 
 		Product product = productRepository.findById(id).orElseThrow();
 

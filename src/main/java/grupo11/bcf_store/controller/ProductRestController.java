@@ -105,7 +105,7 @@ public class ProductRestController {
 
 		URI location = fromCurrentRequest().build().toUri();
 
-		productService.createPostImage(id, location, imageFile.getInputStream(), imageFile.getSize());
+		productService.createProductImage(id, location, imageFile.getInputStream(), imageFile.getSize());
 
 		return ResponseEntity.created(location).build();
 

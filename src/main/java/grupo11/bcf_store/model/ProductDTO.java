@@ -9,5 +9,6 @@ public record ProductDTO(
         double price,
         String description,
         Blob imageFile,
+        String image,
         List<Order> orders) {
 }
