@@ -2,13 +2,16 @@ package grupo11.bcf_store.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +27,7 @@ import grupo11.bcf_store.model.ProductDTO;
 import grupo11.bcf_store.repository.CartRepository;
 import grupo11.bcf_store.repository.OrderRepository;
 import grupo11.bcf_store.repository.ProductRepository;
+import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -60,7 +64,10 @@ public class ProductService {
 
     @Transactional
     public void removeProduct(ProductDTO productDTO) {
-        Product product = productMapper.toDomain(productDTO);
+        Product initialProduct = productMapper.toDomain(productDTO);
+        Long id = initialProduct.getId();
+        
+        Product product = productRepository.findById(id).orElse(null);
         if (product != null) {
             for (Order order : product.getOrders()) {
                 if (order.getTotalItems() == 1 || order.isSimpleOrder()) {
@@ -166,6 +173,56 @@ public class ProductService {
         }
     }
 
+    // Image methods
+    public void createPostImage(long id, URI location, InputStream inputStream, long size) {
+
+		Product product = productRepository.findById(id).orElseThrow();
+
+		product.setImage(location.toString());
+		product.setImageFile(BlobProxy.generateProxy(inputStream, size));
+		productRepository.save(product);
+	}
+
+    public Resource getProductImage(long id) throws SQLException {
+
+		Product product = productRepository.findById(id).orElseThrow();
+
+		if (product.getImageFile() != null) {
+			return (Resource) new InputStreamResource(product.getImageFile().getBinaryStream());
+		} else {
+			throw new NoSuchElementException();
+		}
+	}
+
+	public void replaceProductImage(long id, InputStream inputStream, long size) {
+
+		Product product = productRepository.findById(id).orElseThrow();
+
+		if(product.getImage() == null){
+			throw new NoSuchElementException();
+		}
+
+		product.setImageFile(BlobProxy.generateProxy(inputStream, size));
+
+		productRepository.save(product);
+	}
+
+	public void deleteProductImage(long id) {
+
+		Product product = productRepository.findById(id).orElseThrow();
+
+		if(product.getImage() == null){
+			throw new NoSuchElementException();
+		}
+
+		product.setImageFile(null);
+		product.setImage(null);
+
+		productRepository.save(product);
+	}
+
+
+    // Pagination methods
     public Page<ProductDTO> convertToDTOPage(Page<Product> productPage) {
         return new PageImpl<>(
             productPage.getContent().stream().map(productMapper::toDTO).collect(Collectors.toList()),

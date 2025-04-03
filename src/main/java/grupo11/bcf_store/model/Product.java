@@ -17,7 +17,11 @@ public class Product {
     private String name;
     private double price;
     private String description;
-    private Blob imageFile; 
+
+    private String image; // URL or path to the image file
+
+    @Lob
+    private Blob imageFile;
 
     @ManyToMany(mappedBy = "products")
     private List<Order> orders; // Orders that contain this product
@@ -66,6 +70,14 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setImage(String image) {
+		this.image = image;
+	}
+
+    public String getImage() {
+        return image;
     }
 
     public Blob getImageFile() {

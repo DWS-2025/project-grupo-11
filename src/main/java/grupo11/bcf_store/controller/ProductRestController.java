@@ -1,10 +1,13 @@
 package grupo11.bcf_store.controller;
 
+import java.io.IOException;
 import java.net.URI;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,19 +19,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
 import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.model.ProductDTO;
 import grupo11.bcf_store.model.ProductMapper;
 import grupo11.bcf_store.repository.ProductRepository;
+import grupo11.bcf_store.service.ProductService;
+import jakarta.annotation.Resource;
 
 @RestController
 @RequestMapping("/api/products/")
 public class ProductRestController {
 
+	@Autowired
+	private ProductService productService;
+	
     @Autowired
     private ProductRepository productRepository;
 
@@ -85,6 +96,50 @@ public class ProductRestController {
 
 		return toDTO(product);
 	}
+
+
+	// Image methods
+	@PostMapping("/{id}/image")
+	public ResponseEntity<Object> createProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
+			throws IOException {
+
+		URI location = fromCurrentRequest().build().toUri();
+
+		productService.createPostImage(id, location, imageFile.getInputStream(), imageFile.getSize());
+
+		return ResponseEntity.created(location).build();
+
+	}
+
+	@GetMapping("/{id}/image")
+	public ResponseEntity<Object> getProductImage(@PathVariable long id) throws SQLException, IOException {
+
+		Resource productImage = productService.getProductImage(id);
+
+		return ResponseEntity
+				.ok()
+				.header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
+				.body(productImage);
+
+	}
+
+	@PutMapping("/{id}/image")
+	public ResponseEntity<Object> replaceProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
+			throws IOException {
+
+		productService.replaceProductImage(id, imageFile.getInputStream(), imageFile.getSize());
+
+		return ResponseEntity.noContent().build();
+	}
+
+	@DeleteMapping("/{id}/image")
+	public ResponseEntity<Object> deleteProductImage(@PathVariable long id) throws IOException {
+
+		productService.deleteProductImage(id);
+
+		return ResponseEntity.noContent().build();
+	}
+
 
     // DTO methods
     private ProductDTO toDTO(Product product){
