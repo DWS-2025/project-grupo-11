@@ -221,8 +221,15 @@ public class ProductService {
 		productRepository.save(product);
 	}
 
-
-    // Pagination methods
+    public byte[] getProductImage(Long id) throws SQLException {
+        Product product = productRepository.findById(id).orElse(null);
+        if (product != null && product.getImageFile() != null) {
+            return product.getImageFile().getBytes(1, (int) product.getImageFile().length());
+        }
+        return null;
+    }
+    
+    
     public Page<ProductDTO> convertToDTOPage(Page<Product> productPage) {
         return new PageImpl<>(
             productPage.getContent().stream().map(productMapper::toDTO).collect(Collectors.toList()),
@@ -271,11 +278,27 @@ public class ProductService {
         return convertToDTOPage(productPage);
     }
 
-    public byte[] getProductImage(Long id) throws SQLException {
-        Product product = productRepository.findById(id).orElse(null);
-        if (product != null && product.getImageFile() != null) {
-            return product.getImageFile().getBytes(1, (int) product.getImageFile().length());
+    public Page<ProductDTO> searchProducts(String name, String description, Double price, Pageable pageable) {
+        Page<Product> productPage;
+
+        if (name != null && !name.isEmpty() && description != null && !description.isEmpty() && price != null) {
+            productPage = productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCaseAndPrice(name, description, price, pageable);
+        } else if (name != null && !name.isEmpty() && description != null && !description.isEmpty()) {
+            productPage = productRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(name, description, pageable);
+        } else if (name != null && !name.isEmpty() && price != null) {
+            productPage = productRepository.findByNameContainingIgnoreCaseAndPrice(name, price, pageable);
+        } else if (description != null && !description.isEmpty() && price != null) {
+            productPage = productRepository.findByDescriptionContainingIgnoreCaseAndPrice(description, price, pageable);
+        } else if (name != null && !name.isEmpty()) {
+            productPage = productRepository.findByNameContainingIgnoreCase(name, pageable);
+        } else if (description != null && !description.isEmpty()) {
+            productPage = productRepository.findByDescriptionContainingIgnoreCase(description, pageable);
+        } else if (price != null) {
+            productPage = productRepository.findByPrice(price, pageable);
+        } else {
+            productPage = productRepository.findAll(pageable);
         }
-        return null;
+
+        return convertToDTOPage(productPage);
     }
 }

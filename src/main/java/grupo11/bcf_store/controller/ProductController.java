@@ -32,20 +32,10 @@ public class ProductController {
     public String getPosts(Model model, @RequestParam(defaultValue = "0") int page) {
         int pageSize = 10;
 
-        if (page < 0) {
-            page = 0;
-        }
-
         Page<ProductDTO> productPage = productService.getProducts(PageRequest.of(page, pageSize));
 
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", productPage.getTotalPages());
-        model.addAttribute("prev", page > 0 ? page - 1 : 0);
-        model.addAttribute("next", page < productPage.getTotalPages() - 1 ? page + 1 : page);
-        model.addAttribute("hasPrev", page > 0);
-        model.addAttribute("hasNext", page < productPage.getTotalPages() - 1);
-        model.addAttribute("isSearch", false);
 
         return "clothes";
     }
@@ -143,40 +133,27 @@ public class ProductController {
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<ProductDTO> productPage;
-
-        if (name != null && !name.isEmpty() && description != null && !description.isEmpty() && price != null) {
-            productPage = productService.findByNameAndDescriptionAndPrice(name, description, price, pageable);
-        } else if (name != null && !name.isEmpty() && description != null && !description.isEmpty()) {
-            productPage = productService.findByNameAndDescription(name, description, pageable);
-        } else if (name != null && !name.isEmpty() && price != null) {
-            productPage = productService.findByNameAndPrice(name, price, pageable);
-        } else if (description != null && !description.isEmpty() && price != null) {
-            productPage = productService.findByDescriptionAndPrice(description, price, pageable);
-        } else if (name != null && !name.isEmpty()) {
-            productPage = productService.findByName(name, pageable);
-        } else if (description != null && !description.isEmpty()) {
-            productPage = productService.findByDescription(description, pageable);
-        } else if (price != null) {
-            productPage = productService.findByPrice(price, pageable);
-        } else {
-            productPage = productService.getProducts(pageable);
-        }
+        Page<ProductDTO> productPage = productService.searchProducts(name, description, price, pageable);
 
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", productPage.getTotalPages());
-        model.addAttribute("prev", page > 0 ? page - 1 : 0);
-        model.addAttribute("next", page < productPage.getTotalPages() - 1 ? page + 1 : page);
-        model.addAttribute("hasPrev", page > 0);
-        model.addAttribute("hasNext", page < productPage.getTotalPages() - 1);
-        model.addAttribute("name", name);
-        model.addAttribute("description", description);
-        model.addAttribute("price", price);
-        model.addAttribute("isSearch", true); 
-        
+
         return "clothes";
     }
+
+    @GetMapping("/search-products/more/")
+    @ResponseBody
+    public List<ProductDTO> getMoreSearchProducts(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) Double price,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        return productService.searchProducts(name, description, price, pageable).getContent();
+    }
+    
 
     @GetMapping("/product-image/{id}/")
     public ResponseEntity<byte[]> getProductImage(@PathVariable Long id) throws Exception {
