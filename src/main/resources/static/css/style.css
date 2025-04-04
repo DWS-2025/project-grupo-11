@@ -597,4 +597,9 @@ div.pagination span.disabled {
   margin-bottom: 10px;
 }
 
+#spinner img {
+  width: 192px;
+  height: 100px;
+}
+
 

@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.model.ProductDTO;
@@ -47,6 +48,14 @@ public class ProductController {
         model.addAttribute("isSearch", false);
 
         return "clothes";
+    }
+
+    @GetMapping("/clothes/more/")
+    @ResponseBody
+    public List<ProductDTO> getMoreProducts(@RequestParam(defaultValue = "0") int page) {
+        int pageSize = 10;
+        Page<ProductDTO> productPage = productService.getProducts(PageRequest.of(page, pageSize));
+        return productPage.getContent();
     }
 
     @PostMapping("/delete-product/{id}/")
@@ -180,5 +189,4 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
     }
-
 }
