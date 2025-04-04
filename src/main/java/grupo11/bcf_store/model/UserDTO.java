@@ -6,7 +6,7 @@ public record UserDTO(
         Long id,
         String username,
         String password,
-        Cart cart,
-        List<Order> orders) {
+        CartSimpleDTO cart,
+        List<OrderSimpleDTO> orders) {
 }
 

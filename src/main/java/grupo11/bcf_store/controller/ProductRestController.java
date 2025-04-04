@@ -99,7 +99,7 @@ public class ProductRestController {
 
 
 	// Image methods
-	@PostMapping("/{id}/image")
+	@PostMapping("/{id}/image/")
 	public ResponseEntity<Object> createProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
 			throws IOException {
 
@@ -111,7 +111,7 @@ public class ProductRestController {
 
 	}
 
-	@GetMapping("/{id}/image")
+	@GetMapping("/{id}/image/")
 	public ResponseEntity<Object> getProductImage(@PathVariable long id) throws SQLException, IOException {
 
 		Resource productImage = productService.getProductImage(id);
@@ -123,7 +123,7 @@ public class ProductRestController {
 
 	}
 
-	@PutMapping("/{id}/image")
+	@PutMapping("/{id}/image/")
 	public ResponseEntity<Object> replaceProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
 			throws IOException {
 
@@ -132,7 +132,7 @@ public class ProductRestController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@DeleteMapping("/{id}/image")
+	@DeleteMapping("/{id}/image/")
 	public ResponseEntity<Object> deleteProductImage(@PathVariable long id) throws IOException {
 
 		productService.deleteProductImage(id);

@@ -4,6 +4,6 @@ import java.util.List;
 
 public record CartDTO(
         Long id,
-        List<Product> products,
-        User user) {
+        List<ProductSimpleDTO> products,
+        UserSimpleDTO user) {
 }
