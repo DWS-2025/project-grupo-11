@@ -29,7 +29,7 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/clothes/")
-    public String getPosts(Model model, @RequestParam(defaultValue = "0") int page) {
+    public String getProducts(Model model, @RequestParam(defaultValue = "0") int page) {
         int pageSize = 10;
 
         Page<ProductDTO> productPage = productService.getProducts(PageRequest.of(page, pageSize));

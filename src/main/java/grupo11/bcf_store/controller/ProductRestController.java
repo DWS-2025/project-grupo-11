@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,9 +51,10 @@ public class ProductRestController {
 
     // API methods
     @GetMapping("/")
-    public List<ProductDTO> getProducts() {
-		return toDTOs(productRepository.findAll());
-	}
+    public Page<ProductDTO> getProducts(Pageable pageable, @RequestParam(defaultValue = "10") int size) {
+        Pageable updatedPageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort());
+        return productRepository.findAll(updatedPageable).map(this::toDTO);
+    }
 
     @GetMapping("/{id}/")
 	public ProductDTO getProduct(@PathVariable long id) {
