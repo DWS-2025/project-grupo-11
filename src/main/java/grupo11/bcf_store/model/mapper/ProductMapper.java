@@ -1,6 +1,10 @@
-package grupo11.bcf_store.model;
+package grupo11.bcf_store.model.mapper;
 
 import org.mapstruct.Mapper;
+
+import grupo11.bcf_store.model.Product;
+import grupo11.bcf_store.model.dto.ProductDTO;
+
 import java.util.List;
 
 @Mapper(componentModel = "spring")

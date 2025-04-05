@@ -1,4 +1,4 @@
-package grupo11.bcf_store.controller;
+package grupo11.bcf_store.controller.work;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import grupo11.bcf_store.repository.UserRepository;
 
 @Controller
-public class UserController {
+public class UserWorkController {
     @Autowired
     private UserRepository userRepository;
 

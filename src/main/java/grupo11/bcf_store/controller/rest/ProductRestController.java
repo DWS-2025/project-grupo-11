@@ -1,9 +1,8 @@
-package grupo11.bcf_store.controller;
+package grupo11.bcf_store.controller.rest;
 
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
 import grupo11.bcf_store.model.Product;
-import grupo11.bcf_store.model.ProductDTO;
-import grupo11.bcf_store.model.ProductMapper;
+import grupo11.bcf_store.model.dto.ProductDTO;
+import grupo11.bcf_store.model.mapper.ProductMapper;
 import grupo11.bcf_store.repository.ProductRepository;
 import grupo11.bcf_store.service.ProductService;
 import jakarta.transaction.Transactional;
@@ -101,6 +100,15 @@ public class ProductRestController {
 		return toDTO(product);
 	}
 
+    @GetMapping("/search/")
+    public Page<ProductDTO> searchProducts(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) Double price,
+            Pageable pageable) {
+        Pageable updatedPageable = PageRequest.of(pageable.getPageNumber(), 10, pageable.getSort());
+        return productService.searchProducts(name, description, price, updatedPageable);
+    }
 
 	// Image methods
 	@PostMapping("/{id}/image/")
@@ -152,9 +160,6 @@ public class ProductRestController {
 		return mapper.toDomain(productDTO);
 	}
 
-	private List<ProductDTO> toDTOs(List<Product> products){
-		return mapper.toDTOs(products);
-	}
         
     // Exception handling
     @ControllerAdvice

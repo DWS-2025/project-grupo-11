@@ -1,4 +1,4 @@
-package grupo11.bcf_store.controller;
+package grupo11.bcf_store.controller.work;
 
 import java.util.List;
 
@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import grupo11.bcf_store.model.CartDTO;
-import grupo11.bcf_store.model.OrderDTO;
-import grupo11.bcf_store.model.ProductDTO;
+import grupo11.bcf_store.model.dto.CartDTO;
+import grupo11.bcf_store.model.dto.OrderDTO;
+import grupo11.bcf_store.model.dto.ProductDTO;
 import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.OrderService;
 
 @Controller
-public class OrderController {
+public class OrderWorkController {
     @Autowired
     private CartService cartService;
 

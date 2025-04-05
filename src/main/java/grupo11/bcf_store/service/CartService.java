@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import grupo11.bcf_store.model.Cart;
-import grupo11.bcf_store.model.CartDTO;
-import grupo11.bcf_store.model.CartMapper;
 import grupo11.bcf_store.model.Product;
-import grupo11.bcf_store.model.ProductDTO;
-import grupo11.bcf_store.model.ProductMapper;
+import grupo11.bcf_store.model.dto.CartDTO;
+import grupo11.bcf_store.model.dto.ProductDTO;
+import grupo11.bcf_store.model.mapper.CartMapper;
+import grupo11.bcf_store.model.mapper.ProductMapper;
 import grupo11.bcf_store.repository.CartRepository;
 
 @Service

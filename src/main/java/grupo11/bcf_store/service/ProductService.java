@@ -19,11 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import grupo11.bcf_store.model.Order;
-import grupo11.bcf_store.model.OrderMapper;
 import grupo11.bcf_store.model.Product;
-import grupo11.bcf_store.model.ProductMapper;
-import grupo11.bcf_store.model.OrderDTO;
-import grupo11.bcf_store.model.ProductDTO;
+import grupo11.bcf_store.model.dto.OrderDTO;
+import grupo11.bcf_store.model.dto.ProductDTO;
+import grupo11.bcf_store.model.mapper.OrderMapper;
+import grupo11.bcf_store.model.mapper.ProductMapper;
 import grupo11.bcf_store.repository.CartRepository;
 import grupo11.bcf_store.repository.OrderRepository;
 import grupo11.bcf_store.repository.ProductRepository;

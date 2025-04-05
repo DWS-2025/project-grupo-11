@@ -1,4 +1,4 @@
-package grupo11.bcf_store.controller;
+package grupo11.bcf_store.controller.work;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import grupo11.bcf_store.model.CartDTO;
-import grupo11.bcf_store.model.ProductDTO;
+import grupo11.bcf_store.model.dto.CartDTO;
+import grupo11.bcf_store.model.dto.ProductDTO;
 import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.ProductService;
 
 @Controller
-public class CartController {
+public class CartWorkController {
 
     @Autowired
     private ProductService productService;

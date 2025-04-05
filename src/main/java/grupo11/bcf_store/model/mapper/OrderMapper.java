@@ -1,7 +1,10 @@
-package grupo11.bcf_store.model;
+package grupo11.bcf_store.model.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import grupo11.bcf_store.model.Order;
+import grupo11.bcf_store.model.dto.OrderDTO;
 
 import java.util.List;
 

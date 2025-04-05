@@ -1,4 +1,6 @@
-package grupo11.bcf_store.model;
+package grupo11.bcf_store.model.dto;
+
+import grupo11.bcf_store.model.Cart;
 
 public record UserSimpleDTO(
         long id,

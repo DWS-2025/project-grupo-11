@@ -1,4 +1,4 @@
-package grupo11.bcf_store.controller;
+package grupo11.bcf_store.controller.work;
 
 import java.util.List;
 
@@ -18,12 +18,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import grupo11.bcf_store.model.Product;
-import grupo11.bcf_store.model.ProductDTO;
-import grupo11.bcf_store.model.OrderDTO;
+import grupo11.bcf_store.model.dto.OrderDTO;
+import grupo11.bcf_store.model.dto.ProductDTO;
 import grupo11.bcf_store.service.ProductService;
 
 @Controller
-public class ProductController {
+public class ProductWorkController {
 
     @Autowired
     private ProductService productService;

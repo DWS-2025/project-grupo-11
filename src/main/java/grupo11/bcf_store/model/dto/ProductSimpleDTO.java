@@ -1,4 +1,4 @@
-package grupo11.bcf_store.model;
+package grupo11.bcf_store.model.dto;
 
 public record ProductSimpleDTO(
         long id,

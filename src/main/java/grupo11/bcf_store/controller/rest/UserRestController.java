@@ -1,4 +1,4 @@
-package grupo11.bcf_store.controller;
+package grupo11.bcf_store.controller.rest;
 
 import java.net.URI;
 import java.util.List;
@@ -20,53 +20,49 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
-import grupo11.bcf_store.model.OrderMapper;
-import grupo11.bcf_store.model.Order;
-import grupo11.bcf_store.model.OrderDTO;
-import grupo11.bcf_store.repository.OrderRepository;
+import grupo11.bcf_store.model.User;
+import grupo11.bcf_store.model.dto.UserDTO;
+import grupo11.bcf_store.model.mapper.UserMapper;
+import grupo11.bcf_store.repository.UserRepository;
 import jakarta.transaction.Transactional;
 
 @RestController
-@RequestMapping("/api/orders/")
-public class OrderRestController {
+@RequestMapping("/api/users/")
+public class UserRestController {
 
     @Autowired
-    private OrderRepository orderRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private OrderMapper mapper;
+    private UserMapper mapper;
 
     // API methods
     @GetMapping("/")
-    public List<OrderDTO> getOrders() {
-        return toDTOs(orderRepository.findAll());
+    public List<UserDTO> getUsers() {
+        return toDTOs(userRepository.findAll());
     }
 
     @GetMapping("/{id}/")
-    public OrderDTO getOrder(@PathVariable long id) {
-        return toDTO(orderRepository.findById(id).orElseThrow());
+    public UserDTO getUser(@PathVariable long id) {
+        return toDTO(userRepository.findById(id).orElseThrow());
     }
 
     @PostMapping("/")
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
-        Order order = toDomain(orderDTO);
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+        User user = toDomain(userDTO);
+        userRepository.save(user);
 
-        orderRepository.save(order);
-
-        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(order.getId()).toUri();
-
-        return ResponseEntity.created(location).body(toDTO(order));
+        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
+        return ResponseEntity.created(location).body(toDTO(user));
     }
 
     @PutMapping("/{id}/")
-    public OrderDTO replaceOrder(@PathVariable long id, @RequestBody OrderDTO updatedOrderDTO) {
-        if (orderRepository.existsById(id)) {
-            Order updatedOrder = toDomain(updatedOrderDTO);
-
-            updatedOrder.setId(id);
-            orderRepository.save(updatedOrder);
-
-            return toDTO(updatedOrder);
+    public UserDTO replaceUser(@PathVariable long id, @RequestBody UserDTO updatedUserDTO) {
+        if (userRepository.existsById(id)) {
+            User updatedUser = toDomain(updatedUserDTO);
+            updatedUser.setId(id);
+            userRepository.save(updatedUser);
+            return toDTO(updatedUser);
         } else {
             throw new NoSuchElementException();
         }
@@ -74,25 +70,23 @@ public class OrderRestController {
 
     @Transactional
     @DeleteMapping("/{id}/")
-    public OrderDTO deleteOrder(@PathVariable long id) {
-        Order order = orderRepository.findById(id).orElseThrow();
-
-        orderRepository.deleteById(id);
-
-        return toDTO(order);
+    public UserDTO deleteUser(@PathVariable long id) {
+        User user = userRepository.findById(id).orElseThrow();
+        userRepository.deleteById(id);
+        return toDTO(user);
     }
 
     // DTO methods
-    private OrderDTO toDTO(Order order) {
-        return mapper.toDTO(order);
+    private UserDTO toDTO(User user) {
+        return mapper.toDTO(user);
     }
 
-    private Order toDomain(OrderDTO orderDTO) {
-        return mapper.toDomain(orderDTO);
+    private User toDomain(UserDTO userDTO) {
+        return mapper.toDomain(userDTO);
     }
 
-    private List<OrderDTO> toDTOs(List<Order> orders) {
-        return mapper.toDTOs(orders);
+    private List<UserDTO> toDTOs(List<User> users) {
+        return mapper.toDTOs(users);
     }
 
     // Exception handling

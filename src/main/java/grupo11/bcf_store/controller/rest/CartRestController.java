@@ -1,4 +1,4 @@
-package grupo11.bcf_store.controller;
+package grupo11.bcf_store.controller.rest;
 
 import java.net.URI;
 import java.util.List;
@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
-import grupo11.bcf_store.model.CartMapper;
 import grupo11.bcf_store.model.Cart;
-import grupo11.bcf_store.model.CartDTO;
+import grupo11.bcf_store.model.dto.CartDTO;
+import grupo11.bcf_store.model.mapper.CartMapper;
 import grupo11.bcf_store.repository.CartRepository;
 import jakarta.transaction.Transactional;
 
