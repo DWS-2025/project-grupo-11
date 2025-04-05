@@ -62,6 +62,12 @@ public class ProductService {
         productRepository.save(productMapper.toDomain(productDTO));
     }
 
+    public void save(Product product) {
+        productRepository.save(product);
+        product.setImage("http://localhost:8080/product-image/" + product.getId() + "/");
+        productRepository.save(product);
+    }
+
     @Transactional
     public void removeProduct(ProductDTO productDTO) {
         Product initialProduct = productMapper.toDomain(productDTO);

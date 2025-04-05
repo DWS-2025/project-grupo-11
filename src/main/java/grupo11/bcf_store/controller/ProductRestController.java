@@ -103,8 +103,8 @@ public class ProductRestController {
 	@PostMapping("/{id}/image/")
 	public ResponseEntity<Object> createProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
 			throws IOException {
-
-		URI location = fromCurrentRequest().build().toUri();
+		String location_string = "http://localhost:8080/product-image/" + id + "/";
+		URI location = URI.create(location_string);
 
 		productService.createProductImage(id, location, imageFile.getInputStream(), imageFile.getSize());
 
