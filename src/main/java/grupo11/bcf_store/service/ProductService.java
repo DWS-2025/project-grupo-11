@@ -52,7 +52,7 @@ public class ProductService {
         return productMapper.toDTOs(productRepository.findAll());
     }
 
-    public ProductDTO getProduct(Long id) {
+    public ProductDTO getProduct(long id) {
         return productRepository.findById(id)
                 .map(productMapper::toDTO)
                 .orElse(null);
@@ -65,7 +65,7 @@ public class ProductService {
     @Transactional
     public void removeProduct(ProductDTO productDTO) {
         Product initialProduct = productMapper.toDomain(productDTO);
-        Long id = initialProduct.getId();
+        long id = initialProduct.getId();
         
         Product product = productRepository.findById(id).orElse(null);
         if (product != null) {
@@ -83,7 +83,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void removeProductById(Long id) {
+    public void removeProductById(long id) {
         Product product = productRepository.findById(id).orElse(null);
 
         if (product != null) {
@@ -98,7 +98,7 @@ public class ProductService {
         }
     }
 
-    public ProductDTO editProduct(Long id) {
+    public ProductDTO editProduct(long id) {
         Product product = productRepository.findById(id).orElse(new Product("", 0, "", null));
         return productMapper.toDTO(product);
     }
@@ -116,7 +116,7 @@ public class ProductService {
         return productMapper.toDTO(product);
     }
 
-    public ProductDTO submitProductEdited(Long id, String name, String description, double price, MultipartFile imageFile)
+    public ProductDTO submitProductEdited(long id, String name, String description, double price, MultipartFile imageFile)
             throws Exception {
         Product product = productRepository.findById(id).orElse(new Product());
 
@@ -133,14 +133,14 @@ public class ProductService {
         return productMapper.toDTO(product);
     }
 
-    public List<OrderDTO> getProductOrders(Long id) {
+    public List<OrderDTO> getProductOrders(long id) {
         return productRepository.findById(id)
                 .map(Product::getOrders)
                 .map(orderMapper::toDTOs)
                 .orElse(null);
     }
 
-    public List<OrderDTO> getUniqueProductOrders(Long id) {
+    public List<OrderDTO> getUniqueProductOrders(long id) {
         return productRepository.findById(id)
                 .map(product -> product.getOrders().stream().distinct().collect(Collectors.toList()))
                 .map(orderMapper::toDTOs)
@@ -151,7 +151,7 @@ public class ProductService {
         Product updatedProduct = productMapper.toDomain(updatedProductDTO);
         cartRepository.findAll().forEach(cart -> {
             cart.getProducts()
-                    .replaceAll(product -> product.getId().equals(updatedProduct.getId()) ? updatedProduct : product);
+                    .replaceAll(product -> product.getId() == updatedProduct.getId() ? updatedProduct : product);
         });
     }
 
@@ -183,7 +183,7 @@ public class ProductService {
 		productRepository.save(product);
 	}
 
-    public Resource getProductImage(long id) throws SQLException {
+    public Resource getProductImageApi(long id) throws SQLException {
 
 		Product product = productRepository.findById(id).orElseThrow();
 
@@ -221,7 +221,7 @@ public class ProductService {
 		productRepository.save(product);
 	}
 
-    public byte[] getProductImage(Long id) throws SQLException {
+    public byte[] getProductImage(long id) throws SQLException {
         Product product = productRepository.findById(id).orElse(null);
         if (product != null && product.getImageFile() != null) {
             return product.getImageFile().getBytes(1, (int) product.getImageFile().length());

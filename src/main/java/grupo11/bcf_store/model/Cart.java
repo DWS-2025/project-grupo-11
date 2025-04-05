@@ -11,7 +11,7 @@ public class Cart {
     // Attributes
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private long id;
 
     @ManyToMany
     @JoinTable(name = "Cart_Products", joinColumns = @JoinColumn(name = "cart_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
@@ -26,11 +26,11 @@ public class Cart {
     }
 
     // Methods to add and remove products
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -77,6 +77,6 @@ public class Cart {
 
     public void updateCartProduct(Product updatedProduct) {
         this.getProducts()
-                .replaceAll((product) -> product.getId().equals(updatedProduct.getId()) ? updatedProduct : product);
+                .replaceAll((product) -> product.getId() == updatedProduct.getId() ? updatedProduct : product);
     }
 }

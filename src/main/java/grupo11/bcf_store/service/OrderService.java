@@ -31,13 +31,13 @@ public class OrderService {
         return orderMapper.toDTO(orderRepository.save(order));
     }
 
-    public OrderDTO getOrder(Long id) {
+    public OrderDTO getOrder(long id) {
         return orderRepository.findById(id)
                 .map(orderMapper::toDTO)
                 .orElse(null);
     }
 
-    public void remove(Long id) {
+    public void remove(long id) {
         orderRepository.deleteById(id);
     }
 
@@ -53,7 +53,7 @@ public class OrderService {
         return productMapper.toDTOs(order.getProducts());
     }
 
-    public List<OrderDTO> getOrdersByUserId(Long userId) {
+    public List<OrderDTO> getOrdersByUserId(long userId) {
         return orderRepository.findById(userId)
                 .stream()
                 .map(orderMapper::toDTO)

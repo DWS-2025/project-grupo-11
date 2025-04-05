@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     @PostMapping("/delete-product/{id}/")
-    public String deleteProduct(@PathVariable Long id, Model model) {
+    public String deleteProduct(@PathVariable long id, Model model) {
         ProductDTO product = productService.getProduct(id);
         if (product != null) {
             productService.removeProduct(product);
@@ -68,7 +68,7 @@ public class ProductController {
     }
 
     @GetMapping("/edit-product/{id}/")
-    public String editProductRedirect(@PathVariable Long id, Model model) {
+    public String editProductRedirect(@PathVariable long id, Model model) {
         ProductDTO product_to_edit = productService.getProduct(id);
         model.addAttribute("product", product_to_edit);
 
@@ -91,7 +91,7 @@ public class ProductController {
     }
 
     @PostMapping("/edit-product/")
-    public String editProduct(@RequestParam("id") Long id,
+    public String editProduct(@RequestParam("id") long id,
             @RequestParam("name") String name,
             @RequestParam("description") String description,
             @RequestParam("price") double price,
@@ -107,7 +107,7 @@ public class ProductController {
     }
 
     @GetMapping("/view/{id}/")
-    public String viewProduct(@PathVariable Long id, Model model) {
+    public String viewProduct(@PathVariable long id, Model model) {
         ProductDTO product_to_view = productService.getProduct(id);
         List<OrderDTO> productOrders = productService.getProductOrders(id);
         List<OrderDTO> uniqueProductOrders = productService.getUniqueProductOrders(id);
@@ -156,7 +156,7 @@ public class ProductController {
     
 
     @GetMapping("/product-image/{id}/")
-    public ResponseEntity<byte[]> getProductImage(@PathVariable Long id) throws Exception {
+    public ResponseEntity<byte[]> getProductImage(@PathVariable long id) throws Exception {
         byte[] image = productService.getProductImage(id);
         if (image != null) {
             return ResponseEntity.ok()

@@ -29,7 +29,7 @@ public class CartService {
         return cartMapper.toDTOs(cartRepository.findAll());
     }
 
-    public CartDTO getCart(Long id) {
+    public CartDTO getCart(long id) {
         Cart cart = cartRepository.findById(id).orElse(null);
         return cart != null ? cartMapper.toDTO(cart) : null;
     }
@@ -62,7 +62,7 @@ public class CartService {
         }
     }
 
-    public List<ProductDTO> getProductsInCart(Long cartId) {
+    public List<ProductDTO> getProductsInCart(long cartId) {
         Cart cart = cartRepository.findById(cartId).orElse(null);
         if (cart != null) {
             List<Product> products = cart.getProducts();
@@ -84,7 +84,7 @@ public class CartService {
         return null;
     }
 
-    public double getTotalPrice(Long cartId) {
+    public double getTotalPrice(long cartId) {
         Cart cart = cartRepository.findById(cartId).orElse(null);
         if (cart != null) {
             return cart.getTotalPrice();
@@ -92,7 +92,7 @@ public class CartService {
         return 0;
     }
 
-    public int getTotalItemsInCart(Long cartId) {
+    public int getTotalItemsInCart(long cartId) {
         Cart cart = cartRepository.findById(cartId).orElse(null);
         if (cart != null) {
             return cart.getTotalItems();
@@ -100,7 +100,7 @@ public class CartService {
         return 0;
     }
 
-    public void addProductToCart(Long cartId, ProductDTO productDTO) {
+    public void addProductToCart(long cartId, ProductDTO productDTO) {
         Cart cart = cartRepository.findById(cartId).orElse(null);
         if (cart != null && productDTO != null) {
             Product product = productMapper.toDomain(productDTO);
@@ -109,11 +109,11 @@ public class CartService {
         }
     }
 
-    public void removeProductFromCart(Long cartId, ProductDTO productDTO) {
+    public void removeProductFromCart(long cartId, ProductDTO productDTO) {
         Cart cart = cartRepository.findById(cartId).orElse(null);
         if (cart != null && productDTO != null) {
             Product productToRemove = cart.getProducts().stream()
-                .filter(product -> product.getId().equals(productDTO.id()))
+                .filter(product -> product.getId() == productDTO.id())
                 .findFirst()
                 .orElse(null);
             if (productToRemove != null) {

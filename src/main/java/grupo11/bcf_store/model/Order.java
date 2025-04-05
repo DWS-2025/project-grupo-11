@@ -10,7 +10,7 @@ public class Order {
     // Attributes
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private long id;
 
     @ManyToMany
     @JoinTable(
@@ -41,11 +41,11 @@ public class Order {
         this.products = products;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -58,10 +58,10 @@ public class Order {
             return true;
         }
 
-        Long firstProductId = products.get(0).getId();
+        long firstProductId = products.get(0).getId();
 
         for (Product product : products) {
-            if (!product.getId().equals(firstProductId)) {
+            if (product.getId() != firstProductId) {
                 return false;
             }
         }

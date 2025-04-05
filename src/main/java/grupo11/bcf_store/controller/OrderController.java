@@ -44,7 +44,7 @@ public class OrderController {
     }
 
     @PostMapping("/delete-order/{id}/")
-    public String deleteOrder(@PathVariable Long id, Model model) {
+    public String deleteOrder(@PathVariable long id, Model model) {
         OrderDTO order_to_delete = orderService.getOrder(id);
 
         if (order_to_delete != null) {
@@ -58,7 +58,7 @@ public class OrderController {
     }
 
     @GetMapping("/view-order/{id}/")
-    public String viewOrder(@PathVariable Long id, Model model) {
+    public String viewOrder(@PathVariable long id, Model model) {
         OrderDTO order = orderService.getOrder(id);
         if (order != null) {
             model.addAttribute("order", order);

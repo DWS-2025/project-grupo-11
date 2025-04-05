@@ -1,6 +1,6 @@
 package grupo11.bcf_store.model;
 
 public record CartSimpleDTO(
-        Long id,
+        long id,
         User user) {
 }

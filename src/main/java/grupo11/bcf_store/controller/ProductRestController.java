@@ -32,7 +32,6 @@ import grupo11.bcf_store.model.ProductMapper;
 import grupo11.bcf_store.model.ProductSimpleDTO;
 import grupo11.bcf_store.repository.ProductRepository;
 import grupo11.bcf_store.service.ProductService;
-import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 
 @RestController
@@ -116,7 +115,7 @@ public class ProductRestController {
 	@GetMapping("/{id}/image/")
 	public ResponseEntity<Object> getProductImage(@PathVariable long id) throws SQLException, IOException {
 
-		Resource productImage = productService.getProductImage(id);
+		byte[] productImage = productService.getProductImage(id);
 
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_TYPE, "image/jpeg").body(productImage);

@@ -23,7 +23,7 @@ public class CartController {
 
     @GetMapping("/cart/")
     public String cart(Model model) {
-        Long cartId = 1L; // Default cart ID
+        long cartId = 1L; // Default cart ID
         CartDTO cart = cartService.getCart(cartId);
 
         if (cart != null) {
@@ -38,8 +38,8 @@ public class CartController {
     }
 
     @PostMapping("/add-to-cart/{productId}/")
-    public String addToCart(@PathVariable Long productId, Model model) {
-        Long cartId = 1L; // Default cart ID
+    public String addToCart(@PathVariable long productId, Model model) {
+        long cartId = 1L; // Default cart ID
         ProductDTO product = productService.getProduct(productId);
 
         if (product != null) {
@@ -58,8 +58,8 @@ public class CartController {
     }
 
     @PostMapping("/remove-from-cart/{productId}/")
-    public String removeFromCart(@PathVariable Long productId, Model model) {
-        Long cartId = 1L; // Default cart ID
+    public String removeFromCart(@PathVariable long productId, Model model) {
+        long cartId = 1L; // Default cart ID
         ProductDTO product = productService.getProduct(productId);
 
         if (product != null) {
