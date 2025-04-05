@@ -24,6 +24,7 @@ import grupo11.bcf_store.model.CartMapper;
 import grupo11.bcf_store.model.Cart;
 import grupo11.bcf_store.model.CartDTO;
 import grupo11.bcf_store.repository.CartRepository;
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/api/carts/")
@@ -71,6 +72,7 @@ public class CartRestController {
         }
     }
 
+    @Transactional
     @DeleteMapping("/{id}/")
     public CartDTO deleteCart(@PathVariable long id) {
         Cart cart = cartRepository.findById(id).orElseThrow();

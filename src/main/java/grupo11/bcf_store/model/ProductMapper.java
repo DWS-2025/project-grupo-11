@@ -7,13 +7,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
-    @Mapping(target = "orders", ignore = true)
     ProductDTO toDTO(Product product);
-
-    List<ProductDTO> toDTOs(List<Product> products);
+    List<ProductSimpleDTO> toSimpleDTOs(List<Product> products);
 
     List<Product> toDomain(List<ProductDTO> productDTOs);
+    List<ProductDTO> toDTOs(List<Product> products);
 
-    @Mapping(target = "orders", ignore = true)
     Product toDomain(ProductDTO productDTO);
 }

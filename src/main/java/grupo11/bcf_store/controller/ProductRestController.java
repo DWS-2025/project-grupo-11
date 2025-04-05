@@ -29,9 +29,11 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.model.ProductDTO;
 import grupo11.bcf_store.model.ProductMapper;
+import grupo11.bcf_store.model.ProductSimpleDTO;
 import grupo11.bcf_store.repository.ProductRepository;
 import grupo11.bcf_store.service.ProductService;
 import jakarta.annotation.Resource;
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/api/products/")
@@ -48,9 +50,8 @@ public class ProductRestController {
 
     // API methods
     @GetMapping("/")
-    public List<ProductDTO> getProducts() {
-		
-		return toDTOs(productRepository.findAll());
+    public List<ProductSimpleDTO> getProducts() {
+		return toSimpleDTOs(productRepository.findAll());
 	}
 
     @GetMapping("/{id}/")
@@ -87,6 +88,7 @@ public class ProductRestController {
 		}
 	}
 
+	@Transactional
     @DeleteMapping("/{id}/")
 	public ProductDTO deleteProduct(@PathVariable long id) {
 
@@ -116,10 +118,8 @@ public class ProductRestController {
 
 		Resource productImage = productService.getProductImage(id);
 
-		return ResponseEntity
-				.ok()
-				.header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
-				.body(productImage);
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_TYPE, "image/jpeg").body(productImage);
 
 	}
 
@@ -146,12 +146,12 @@ public class ProductRestController {
 		return mapper.toDTO(product);
 	}
 
-	private Product toDomain(ProductDTO postDTO){
-		return mapper.toDomain(postDTO);
+	private Product toDomain(ProductDTO productDTO){
+		return mapper.toDomain(productDTO);
 	}
 
-	private List<ProductDTO> toDTOs(List<Product> products){
-		return mapper.toDTOs(products);
+	private List<ProductSimpleDTO> toSimpleDTOs(List<Product> products){
+		return mapper.toSimpleDTOs(products);
 	}
         
     // Exception handling

@@ -24,6 +24,7 @@ import grupo11.bcf_store.model.OrderMapper;
 import grupo11.bcf_store.model.Order;
 import grupo11.bcf_store.model.OrderDTO;
 import grupo11.bcf_store.repository.OrderRepository;
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/api/orders/")
@@ -71,6 +72,7 @@ public class OrderRestController {
         }
     }
 
+    @Transactional
     @DeleteMapping("/{id}/")
     public OrderDTO deleteOrder(@PathVariable long id) {
         Order order = orderRepository.findById(id).orElseThrow();

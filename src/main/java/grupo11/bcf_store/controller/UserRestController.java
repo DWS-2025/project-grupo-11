@@ -24,6 +24,7 @@ import grupo11.bcf_store.model.User;
 import grupo11.bcf_store.model.UserDTO;
 import grupo11.bcf_store.model.UserMapper;
 import grupo11.bcf_store.repository.UserRepository;
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/api/users/")
@@ -67,6 +68,7 @@ public class UserRestController {
         }
     }
 
+    @Transactional
     @DeleteMapping("/{id}/")
     public UserDTO deleteUser(@PathVariable long id) {
         User user = userRepository.findById(id).orElseThrow();
