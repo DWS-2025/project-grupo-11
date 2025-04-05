@@ -49,6 +49,14 @@ public class Order {
         this.id = id;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public int getTotalItems() {
         return products.size();
     }

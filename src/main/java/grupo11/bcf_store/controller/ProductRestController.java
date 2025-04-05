@@ -29,7 +29,6 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.model.ProductDTO;
 import grupo11.bcf_store.model.ProductMapper;
-import grupo11.bcf_store.model.ProductSimpleDTO;
 import grupo11.bcf_store.repository.ProductRepository;
 import grupo11.bcf_store.service.ProductService;
 import jakarta.transaction.Transactional;
@@ -49,8 +48,8 @@ public class ProductRestController {
 
     // API methods
     @GetMapping("/")
-    public List<ProductSimpleDTO> getProducts() {
-		return toSimpleDTOs(productRepository.findAll());
+    public List<ProductDTO> getProducts() {
+		return toDTOs(productRepository.findAll());
 	}
 
     @GetMapping("/{id}/")
@@ -149,8 +148,8 @@ public class ProductRestController {
 		return mapper.toDomain(productDTO);
 	}
 
-	private List<ProductSimpleDTO> toSimpleDTOs(List<Product> products){
-		return mapper.toSimpleDTOs(products);
+	private List<ProductDTO> toDTOs(List<Product> products){
+		return mapper.toDTOs(products);
 	}
         
     // Exception handling
