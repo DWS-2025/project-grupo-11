@@ -59,19 +59,21 @@ La aplicación gestiona las siguientes entidades:
 
 #### 🧑‍💻 **Mario Serrano García**  
 - **Tareas realizadas:**  
-  - Implementación de funcionalidades clave.  
+  - Implementación de la API (RestControllers, Mappers y DTOs).
+  - Implementación de la BBDD utilizando Repositorios.
+  - Arreglos en el funcionamiento de la web, base de datos y API.
 - **Commits más significativos:**  
-  1. [Implementación](https://github.com/)  
-  2. [Implementación](https://github.com/)  
-  3. [Implementación](https://github.com/)  
-  4. [Implementación](https://github.com/)  
-  5. [Implementación](https://github.com/)  
+  1. [RestControllers, DTOs y Mappers terminados](https://github.com/DWS-2025/project-grupo-11/commit/b0722ef9d8c5ea227cbe2784bea0a53a1bc6f6e2)  
+  2. [Cambios para comenzar a usar la BBDD](https://github.com/DWS-2025/project-grupo-11/commit/17547b6ce8c3227683883c94628d75c3c933b94a)  
+  3. [Adición SimpleDTOs para solucionar referencias circulares](https://github.com/DWS-2025/project-grupo-11/commit/ef6b1ffe7bde85881fc6e3dfa918f08f4498e21d)  
+  4. [Cambios en las clases para seguir integrando la base de datos](https://github.com/DWS-2025/project-grupo-11/commit/7e3293e5d3b69ed2d7716a7994e73282b50e7278)  
+  5. [Arreglo Funcionamiento Mappers](https://github.com/DWS-2025/project-grupo-11/commit/56827cdb21d13ea9aef59b9e9203ab57c0ae3dbf)  
 - **Ficheros más editados:**  
-  - `src/main/resources/templates/index.html`  
-  - `src/main/resources/templates/index.html`  
-  - `src/main/resources/templates/index.html`  
-  - `src/main/resources/templates/index.html`  
-  - `src/main/resources/templates/index.html`  
+  - `src/main/java/grupo11/bcf_store/controller/rest/ProductRestController.java`  
+  - `src/main/java/grupo11/bcf_store/service/ProductService.java`  
+  - `src/main/java/grupo11/bcf_store/controller/rest/OrderRestController.java`  
+  - `src/main/java/grupo11/bcf_store/service/CartService.java`  
+  - `src/main/java/grupo11/bcf_store/model/Cart.java`  
 
 #### 🧑‍💻 **Carlos Gutiérrez Carpintero**  
 - **Tareas realizadas:**  
