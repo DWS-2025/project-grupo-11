@@ -1,4 +1,4 @@
-package grupo11.bcf_store.controller.work;
+package grupo11.bcf_store.controller.web;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.OrderService;
 
 @Controller
-public class OrderWorkController {
+public class OrderWebController {
     @Autowired
     private CartService cartService;
 

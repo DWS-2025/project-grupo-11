@@ -1,4 +1,4 @@
-package grupo11.bcf_store.controller.work;
+package grupo11.bcf_store.controller.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +13,7 @@ import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.ProductService;
 
 @Controller
-public class CartWorkController {
+public class CartWebController {
 
     @Autowired
     private ProductService productService;

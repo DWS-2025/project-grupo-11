@@ -1,4 +1,4 @@
-package grupo11.bcf_store.controller.work;
+package grupo11.bcf_store.controller.web;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import grupo11.bcf_store.model.dto.ProductDTO;
 import grupo11.bcf_store.service.ProductService;
 
 @Controller
-public class ProductWorkController {
+public class ProductWebController {
 
     @Autowired
     private ProductService productService;
