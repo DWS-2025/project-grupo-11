@@ -113,11 +113,22 @@ public class ProductService {
             throws Exception {
         Product product = new Product();
 
-        if (!name.isEmpty() && !description.isEmpty() && price > 0 && !imageFile.isEmpty()) {
+        if (!name.isEmpty() && !description.isEmpty() && price > 0) {
             product.setName(name);
             product.setDescription(description);
             product.setPrice(price);
-            this.save(productMapper.toDTO(product), imageFile);
+
+            // Save the product to generate an ID
+            product = productRepository.save(product);
+
+            // Process the image file if it is not empty
+            if (!imageFile.isEmpty()) {
+                product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+                product.setImage("http://localhost:8080/product-image/" + product.getId() + "/");
+            }
+
+            // Save the product again to update the image
+            product = productRepository.save(product);
         }
         return productMapper.toDTO(product);
     }
