@@ -73,7 +73,7 @@ La aplicación gestiona las siguientes entidades:
   - `src/main/java/grupo11/bcf_store/service/ProductService.java`  
   - `src/main/java/grupo11/bcf_store/controller/rest/OrderRestController.java`  
   - `src/main/java/grupo11/bcf_store/service/CartService.java`  
-  - `src/main/java/grupo11/bcf_store/model/Cart.java`  
+  - `src/main/java/grupo11/bcf_store/model/Cart.java`
 
 #### 🧑‍💻 **Carlos Gutiérrez Carpintero**  
 - **Tareas realizadas:**  
