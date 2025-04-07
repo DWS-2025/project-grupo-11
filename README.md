@@ -81,13 +81,13 @@ La aplicación gestiona las siguientes entidades:
   - Migración a MySQL.  
   - Corrección de errores en la web, base de datos y API.  
 - **Commits más significativos:**  
-  1. [Edición de productos](https://github.com/DWS-2025/project-grupo-11/commit/cb86b52a7a04707dd7b36c337b425c20ac9c3883)  
-  2. [Imágenes en base de datos](https://github.com/DWS-2025/project-grupo-11/commit/9a14714f369487d03d81569e7129a712b32ff7c0)  
-  3. [Consultas de productos](https://github.com/DWS-2025/project-grupo-11/commit/584385d4179b5cf45435c781f220f0f5fae31223)  
-  4. [Paginación con JavaScript](https://github.com/DWS-2025/project-grupo-11/commit/618a357db346d1af5bf31bce511dbba1a502ef44)  
-  5. [Corrección de errores en carrito y pedidos](https://github.com/DWS-2025/project-grupo-11/commit/195a26f25db4845e52c19701d47cbda8e941dca3)  
+  1. [Solucionada la edición de productos](https://github.com/DWS-2025/project-grupo-11/commit/f54ab48a91bf0fe8cb5737a86a00d57c0f10656a)  
+  2. [Implementación de las imágenes de los productos almacenadas en la base de datos](https://github.com/DWS-2025/project-grupo-11/commit/9a14714f369487d03d81569e7129a712b32ff7c0)  
+  3. [Añadida funcionalidad de consultas de productos](https://github.com/DWS-2025/project-grupo-11/commit/584385d4179b5cf45435c781f220f0f5fae31223)  
+  4. [Mejora de paginación mediante JavaScript](https://github.com/DWS-2025/project-grupo-11/commit/618a357db346d1af5bf31bce511dbba1a502ef44)  
+  5. [Arreglo de acceso al carrito, borrado de productos y borrado de pedidos](https://github.com/DWS-2025/project-grupo-11/commit/195a26f25db4845e52c19701d47cbda8e941dca3)  
 - **Ficheros más editados:**  
-  - `src/main/java/grupo11/bcf_store/controller/work/ProductWorkController.java`  
+  - `src/main/java/grupo11/bcf_store/controller/web/ProductWebController.java`  
   - `src/main/java/grupo11/bcf_store/service/ProductService.java`  
   - `src/main/java/grupo11/bcf_store/repository/ProductRepository.java`  
   - `src/main/resources/static/js/clothes.js`  
