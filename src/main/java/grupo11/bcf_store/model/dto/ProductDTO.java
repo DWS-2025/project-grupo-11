@@ -3,7 +3,7 @@ package grupo11.bcf_store.model.dto;
 import java.util.List;
 
 public record ProductDTO(
-        long id,
+        Long id,
         String name,
         double price,
         String description,
