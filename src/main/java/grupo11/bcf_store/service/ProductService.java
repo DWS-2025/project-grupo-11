@@ -141,11 +141,15 @@ public class ProductService {
             product.setName(name);
             product.setDescription(description);
             product.setPrice(price);
+
+            // Process the image file if it is not empty
             if (!imageFile.isEmpty()) {
-                this.save(productMapper.toDTO(product), imageFile);
-            } else if (product.getImageFile() != null) {
-                this.save(productMapper.toDTO(product));
+                product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+                product.setImage("http://localhost:8080/product-image/" + product.getId() + "/");
             }
+
+            // Save the product
+            product = productRepository.save(product);
         }
         return productMapper.toDTO(product);
     }

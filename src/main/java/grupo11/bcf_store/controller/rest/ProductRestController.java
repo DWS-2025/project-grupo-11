@@ -93,11 +93,13 @@ public class ProductRestController {
     @DeleteMapping("/{id}/")
 	public ProductDTO deleteProduct(@PathVariable long id) {
 
-		Product product = productRepository.findById(id).orElseThrow();
-
-		productRepository.deleteById(id);
-
-		return toDTO(product);
+		ProductDTO product = productService.getProduct(id);
+		if (product != null) {
+			productService.removeProduct(product);
+			return product;
+		} else {
+			throw new NoSuchElementException();
+		}
 	}
 
     @GetMapping("/search/")
