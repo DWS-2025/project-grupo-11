@@ -16,4 +16,19 @@ public class StaticWebController {
     public String contact() {
         return "contact";
     }
+
+    @GetMapping("/login")
+	public String login() {
+		return "login";
+	}
+
+	@GetMapping("/loginerror")
+	public String loginerror() {
+		return "loginerror";
+	}
+
+	@GetMapping("/private")
+	public String privatePage() {
+		return "private";
+	}
 }
