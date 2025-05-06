@@ -23,13 +23,17 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Order> orders;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+	private List<String> roles;
+
     // Constructors
     public User() {
     }
 
-    public User(String username, String password) {
+    public User(String username, String password, String... roles) {
         this.username = username;
         this.password = password;
+        this.roles = List.of(roles);
         this.orders = new ArrayList<>();
         this.cart = new Cart();
     }

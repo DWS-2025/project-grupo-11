@@ -16,6 +16,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
+	@Autowired
+    public RepositoryUserDetailsService userDetailService;
+
     @Value("${security.user}")
 	private String username;
 
@@ -31,7 +34,7 @@ public class SecurityConfiguration {
 	public DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
-		authProvider.setUserDetailsService(userDetailsService());
+		authProvider.setUserDetailsService(userDetailService);
 		authProvider.setPasswordEncoder(passwordEncoder());
 
 		return authProvider;
@@ -44,7 +47,12 @@ public class SecurityConfiguration {
 				.password(passwordEncoder().encode("pass"))
 				.roles("USER")
 				.build();
-		return new InMemoryUserDetailsManager(user);
+		UserDetails admin = User.builder()
+				.username("admin")
+				.password(passwordEncoder().encode("adminpass"))
+				.roles("USER","ADMIN")
+				.build();
+		return new InMemoryUserDetailsManager(user, admin);
 	}
 
 	@Bean
@@ -56,10 +64,10 @@ public class SecurityConfiguration {
 			.authorizeHttpRequests(authorize -> authorize
 					// PUBLIC PAGES
 					.requestMatchers("/").permitAll()
-					.requestMatchers("/css/**").permitAll()
-					.requestMatchers("/images/public/**").permitAll()
 					// PRIVATE PAGES
-					.anyRequest().authenticated())
+					.requestMatchers("/private").hasAnyRole("USER")
+					.requestMatchers("/admin").hasAnyRole("ADMIN")
+			)
 			.formLogin(formLogin -> formLogin
 					.loginPage("/login")
 					.failureUrl("/loginerror")
