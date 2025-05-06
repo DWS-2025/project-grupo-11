@@ -1,6 +1,8 @@
 package grupo11.bcf_store;
 
-/*import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,17 +14,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import grupo11.bcf_store.service.UserService;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
 
 	@Autowired
-    public RepositoryUserDetailsService userDetailService;
+    public UserService userService;
 
-    @Value("${security.user}")
+    //@Value("${security.user}")
 	private String username;
 
-	@Value("${security.encodedPassword}")
+	//@Value("${security.encodedPassword}")
 	private String encodedPassword;
 
 	@Bean
@@ -34,7 +38,7 @@ public class SecurityConfiguration {
 	public DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
-		authProvider.setUserDetailsService(userDetailService);
+		authProvider.setUserDetailsService(userService);
 		authProvider.setPasswordEncoder(passwordEncoder());
 
 		return authProvider;
@@ -64,6 +68,14 @@ public class SecurityConfiguration {
 			.authorizeHttpRequests(authorize -> authorize
 					// PUBLIC PAGES
 					.requestMatchers("/").permitAll()
+					.requestMatchers("/clothes/**").permitAll()
+					.requestMatchers("/view/**").permitAll()
+					.requestMatchers("/cart/**").permitAll()
+					.requestMatchers("/myaccount/**").permitAll()
+					.requestMatchers("/contact/**").permitAll()
+					.requestMatchers("/images/**").permitAll()
+					.requestMatchers("/css/**").permitAll()
+					.requestMatchers("/js/**").permitAll()
 					// PRIVATE PAGES
 					.requestMatchers("/private").hasAnyRole("USER")
 					.requestMatchers("/admin").hasAnyRole("ADMIN")
@@ -87,4 +99,3 @@ public class SecurityConfiguration {
 	}
     
 }
-*/

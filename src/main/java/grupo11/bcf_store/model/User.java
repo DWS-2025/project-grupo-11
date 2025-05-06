@@ -47,6 +47,14 @@ public class User {
         this.id = id;
     }
 
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
     public String getUsername() {
         return username;
     }
