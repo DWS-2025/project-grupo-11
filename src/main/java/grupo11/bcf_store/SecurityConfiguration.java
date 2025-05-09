@@ -1,7 +1,6 @@
 package grupo11.bcf_store;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -70,29 +69,42 @@ public class SecurityConfiguration {
 					.requestMatchers("/").permitAll()
 					.requestMatchers("/clothes/**").permitAll()
 					.requestMatchers("/view/**").permitAll()
-					.requestMatchers("/cart/**").permitAll()
+					.requestMatchers("/product-image/**").permitAll()
+					.requestMatchers("/search-products/**").permitAll()
 					.requestMatchers("/myaccount/**").permitAll()
 					.requestMatchers("/contact/**").permitAll()
 					.requestMatchers("/images/**").permitAll()
 					.requestMatchers("/css/**").permitAll()
 					.requestMatchers("/js/**").permitAll()
-					// PRIVATE PAGES
-					.requestMatchers("/private").hasAnyRole("USER")
-					.requestMatchers("/admin").hasAnyRole("ADMIN")
+					// USER PAGES
+					.requestMatchers("/cart/**").hasRole("USER")
+					.requestMatchers("/add-to-cart/**").hasRole("USER")
+					.requestMatchers("/remove-from-cart/**").hasRole("USER")
+					.requestMatchers("/create-order/**").hasRole("USER")
+					.requestMatchers("/delete-order/**").hasRole("USER")
+					.requestMatchers("/view-order/**").hasRole("USER")
+					.requestMatchers("/private/**").hasRole("USER")
+
+					// ADMIN PAGES
+					.requestMatchers("/admin/**").hasRole("ADMIN")
+					.requestMatchers("/add-product/**").hasRole("ADMIN")
+					.requestMatchers("/edit-product/**").hasRole("ADMIN")
+					.requestMatchers("/delete-product/**").hasRole("ADMIN")
 			)
 			.formLogin(formLogin -> formLogin
-					.loginPage("/login")
-					.failureUrl("/loginerror")
-					.defaultSuccessUrl("/private")
+					.loginPage("/login/")
+					.failureUrl("/loginerror/")
+					.defaultSuccessUrl("/private/")
 					.permitAll()
 			)
+			
 			.logout(logout -> logout
-					.logoutUrl("/logout")
+					.logoutUrl("/logout/")
 					.logoutSuccessUrl("/")
 					.permitAll()
 			);
 		
-		// Disable CSRF at the moment
+		// Disable CSRF protection
 		http.csrf(csrf -> csrf.disable());
 
 		return http.build();
