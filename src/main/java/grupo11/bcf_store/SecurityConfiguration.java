@@ -76,10 +76,12 @@ public class SecurityConfiguration {
 					.requestMatchers("/images/**").permitAll()
 					.requestMatchers("/css/**").permitAll()
 					.requestMatchers("/js/**").permitAll()
+					.requestMatchers("/register/**").permitAll()
 					// USER PAGES
 					.requestMatchers("/cart/**").hasRole("USER")
 					.requestMatchers("/add-to-cart/**").hasRole("USER")
 					.requestMatchers("/remove-from-cart/**").hasRole("USER")
+					.requestMatchers("/orders/**").hasRole("USER")
 					.requestMatchers("/create-order/**").hasRole("USER")
 					.requestMatchers("/delete-order/**").hasRole("USER")
 					.requestMatchers("/view-order/**").hasRole("USER")
@@ -100,7 +102,7 @@ public class SecurityConfiguration {
 			
 			.logout(logout -> logout
 					.logoutUrl("/logout/")
-					.logoutSuccessUrl("/")
+					.logoutSuccessUrl("/myaccount/")
 					.permitAll()
 			);
 		

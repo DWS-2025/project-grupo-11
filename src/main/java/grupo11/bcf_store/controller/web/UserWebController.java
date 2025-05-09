@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import grupo11.bcf_store.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import grupo11.bcf_store.model.User;
+import grupo11.bcf_store.model.Cart;
+import grupo11.bcf_store.service.UserService;
 
 import java.util.List;
 
@@ -21,10 +23,20 @@ public class UserWebController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/users/")
     public String getUsers(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "users";
+    }
+
+    @GetMapping("/myaccount/")
+    public String myAccount(Model model, HttpServletRequest request) {
+        model.addAttribute("username", userService.getLoggedInUsername(request));
+        model.addAttribute("admin", userService.isAdmin(request));
+        return "myaccount";
     }
 
     @GetMapping("/login/")
@@ -63,6 +75,7 @@ public class UserWebController {
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRoles(List.of("USER"));
+        newUser.setCart(new Cart()); 
         userRepository.save(newUser);
         return "redirect:/myaccount/";
     }

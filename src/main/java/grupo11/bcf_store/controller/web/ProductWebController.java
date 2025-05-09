@@ -21,6 +21,8 @@ import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.model.dto.OrderDTO;
 import grupo11.bcf_store.model.dto.ProductDTO;
 import grupo11.bcf_store.service.ProductService;
+import grupo11.bcf_store.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class ProductWebController {
@@ -28,14 +30,20 @@ public class ProductWebController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/clothes/")
-    public String getProducts(Model model, @RequestParam(defaultValue = "0") int page) {
+    public String getProducts(Model model, HttpServletRequest request, @RequestParam(defaultValue = "0") int page) {
         int pageSize = 10;
 
         Page<ProductDTO> productPage = productService.getProducts(PageRequest.of(page, pageSize));
 
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("currentPage", page);
+        
+        model.addAttribute("username", userService.getLoggedInUsername(request));
+        model.addAttribute("admin", userService.isAdmin(request));
 
         return "clothes";
     }
@@ -107,10 +115,13 @@ public class ProductWebController {
     }
 
     @GetMapping("/view/{id}/")
-    public String viewProduct(@PathVariable long id, Model model) {
+    public String viewProduct(@PathVariable long id, Model model, HttpServletRequest request) {
         ProductDTO product_to_view = productService.getProduct(id);
         List<OrderDTO> productOrders = productService.getProductOrders(id);
         List<OrderDTO> uniqueProductOrders = productService.getUniqueProductOrders(id);
+
+        model.addAttribute("username", userService.getLoggedInUsername(request));
+        model.addAttribute("admin", userService.isAdmin(request));
 
         if (product_to_view != null) {
             model.addAttribute("product", product_to_view);

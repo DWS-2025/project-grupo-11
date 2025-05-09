@@ -22,25 +22,24 @@
       </div>
     </div>
     <div class="center_content">
-      <div class="left_content">
-        <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>MI CUENTA</div>
-        <div class="clear"></div>
-        <div class="login_register_buttons">
-          {{^username}}
-          <button onclick="window.location.href='/login/'">Iniciar sesión</button>
-          <button onclick="window.location.href='/register/'">Registrarse</button>
-          {{/username}}
-          {{#username}}
-          <button onclick="window.location.href='/private/'">Información personal</button>
-          <button onclick="window.location.href='/logout/'">Cerrar sesión</button>
-          {{/username}}
-        </div>
-      </div>
       <div class="right_content">
         <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>PEDIDOS ANTERIORES
         </div>
         <div class="clear"></div>
-        <button onclick="window.location.href='/orders/'">Pedidos</button>
+        {{#orders}}
+        <div class="feat_prod_box">
+          <div class="prod_det_box">
+            <div class="box_top"></div>
+            <div class="box_center">
+              <div class="prod_title">Pedido Nº{{id}}</div>
+              <button onclick="window.location.href='/view-order/{{id}}/'">Más información</button>
+              <div class="clear"></div>
+            </div>
+            <div class="box_bottom"></div>
+          </div>
+        </div>
+        <div class="clear"></div>
+        {{/orders}}
         <div class="clear"></div>
       </div>
     </div>

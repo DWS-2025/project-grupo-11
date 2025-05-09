@@ -33,13 +33,17 @@
               <div class="prod_title">{{product.name}}</div>
               <p class="details">{{product.description}}</p>
               <div class="price">Precio: {{product.price}}€</div>
+              {{#username}}
               <form action="/add-to-cart/{{product.id}}/" method="post"><button type="submit"
                   class="button-spacing">Añadir al carrito</button></form>
+              {{#admin}}
               <form action="/edit-product/{{product.id}}/" method="get"><button type="submit"
                   class="button-spacing">Editar producto</button></form>
               <form action="/delete-product/{{product.id}}/" method="post"><button type="submit"
                   class="button-spacing">Eliminar producto</button></form>
+              {{/admin}}
               <div class="clear"></div>
+              {{/username}}
               <div class="price">Pedidos a los que pertenece:</div>
               {{#uniqueProductOrders}}
               <div class="price"><a href="/view-order/{{id}}/">Pedido {{id}}</a></div>

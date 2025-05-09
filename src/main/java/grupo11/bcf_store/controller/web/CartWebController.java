@@ -11,6 +11,8 @@ import grupo11.bcf_store.model.dto.CartDTO;
 import grupo11.bcf_store.model.dto.ProductDTO;
 import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
+import grupo11.bcf_store.service.UserService;
 
 @Controller
 public class CartWebController {
@@ -21,9 +23,18 @@ public class CartWebController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/cart/")
-    public String cart(Model model) {
-        long cartId = 1L; // Default cart ID
+    public String cart(Model model, HttpServletRequest request) {
+        String username = userService.getLoggedInUsername(request);
+        if (username == null) {
+            model.addAttribute("errorMessage", "Usuario no autenticado.");
+            return "error";
+        }
+
+        long cartId = userService.getCartIdByUsername(username); // Get cart ID for the user
         CartDTO cart = cartService.getCart(cartId);
 
         if (cart != null) {
@@ -38,8 +49,14 @@ public class CartWebController {
     }
 
     @PostMapping("/add-to-cart/{productId}/")
-    public String addToCart(@PathVariable long productId, Model model) {
-        long cartId = 1L; // Default cart ID
+    public String addToCart(@PathVariable long productId, Model model, HttpServletRequest request) {
+        String username = userService.getLoggedInUsername(request);
+        if (username == null) {
+            model.addAttribute("errorMessage", "Usuario no autenticado.");
+            return "error";
+        }
+
+        long cartId = userService.getCartIdByUsername(username); // Get cart ID for the user
         ProductDTO product = productService.getProduct(productId);
 
         if (product != null) {
@@ -58,8 +75,14 @@ public class CartWebController {
     }
 
     @PostMapping("/remove-from-cart/{productId}/")
-    public String removeFromCart(@PathVariable long productId, Model model) {
-        long cartId = 1L; // Default cart ID
+    public String removeFromCart(@PathVariable long productId, Model model, HttpServletRequest request) {
+        String username = userService.getLoggedInUsername(request);
+        if (username == null) {
+            model.addAttribute("errorMessage", "Usuario no autenticado.");
+            return "error";
+        }
+
+        long cartId = userService.getCartIdByUsername(username); // Get cart ID for the user
         ProductDTO product = productService.getProduct(productId);
 
         if (product != null) {

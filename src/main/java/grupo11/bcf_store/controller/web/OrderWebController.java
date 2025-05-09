@@ -14,6 +14,8 @@ import grupo11.bcf_store.model.dto.OrderDTO;
 import grupo11.bcf_store.model.dto.ProductDTO;
 import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.OrderService;
+import jakarta.servlet.http.HttpServletRequest;
+import grupo11.bcf_store.service.UserService;
 
 @Controller
 public class OrderWebController {
@@ -23,14 +25,36 @@ public class OrderWebController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/orders/")
+    public String order(Model model, HttpServletRequest request) {
+        String username = userService.getLoggedInUsername(request);
+        if (username == null) {
+            model.addAttribute("errorMessage", "Usuario no autenticado.");
+            return "error";
+        }
+
+        model.addAttribute("orders", orderService.getOrdersByUsername(username)); // Filter orders by user
+        return "orders";
+    }
+
     @PostMapping("/create-order/")
-    public String createOrder(Model model) {
-        CartDTO cart = cartService.getCart(1L);
+    public String createOrder(Model model, HttpServletRequest request) {
+        String username = userService.getLoggedInUsername(request);
+        if (username == null) {
+            model.addAttribute("errorMessage", "Usuario no autenticado.");
+            return "error";
+        }
+
+        long cartId = userService.getCartIdByUsername(username); // Get cart ID for the user
+        CartDTO cart = cartService.getCart(cartId);
 
         if (cart != null) {
             List<ProductDTO> productsInCart = cartService.getProductsInCart(cart);
             if (productsInCart != null && !productsInCart.isEmpty()) {
-                OrderDTO newOrder = orderService.createOrder(productsInCart);
+                OrderDTO newOrder = orderService.createOrderForUser(productsInCart, username); // Associate order with user
                 cartService.clearCart(cart);
                 return "redirect:/view-order/" + newOrder.id() + "/";
             } else {
@@ -68,11 +92,5 @@ public class OrderWebController {
             model.addAttribute("errorMessage", "Pedido no encontrado.");
             return "error";
         }
-    }
-
-    @GetMapping("/myaccount/")
-    public String myAccount(Model model) {
-        model.addAttribute("orders", orderService.getOrders());
-        return "myaccount";
     }
 }

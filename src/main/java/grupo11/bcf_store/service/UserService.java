@@ -3,6 +3,8 @@ package grupo11.bcf_store.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,5 +36,28 @@ public class UserService implements UserDetailsService {
 		return new org.springframework.security.core.userdetails.User(user.getUsername(), 
 				user.getPassword(), roles);
 
+	}
+
+	public String getLoggedInUsername(HttpServletRequest request) {
+		if (request.getUserPrincipal() != null) {
+			String name = request.getUserPrincipal().getName();
+			User user = userRepository.findByUsername(name).orElseThrow();
+			return user.getUsername();
+		}
+		return null;
+	}
+
+	public boolean isAdmin(HttpServletRequest request) {
+		if (request.getUserPrincipal() != null) {
+			String name = request.getUserPrincipal().getName();
+			User user = userRepository.findByUsername(name).orElseThrow();
+			return user.getRoles().contains("ADMIN");
+		}
+		return false;
+	}
+
+	public long getCartIdByUsername(String username) {
+		User user = userRepository.findByUsername(username).orElseThrow();
+		return user.getCart().getId();
 	}
 }

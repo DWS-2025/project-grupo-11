@@ -35,7 +35,7 @@ public class User {
         this.password = password;
         this.roles = List.of(roles);
         this.orders = new ArrayList<>();
-        this.cart = new Cart();
+        this.cart = new Cart(); // Ensure a new Cart is created for the user
     }
 
     // Getter and setter methods
