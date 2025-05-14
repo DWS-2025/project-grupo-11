@@ -11,6 +11,7 @@ import grupo11.bcf_store.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import grupo11.bcf_store.model.User;
 import grupo11.bcf_store.model.Cart;
+import grupo11.bcf_store.service.OrderService;
 import grupo11.bcf_store.service.UserService;
 
 import java.util.List;
@@ -22,6 +23,9 @@ public class UserWebController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private OrderService orderService;
 
     @Autowired
     private UserService userService;
@@ -106,7 +110,11 @@ public class UserWebController {
     public String deleteUser(HttpServletRequest request) {
         String currentUsername = userService.getLoggedInUsername(request);
         User user = userRepository.findByUsername(currentUsername).orElseThrow();
-        userRepository.delete(user);
+
+        // Delete all orders of the user
+        user.getOrders().forEach(order -> orderService.remove(order.getId()));
+
+        userService.deleteUserById(user.getId());
         request.getSession().invalidate(); // Close the session
         return "redirect:/";
     }

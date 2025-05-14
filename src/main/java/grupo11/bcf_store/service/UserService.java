@@ -80,4 +80,8 @@ public class UserService implements UserDetailsService {
 		User user = userRepository.findByUsername(username).orElseThrow();
 		return user.getCart().getId();
 	}
+
+	public void deleteUserById(long id) {
+		userRepository.deleteById(id);
+	}
 }

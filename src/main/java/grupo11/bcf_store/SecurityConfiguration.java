@@ -90,7 +90,6 @@ public class SecurityConfiguration {
 					.requestMatchers("/remove-from-cart/**").hasRole("USER")
 					.requestMatchers("/orders/**").hasRole("USER")
 					.requestMatchers("/create-order/**").hasRole("USER")
-					.requestMatchers("/delete-order/**").hasRole("USER")
 					.requestMatchers("/view-order/**").hasRole("USER")
 					.requestMatchers("/private/**").hasRole("USER")
 					.requestMatchers("/update-user/**").hasRole("USER")
@@ -101,6 +100,7 @@ public class SecurityConfiguration {
 					.requestMatchers("/add-product/**").hasRole("ADMIN")
 					.requestMatchers("/edit-product/**").hasRole("ADMIN")
 					.requestMatchers("/delete-product/**").hasRole("ADMIN")
+					.requestMatchers("/delete-order/**").hasRole("ADMIN")
 			)
 			.formLogin(formLogin -> formLogin
 					.loginPage("/login/")

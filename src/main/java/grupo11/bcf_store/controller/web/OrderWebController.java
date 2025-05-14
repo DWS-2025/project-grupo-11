@@ -94,7 +94,10 @@ public class OrderWebController {
             return "error";
         }
 
-        if (orderService.isOrderOwnedByUser(id, username) || userService.isAdmin(request)) {
+        boolean isAdmin = userService.isAdmin(request);
+        model.addAttribute("admin", isAdmin);
+
+        if (orderService.isOrderOwnedByUser(id, username) || isAdmin) {
             OrderDTO order = orderService.getOrder(id);
             if(order != null) {
                 model.addAttribute("order", order);
