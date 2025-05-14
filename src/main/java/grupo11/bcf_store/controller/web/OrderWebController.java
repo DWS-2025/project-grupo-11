@@ -36,8 +36,13 @@ public class OrderWebController {
             return "error";
         }
 
-        model.addAttribute("orders", orderService.getOrdersByUsername(username)); // Filter orders by user
-        return "orders";
+        if(userService.isAdmin(request)) {
+            model.addAttribute("orders", orderService.getOrders());
+            return "orders";
+        } else {
+            model.addAttribute("orders", orderService.getOrdersByUsername(username)); // Filter orders by user
+            return "orders";
+        }
     }
 
     @PostMapping("/create-order/")
@@ -82,14 +87,25 @@ public class OrderWebController {
     }
 
     @GetMapping("/view-order/{id}/")
-    public String viewOrder(@PathVariable long id, Model model) {
-        OrderDTO order = orderService.getOrder(id);
-        if (order != null) {
-            model.addAttribute("order", order);
-            model.addAttribute("products", orderService.getProductsInOrder(order));
-            return "viewOrder";
+    public String viewOrder(@PathVariable long id, Model model, HttpServletRequest request) {
+        String username = userService.getLoggedInUsername(request);
+        if (username == null) {
+            model.addAttribute("errorMessage", "Usuario no autenticado.");
+            return "error";
+        }
+
+        if (orderService.isOrderOwnedByUser(id, username) || userService.isAdmin(request)) {
+            OrderDTO order = orderService.getOrder(id);
+            if(order != null) {
+                model.addAttribute("order", order);
+                model.addAttribute("products", orderService.getProductsInOrder(order));
+                return "viewOrder";            
+            } else {
+                model.addAttribute("errorMessage", "Pedido no encontrado.");
+                return "error";
+            }
         } else {
-            model.addAttribute("errorMessage", "Pedido no encontrado.");
+            model.addAttribute("errorMessage", "No tienes permiso para acceder a este pedido.");
             return "error";
         }
     }

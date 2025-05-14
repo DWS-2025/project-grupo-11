@@ -27,6 +27,7 @@ public class SampleDataService {
         // Default users
         userRepository.save(new User("user", passwordEncoder.encode("pass"), "USER"));
 		userRepository.save(new User("admin", passwordEncoder.encode("adminpass"), "USER", "ADMIN"));
+        userRepository.save(new User("prueba", passwordEncoder.encode("prueba"), "USER"));
         // Default products
         productService.save(new Product("1ª EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido", productService.getImageBlob("/static/images/shirt0.jpg")));
         productService.save(new Product("2ª EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido", productService.getImageBlob("/static/images/shirt1.jpg")));

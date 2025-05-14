@@ -50,12 +50,17 @@ public class SecurityConfiguration {
 				.password(passwordEncoder().encode("pass"))
 				.roles("USER")
 				.build();
+		UserDetails prueba = User.builder()
+				.username("prueba")
+				.password(passwordEncoder().encode("prueba"))
+				.roles("USER")
+				.build();
 		UserDetails admin = User.builder()
 				.username("admin")
 				.password(passwordEncoder().encode("adminpass"))
 				.roles("USER","ADMIN")
 				.build();
-		return new InMemoryUserDetailsManager(user, admin);
+		return new InMemoryUserDetailsManager(user, prueba, admin);
 	}
 
 	@Bean
@@ -88,8 +93,6 @@ public class SecurityConfiguration {
 					.requestMatchers("/delete-order/**").hasRole("USER")
 					.requestMatchers("/view-order/**").hasRole("USER")
 					.requestMatchers("/private/**").hasRole("USER")
-					.requestMatchers("/update-user/**").hasRole("USER")
-					.requestMatchers("/delete-user/**").hasRole("USER")
 
 					// ADMIN PAGES
 					.requestMatchers("/admin/**").hasRole("ADMIN")
