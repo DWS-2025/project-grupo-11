@@ -93,6 +93,8 @@ public class SecurityConfiguration {
 					.requestMatchers("/delete-order/**").hasRole("USER")
 					.requestMatchers("/view-order/**").hasRole("USER")
 					.requestMatchers("/private/**").hasRole("USER")
+					.requestMatchers("/update-user/**").hasRole("USER")
+					.requestMatchers("/delete-user/**").hasRole("USER")
 
 					// ADMIN PAGES
 					.requestMatchers("/admin/**").hasRole("ADMIN")
