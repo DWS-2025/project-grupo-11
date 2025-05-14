@@ -125,4 +125,10 @@ public class OrderService {
         order.getProducts().forEach(product -> product.getOrders().remove(order));
         orderRepository.delete(order);
     }
+
+    public boolean isOrderOwnedByUser(long orderId, String username) {
+        return orderRepository.findById(orderId)
+                .map(order -> order.getUser().getUsername().equals(username))
+                .orElse(false);
+    }
 }

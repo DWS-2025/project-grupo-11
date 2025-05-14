@@ -24,9 +24,11 @@ import grupo11.bcf_store.model.dto.OrderDTO;
 import grupo11.bcf_store.model.dto.ProductDTO;
 import grupo11.bcf_store.model.mapper.OrderMapper;
 import grupo11.bcf_store.model.mapper.ProductMapper;
+import grupo11.bcf_store.model.mapper.UserMapper;
 import grupo11.bcf_store.repository.CartRepository;
 import grupo11.bcf_store.repository.OrderRepository;
 import grupo11.bcf_store.repository.ProductRepository;
+import grupo11.bcf_store.repository.UserRepository;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 
@@ -41,6 +43,12 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private OrderMapper orderMapper;
@@ -166,6 +174,17 @@ public class ProductService {
                 .map(product -> product.getOrders().stream().distinct().collect(Collectors.toList()))
                 .map(orderMapper::toDTOs)
                 .orElse(null);
+    }
+
+    // Check if the product belongs to the user logged in
+    public List<OrderDTO> getUserUniqueProductOrders(long productId, long userId) {
+        return productRepository.findById(productId)
+                .map(product -> product.getOrders().stream()
+                        .distinct()
+                        .filter(order -> order.getUser().getId() == userId)
+                        .map(orderMapper::toDTO)
+                        .collect(Collectors.toList()))
+                .orElse(List.of());
     }
 
     public void updateCartProduct(ProductDTO updatedProductDTO) {

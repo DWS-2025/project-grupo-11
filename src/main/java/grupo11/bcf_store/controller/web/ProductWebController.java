@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -119,14 +120,30 @@ public class ProductWebController {
         ProductDTO product_to_view = productService.getProduct(id);
         List<OrderDTO> productOrders = productService.getProductOrders(id);
         List<OrderDTO> uniqueProductOrders = productService.getUniqueProductOrders(id);
-
+        List<OrderDTO> userUniqueProductOrders = productService.getUserUniqueProductOrders(id, userService.getLoggedInUserId(request));
+        boolean isAdmin = userService.isAdmin(request);
+        
         model.addAttribute("username", userService.getLoggedInUsername(request));
         model.addAttribute("admin", userService.isAdmin(request));
 
         if (product_to_view != null) {
             model.addAttribute("product", product_to_view);
+
             if (productOrders != null && !productOrders.isEmpty()) {
-                model.addAttribute("uniqueProductOrders", uniqueProductOrders);
+                if(isAdmin) {
+                    if(uniqueProductOrders != null && !uniqueProductOrders.isEmpty()) {
+                        model.addAttribute("uniqueProductOrders", uniqueProductOrders);
+                    } else {
+                        model.addAttribute("uniqueProductOrders", null);
+                    }
+                } else {
+                    if(userUniqueProductOrders != null && !userUniqueProductOrders.isEmpty()) {
+                        model.addAttribute("uniqueProductOrders", userUniqueProductOrders);
+                    } else {
+                        model.addAttribute("uniqueProductOrders", null);
+                    }
+                }
+                
             }
             return "view";
         } else {
