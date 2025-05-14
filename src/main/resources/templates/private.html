@@ -22,11 +22,35 @@
             </div>
         </div>
         <div class="center_content">
-            <p>Hello {{username}}. This is a private page</p>
-            {{#admin}}
-            <a href="/admin/">Página de Administrador</a>
-            {{/admin}}
-        </div>
+            <div class="left_content">
+                <p>Hola {{username}}.</p>
+                {{#admin}}
+                <button onclick="window.location.href='/admin/'">Página de Administrador</button>
+                {{/admin}}
+                <div class="clear"></div>
+                <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>INFORMACIÓN PERSONAL</div>
+                <form action="/update-user/" method="post">
+                    <div class="form_row">
+                        <label><strong>Usuario:</strong></label>
+                        <input type="text" name="username" value="{{username}}" required />
+                    </div>
+                    <div class="form_row">
+                        <label><strong>Contraseña:</strong></label>
+                        <input type="password" name="password" required />
+                    </div>
+                    <div class="form_row">
+                        <button type="submit">Actualizar información</button>
+                    </div>
+                </form>
+            </div>
+            <div class="right_content">
+                <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>BORRAR CUENTA</div>
+                <div class="clear"></div>
+                <form action="/delete-user/" method="post">
+                    <button type="submit" style="color: red;">Eliminar cuenta</button>
+                </form>
+            </div>
+        </div>  
         <div class="clear"></div>
         <div class="footer">
             <div class="left_footer"><img src="/images/footer_logo.jpg" alt="" /><br /></div>

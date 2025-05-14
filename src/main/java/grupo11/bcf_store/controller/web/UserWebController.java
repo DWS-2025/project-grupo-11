@@ -89,6 +89,28 @@ public class UserWebController {
         return "private";
     }
 
+    @PostMapping("/update-user/")
+    public String updateUser(@RequestParam String username, @RequestParam String password, HttpServletRequest request) {
+        String currentUsername = userService.getLoggedInUsername(request);
+        User user = userRepository.findByUsername(currentUsername).orElseThrow();
+
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+
+        request.getSession().invalidate();
+        return "redirect:/login/";
+    }
+
+    @PostMapping("/delete-user/")
+    public String deleteUser(HttpServletRequest request) {
+        String currentUsername = userService.getLoggedInUsername(request);
+        User user = userRepository.findByUsername(currentUsername).orElseThrow();
+        userRepository.delete(user);
+        request.getSession().invalidate(); // Close the session
+        return "redirect:/";
+    }
+
     @GetMapping("/admin/")
     public String adminPage() {
         return "admin";

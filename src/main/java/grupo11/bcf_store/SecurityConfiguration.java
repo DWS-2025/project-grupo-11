@@ -76,7 +76,9 @@ public class SecurityConfiguration {
 					.requestMatchers("/images/**").permitAll()
 					.requestMatchers("/css/**").permitAll()
 					.requestMatchers("/js/**").permitAll()
+					.requestMatchers("/favicon.ico").permitAll()
 					.requestMatchers("/register/**").permitAll()
+
 					// USER PAGES
 					.requestMatchers("/cart/**").hasRole("USER")
 					.requestMatchers("/add-to-cart/**").hasRole("USER")
@@ -86,6 +88,8 @@ public class SecurityConfiguration {
 					.requestMatchers("/delete-order/**").hasRole("USER")
 					.requestMatchers("/view-order/**").hasRole("USER")
 					.requestMatchers("/private/**").hasRole("USER")
+					.requestMatchers("/update-user/**").hasRole("USER")
+					.requestMatchers("/delete-user/**").hasRole("USER")
 
 					// ADMIN PAGES
 					.requestMatchers("/admin/**").hasRole("ADMIN")
