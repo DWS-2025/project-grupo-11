@@ -7,19 +7,30 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import grupo11.bcf_store.security.jwt.UserRegisterService;
+import grupo11.bcf_store.security.jwt.RegisterRequest;
 
 import grupo11.bcf_store.security.jwt.*;
 import grupo11.bcf_store.security.jwt.AuthResponse.Status;
 import jakarta.servlet.http.HttpServletResponse;
+
 
 @RestController
 @RequestMapping("/api/auth/")
 public class LoginRestController {
 	
 	@Autowired
+    private UserRegisterService userRegisterService;
+
+	@Autowired
 	private UserLoginService userLoginService;
 
-	
+    @PostMapping("/register/")
+    public ResponseEntity<AuthResponse> register(
+            @RequestBody RegisterRequest registerRequest,
+            HttpServletResponse response) {
+        return userRegisterService.register(response, registerRequest);
+    }
 
 	@PostMapping("/login/")
 	public ResponseEntity<AuthResponse> login(
