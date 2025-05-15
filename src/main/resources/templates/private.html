@@ -29,9 +29,21 @@
                 {{/admin}}
                 <div class="clear"></div>
                 <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>INFORMACIÓN PERSONAL</div>
-                
-                <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>CREDENCIALES</div>
                 <form action="/update-user/" method="post">
+                    <div class="form_row">
+                        <label><strong>Nombre completo:</strong></label>
+                        <input type="text" name="fullName" value="{{fullName}}" />
+                    </div>
+                    <div class="form_row">
+                        <label><strong>Descripción:</strong></label>
+                        <textarea name="description">{{description}}</textarea>
+                    </div>
+                    <div class="form_row">
+                        <button type="submit">Actualizar información</button>
+                    </div>
+                </form>
+                <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>CREDENCIALES</div>
+                <form action="/update-credentials/" method="post">
                     <div class="form_row">
                         <label><strong>Usuario:</strong></label>
                         <input type="text" name="username" value="{{username}}" required />
@@ -41,7 +53,7 @@
                         <input type="password" name="password" required />
                     </div>
                     <div class="form_row">
-                        <button type="submit">Actualizar información</button>
+                        <button type="submit">Actualizar credenciales</button>
                     </div>
                 </form>
             </div>

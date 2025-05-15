@@ -95,11 +95,33 @@ public class UserWebController {
         User user = userRepository.findByUsername(name).orElseThrow();
         model.addAttribute("username", user.getUsername());
         model.addAttribute("admin", request.isUserInRole("ADMIN"));
+        model.addAttribute("fullName", user.getFullName());
+        model.addAttribute("description", user.getDescription());
         return "private";
     }
 
     @PostMapping("/update-user/")
-    public String updateUser(@RequestParam String username, @RequestParam String password, HttpServletRequest request) {
+    public String updateUser(
+        @RequestParam(required = false) String fullName,
+        @RequestParam(required = false) String description,
+        HttpServletRequest request
+    ) {
+        String currentUsername = userService.getLoggedInUsername(request);
+        User user = userRepository.findByUsername(currentUsername).orElseThrow();
+
+        user.setFullName(fullName);
+        user.setDescription(description);
+        userRepository.save(user);
+
+        return "redirect:/private/";
+    }
+
+    @PostMapping("/update-credentials/")
+    public String updateCredentials(
+        @RequestParam String username,
+        @RequestParam String password,
+        HttpServletRequest request
+    ) {
         String currentUsername = userService.getLoggedInUsername(request);
         User user = userRepository.findByUsername(currentUsername).orElseThrow();
 
@@ -133,6 +155,8 @@ public class UserWebController {
             return new Object() {
                 public final long id = cart.getId();
                 public final String username = user.getUsername();
+                public final String fullName = user.getFullName();
+                public final String description = user.getDescription();
                 public final int totalItems = cartService.getTotalItemsInCart(cart.getId());
                 public final double totalPrice = cartService.getTotalPrice(cart.getId());
             };

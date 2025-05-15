@@ -25,9 +25,21 @@ public class SampleDataService {
     @PostConstruct
     public void init() throws Exception {
         // Default users
-        userRepository.save(new User("user", passwordEncoder.encode("pass"), "USER"));
-		userRepository.save(new User("admin", passwordEncoder.encode("adminpass"), "USER", "ADMIN"));
-        userRepository.save(new User("prueba", passwordEncoder.encode("prueba"), "USER"));
+        User user1 = new User("user", passwordEncoder.encode("pass"), "USER");
+        user1.setFullName("Usuario Normal");
+        user1.setDescription("Usuario de ejemplo para compras normales.");
+        userRepository.save(user1);
+
+        User admin = new User("admin", passwordEncoder.encode("adminpass"), "USER", "ADMIN");
+        admin.setFullName("Administrador");
+        admin.setDescription("Usuario con permisos de administración.");
+        userRepository.save(admin);
+
+        User prueba = new User("prueba", passwordEncoder.encode("prueba"), "USER");
+        prueba.setFullName("Usuario Prueba");
+        prueba.setDescription("Usuario de prueba para testear la aplicación.");
+        userRepository.save(prueba);
+
         // Default products
         productService.save(new Product("1ª EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido", productService.getImageBlob("/static/images/shirt0.jpg")));
         productService.save(new Product("2ª EQUIPACION BURGOS CF 24/25", 60, "Camiseta oficial de partido", productService.getImageBlob("/static/images/shirt1.jpg")));

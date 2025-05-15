@@ -29,6 +29,8 @@
                     <tr>
                         <th>ID</th>
                         <th>Usuario</th>
+                        <th>Nombre completo</th>
+                        <th>Descripción</th>
                         <th>Roles</th>
                         <th>Acciones</th>
                     </tr>
@@ -36,6 +38,8 @@
                     <tr>
                         <td>{{id}}</td>
                         <td>{{username}}</td>
+                        <td>{{fullName}}</td>
+                        <td>{{description}}</td>
                         <td>{{roles}}</td>
                         <td>
                             <form action="/admin/delete-user/{{id}}/" method="post" style="display:inline;">
