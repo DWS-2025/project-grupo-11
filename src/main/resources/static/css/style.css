@@ -602,4 +602,46 @@ div.pagination span.disabled {
   height: 100px;
 }
 
+/* Quill editor compact styles */
+#editor-wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
 
+.ql-toolbar.ql-snow {
+  flex: 0 0 auto;
+  height: auto;
+  max-height: 100px;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #ccc;
+}
+
+.ql-container.ql-snow {
+  flex: 1 1 auto;
+  min-height: 120px;
+  max-height: 400px;
+  max-width: 100%;
+  overflow-y: auto;
+  margin-top: 0;
+  border: 1px solid #ccc;
+  border-top: none;
+  padding: 12px;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+#quill-editor {
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+  line-height: 1.5;
+}

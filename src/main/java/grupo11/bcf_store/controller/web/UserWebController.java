@@ -70,12 +70,19 @@ public class UserWebController {
     }
 
     @GetMapping("/register/")
-    public String registerPage() {
+    public String registerPage(Model model) {
+        model.addAttribute("description", "");
         return "register";
     }
 
     @PostMapping("/register/")
-    public String performRegister(@RequestParam String username, @RequestParam String password, Model model) {
+    public String performRegister(
+        @RequestParam String username,
+        @RequestParam String password,
+        @RequestParam String fullName,
+        @RequestParam String description,
+        Model model
+    ) {
         if (userRepository.findByUsername(username).isPresent()) {
             model.addAttribute("errorMessage", "El usuario ya existe.");
             return "error";
@@ -84,7 +91,9 @@ public class UserWebController {
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRoles(List.of("USER"));
-        newUser.setCart(new Cart()); 
+        newUser.setCart(new Cart());
+        newUser.setFullName(fullName);
+        newUser.setDescription(description);
         userRepository.save(newUser);
         return "redirect:/myaccount/";
     }
@@ -96,7 +105,7 @@ public class UserWebController {
         model.addAttribute("username", user.getUsername());
         model.addAttribute("admin", request.isUserInRole("ADMIN"));
         model.addAttribute("fullName", user.getFullName());
-        model.addAttribute("description", user.getDescription());
+        model.addAttribute("description", user.getDescription() != null ? user.getDescription() : "");
         return "private";
     }
 
@@ -148,7 +157,18 @@ public class UserWebController {
 
     @GetMapping("/admin/")
     public String adminPage(Model model) {
-        model.addAttribute("users", userRepository.findAll());
+        var users = userRepository.findAll().stream().map(user -> {
+            String safeDescription = user.getDescription() != null ? user.getDescription() : "";
+            return new Object() {
+                public final long id = user.getId();
+                public final String username = user.getUsername();
+                public final String fullName = user.getFullName();
+                public final String description = safeDescription;
+                public final String roles = user.getRoles() != null ? user.getRoles().toString() : "";
+            };
+        }).toList();
+        model.addAttribute("users", users);
+
         // Add cart information for each cart
         var carts = userRepository.findAll().stream().map(user -> {
             var cart = user.getCart();
@@ -156,7 +176,7 @@ public class UserWebController {
                 public final long id = cart.getId();
                 public final String username = user.getUsername();
                 public final String fullName = user.getFullName();
-                public final String description = user.getDescription();
+                public final String description = "";
                 public final int totalItems = cartService.getTotalItemsInCart(cart.getId());
                 public final double totalPrice = cartService.getTotalPrice(cart.getId());
             };
