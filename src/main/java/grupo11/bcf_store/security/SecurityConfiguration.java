@@ -97,25 +97,34 @@ public class SecurityConfiguration {
 
 		http
 			.authorizeHttpRequests(authorize -> authorize
-                    // ADMIN ENDPOINTS
-                    .requestMatchers(HttpMethod.POST,"/api/products/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PUT,"/api/products/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE,"/api/products/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.POST,"/api/products/**/image/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PUT,"/api/products/**/image/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE,"/api/products/**/image/**").hasRole("ADMIN")
+					// PUBLIC ENDPOINTS
+					.requestMatchers(HttpMethod.GET, "/api/products/").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/products/{id}/").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/products/{id}/image/").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/products/search/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/orders/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/carts/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
+					.requestMatchers(HttpMethod.POST, "/api/auth/login/").permitAll()
+					.requestMatchers(HttpMethod.POST, "/api/auth/refresh/").permitAll()
+					.requestMatchers(HttpMethod.POST, "/api/auth/logout/").permitAll()
 
-                    .requestMatchers(HttpMethod.POST,"/api/orders/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE,"/api/orders/**").hasRole("ADMIN")
+					// ADMIN ENDPOINTS
+					.requestMatchers(HttpMethod.POST, "/api/products/").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.PUT, "/api/products/{id}/").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.DELETE, "/api/products/{id}/").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.POST, "/api/products/{id}/image/").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.PUT, "/api/products/{id}/image/").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.DELETE, "/api/products/{id}/image/").hasRole("ADMIN")
 
-                    .requestMatchers(HttpMethod.POST,"/api/carts/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE,"/api/carts/**").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.POST, "/api/orders/").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.DELETE, "/api/orders/{id}/").hasRole("ADMIN")
 
-                    .requestMatchers(HttpMethod.POST,"/api/users/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE,"/api/users/**").hasRole("ADMIN")
-                    
-                    // PUBLIC ENDPOINTS
-                    .anyRequest().permitAll() // Mover al final
+					.requestMatchers(HttpMethod.POST, "/api/carts/").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.DELETE, "/api/carts/{id}/").hasRole("ADMIN")
+
+					.requestMatchers(HttpMethod.POST, "/api/users/").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.DELETE, "/api/users/{id}/").hasRole("ADMIN")
 			);
 		
         // Disable Form login Authentication
