@@ -22,14 +22,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import grupo11.bcf_store.security.jwt.JwtRequestFilter;
 import grupo11.bcf_store.security.jwt.UnauthorizedHandlerJwt;
-import grupo11.bcf_store.service.UserService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
 
 	@Autowired
-    public UserService userService;
+    public RepositoryUserDetailsService userDetailService;
 
     @Autowired
     private UnauthorizedHandlerJwt unauthorizedHandlerJwt;
@@ -60,7 +59,7 @@ public class SecurityConfiguration {
 	public DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
-		authProvider.setUserDetailsService(userService);
+		authProvider.setUserDetailsService(userDetailService);
 		authProvider.setPasswordEncoder(passwordEncoder());
 
 		return authProvider;
