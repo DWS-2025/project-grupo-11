@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import grupo11.bcf_store.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import grupo11.bcf_store.model.User;
 import grupo11.bcf_store.model.Cart;
 import grupo11.bcf_store.service.OrderService;
 import grupo11.bcf_store.service.UserService;
+import grupo11.bcf_store.service.CartService;
 
 import java.util.List;
 
@@ -29,6 +31,9 @@ public class UserWebController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CartService cartService;
 
     @GetMapping("/users/")
     public String getUsers(Model model) {
@@ -120,7 +125,38 @@ public class UserWebController {
     }
 
     @GetMapping("/admin/")
-    public String adminPage() {
+    public String adminPage(Model model) {
+        model.addAttribute("users", userRepository.findAll());
+        // Add cart information for each cart
+        var carts = userRepository.findAll().stream().map(user -> {
+            var cart = user.getCart();
+            return new Object() {
+                public final long id = cart.getId();
+                public final String username = user.getUsername();
+                public final int totalItems = cartService.getTotalItemsInCart(cart.getId());
+                public final double totalPrice = cartService.getTotalPrice(cart.getId());
+            };
+        }).toList();
+        model.addAttribute("carts", carts);
         return "admin";
+    }
+
+    @PostMapping("/admin/delete-user/{id}/")
+    public String adminDeleteUser(@PathVariable long id, HttpServletRequest request, Model model) {
+        // Prevent admin from deleting their own account
+        String currentUsername = userService.getLoggedInUsername(request);
+        User userToDelete = userRepository.findById(id).orElse(null);
+        if (userToDelete == null) {
+            model.addAttribute("errorMessage", "Usuario no encontrado.");
+            return "error";
+        }
+        if (userToDelete.getUsername().equals(currentUsername)) {
+            model.addAttribute("errorMessage", "No puedes eliminar tu propia cuenta desde el panel de administrador.");
+            return "error";
+        }
+        // Delete all orders of the user
+        userToDelete.getOrders().forEach(order -> orderService.remove(order.getId()));
+        userService.deleteUserById(id);
+        return "redirect:/admin/";
     }
 }

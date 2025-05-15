@@ -123,4 +123,13 @@ public class CartService {
         }
     }
 
+    public void deleteCartById(long id) {
+        Cart cart = cartRepository.findById(id).orElse(null);
+        if (cart != null) {
+            cart.getProducts().clear();
+            cartRepository.save(cart);
+            cartRepository.deleteById(id);
+        }
+    }
+
 }

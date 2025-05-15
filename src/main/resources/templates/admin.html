@@ -22,7 +22,52 @@
             </div>
         </div>
         <div class="center_content">
-            <p>This is a admin private page</p>
+            <div class="left_content">
+                   <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>LISTA DE USUARIOS</div>
+                <div class="clear"></div>
+                <table border="1" cellpadding="5" cellspacing="0" style="width:100%;background:#fff;">
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Roles</th>
+                        <th>Acciones</th>
+                    </tr>
+                    {{#users}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td>{{username}}</td>
+                        <td>{{roles}}</td>
+                        <td>
+                            <form action="/admin/delete-user/{{id}}/" method="post" style="display:inline;">
+                                <button type="submit" style="color:red;">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {{/users}}
+                </table>
+                
+            </div>
+            <div class="right_content">
+                <div class="title" style="margin-top:30px;"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>LISTA DE CARRITOS</div>
+                <div class="clear"></div>
+                <table border="1" cellpadding="5" cellspacing="0" style="width:100%;background:#fff;">
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Número de productos</th>
+                        <th>Precio total</th>
+                    </tr>
+                    {{#carts}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td>{{username}}</td>
+                        <td>{{totalItems}}</td>
+                        <td>{{totalPrice}} €</td>
+                    </tr>
+                    {{/carts}}
+                </table>
+                <div class="clear"></div>                
+            </div>
         </div>
         <div class="clear"></div>
         <div class="footer">
