@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const html = quill.root.innerHTML;
         document.getElementById('description-input').value = DOMPurify.sanitize(html, {
             ALLOWED_TAGS: ['b', 'i', 'u', 'a', 'ul', 'ol', 'li', 'strong', 'em', 'br'],
-            ALLOWED_ATTR: ['href', 'target', 'rel']
+            ALLOWED_ATTR: ['target', 'rel']
         });
         return true;
     };

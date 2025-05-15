@@ -49,9 +49,6 @@
                                     <button class="ql-list" value="ordered"></button>
                                     <button class="ql-list" value="bullet"></button>
                                 </span>
-                                <span class="ql-formats">
-                                    <button class="ql-link"></button>
-                                </span>
                             </div>
                             <div id="quill-editor"></div>
                         </div>
@@ -77,6 +74,19 @@
                         <button type="submit">Actualizar credenciales</button>
                     </div>
                 </form>
+                <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>DNI</div>
+                <form action="/upload-dni/" method="post" enctype="multipart/form-data">
+                    <div class="form_row">
+                        <label><strong>Subir DNI:</strong></label>
+                        <input type="file" name="dniFile" accept="application/pdf,image/*" required />
+                        <button type="submit">Subir DNI</button>
+                    </div>
+                </form>
+                {{#dniOriginalFilename}}
+                <div class="form_row">
+                    <a href="/download-dni/">Descargar DNI actual ({{dniOriginalFilename}})</a>
+                </div>
+                {{/dniOriginalFilename}}
             </div>
             <div class="right_content">
                 <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>BORRAR CUENTA
