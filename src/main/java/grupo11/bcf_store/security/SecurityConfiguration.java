@@ -1,18 +1,27 @@
-package grupo11.bcf_store;
+package grupo11.bcf_store.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import grupo11.bcf_store.security.jwt.JwtRequestFilter;
+import grupo11.bcf_store.security.jwt.UnauthorizedHandlerJwt;
 import grupo11.bcf_store.service.UserService;
 
 @Configuration
@@ -21,6 +30,15 @@ public class SecurityConfiguration {
 
 	@Autowired
     public UserService userService;
+
+    @Autowired
+    private UnauthorizedHandlerJwt unauthorizedHandlerJwt;
+
+    private final JwtRequestFilter jwtRequestFilter;
+
+    public SecurityConfiguration(@Lazy JwtRequestFilter jwtRequestFilter) {
+        this.jwtRequestFilter = jwtRequestFilter;
+    }
 
     //@Value("${security.user}")
 	private String username;
@@ -31,6 +49,11 @@ public class SecurityConfiguration {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+		return authConfig.getAuthenticationManager();
 	}
 
 	@Bean
@@ -64,7 +87,59 @@ public class SecurityConfiguration {
 	}
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	@Order(1)
+	public SecurityFilterChain restFilterChain(HttpSecurity http) throws Exception {
+		
+		http.authenticationProvider(authenticationProvider());
+		
+		http
+			.securityMatcher("/api/**")
+			.exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandlerJwt));
+
+		http
+			.authorizeHttpRequests(authorize -> authorize
+                    // ADMIN ENDPOINTS
+                    .requestMatchers(HttpMethod.POST,"/api/products/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT,"/api/products/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE,"/api/products/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.POST,"/api/products/**/image/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT,"/api/products/**/image/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE,"/api/products/**/image/**").hasRole("ADMIN")
+
+                    .requestMatchers(HttpMethod.POST,"/api/orders/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE,"/api/orders/**").hasRole("ADMIN")
+
+                    .requestMatchers(HttpMethod.POST,"/api/carts/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE,"/api/carts/**").hasRole("ADMIN")
+
+                    .requestMatchers(HttpMethod.POST,"/api/users/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE,"/api/users/**").hasRole("ADMIN")
+                    
+                    // PUBLIC ENDPOINTS
+                    .anyRequest().permitAll() // Mover al final
+			);
+		
+        // Disable Form login Authentication
+        http.formLogin(formLogin -> formLogin.disable());
+
+        // Disable CSRF protection (it is difficult to implement in REST APIs)
+        http.csrf(csrf -> csrf.disable());
+
+        // Disable Basic Authentication
+        http.httpBasic(httpBasic -> httpBasic.disable());
+
+        // Stateless session
+        http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        // Add JWT Token filter
+		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+		return http.build();
+	}
+
+	@Bean
+	@Order(2)
+	public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
 		
 		http.authenticationProvider(authenticationProvider());
 		
