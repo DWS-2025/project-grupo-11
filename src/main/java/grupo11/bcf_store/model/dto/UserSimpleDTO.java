@@ -6,6 +6,9 @@ public record UserSimpleDTO(
         long id,
         String username,
         String password,
+        String fullName,
+        String description,
+        String dniFilePath,
         Cart cart) {
 }
 

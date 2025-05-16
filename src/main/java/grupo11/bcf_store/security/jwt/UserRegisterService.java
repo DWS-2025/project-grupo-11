@@ -26,18 +26,28 @@ public class UserRegisterService {
     private JwtTokenProvider jwtTokenProvider;
 
     public ResponseEntity<AuthResponse> register(HttpServletResponse response, RegisterRequest registerRequest) {
+        // Validation of mandatory fields
+        if (registerRequest.getUsername() == null || registerRequest.getUsername().isBlank() ||
+            registerRequest.getPassword() == null || registerRequest.getPassword().isBlank() ||
+            registerRequest.getFullName() == null || registerRequest.getFullName().isBlank() ||
+            registerRequest.getDescription() == null || registerRequest.getDescription().isBlank()) {
+            return ResponseEntity.badRequest().body(new AuthResponse(AuthResponse.Status.FAILURE, "Todos los campos son obligatorios."));
+        }
+
         if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body(new AuthResponse(AuthResponse.Status.FAILURE, "El usuario ya existe."));
         }
 
         User newUser = new User();
         newUser.setUsername(registerRequest.getUsername());
+
+        // Encrypt the password
         newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         newUser.setRoles(List.of("USER"));
         newUser.setFullName(registerRequest.getFullName());
         newUser.setDescription(registerRequest.getDescription());
 
-        // Crear y asociar un carrito al nuevo usuario
+        // Create a new cart for the user
         Cart newCart = new Cart();
         newUser.setCart(newCart);
 

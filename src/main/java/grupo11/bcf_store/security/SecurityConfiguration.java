@@ -81,7 +81,6 @@ public class SecurityConfiguration {
 					.requestMatchers(HttpMethod.GET, "/api/products/search/**").permitAll()
 					.requestMatchers(HttpMethod.GET, "/api/orders/**").permitAll()
 					.requestMatchers(HttpMethod.GET, "/api/carts/**").permitAll()
-					.requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/auth/login/").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/auth/refresh/").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/auth/logout/").permitAll()
@@ -100,8 +99,10 @@ public class SecurityConfiguration {
 
 					.requestMatchers(HttpMethod.POST, "/api/carts/").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.DELETE, "/api/carts/{id}/").hasRole("ADMIN")
-
+					
+					.requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.POST, "/api/users/").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.PUT, "/api/users/{id}/").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.DELETE, "/api/users/{id}/").hasRole("ADMIN")
 			);
 		
