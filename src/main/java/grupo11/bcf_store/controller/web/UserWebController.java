@@ -128,6 +128,9 @@ public class UserWebController {
             return "error";
         }
 
+        String tempFilename = "temp_" + System.currentTimeMillis() + "_" + dniFile.getOriginalFilename();
+        Path tempFilePath = Paths.get("dni").resolve(tempFilename);
+
         try {
             String dniDir = "dni";
             Path dniDirPath = Paths.get(dniDir);
@@ -140,17 +143,30 @@ public class UserWebController {
                 model.addAttribute("errorMessage", "Nombre de archivo no válido.");
                 return "error";
             }
-            // Store the file with a unique name
-            String storedFilename = user.getId() + "_" + originalFilename;
-            Path filePath = dniDirPath.resolve(storedFilename);
-            dniFile.transferTo(filePath);
 
-            user.setDniFilePath(filePath.toString());
+            dniFile.transferTo(tempFilePath);
+
+            String mimeType = Files.probeContentType(tempFilePath);
+            if (mimeType == null || 
+                !(mimeType.equals("image/png") || mimeType.equals("image/jpg") || mimeType.equals("image/jpeg") || mimeType.equals("image/webp"))) {
+                Files.deleteIfExists(tempFilePath);
+                model.addAttribute("errorMessage", "El archivo subido no es una imagen válida.");
+                return "error";
+            }
+
+            Path filePath = dniDirPath.resolve(originalFilename);
+            Files.move(tempFilePath, filePath);
+
             user.setDniOriginalFilename(originalFilename);
             userRepository.save(user);
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Error al guardar el archivo: " + e.getMessage());
+            model.addAttribute("errorMessage", "Error al guardar el archivo con ese nombre.");
             return "error";
+        } finally {
+            // Delete the temporary file if it exists
+            try {
+                Files.deleteIfExists(tempFilePath);
+            } catch (Exception ignore) {}
         }
 
         return "redirect:/private/";
@@ -162,12 +178,15 @@ public class UserWebController {
         String currentUsername = userService.getLoggedInUsername(request);
         User user = userRepository.findByUsername(currentUsername).orElseThrow();
 
-        if (user.getDniFilePath() == null || user.getDniOriginalFilename() == null) {
+        if (user.getDniOriginalFilename() == null) {
             return ResponseEntity.notFound().build();
         }
 
         try {
-            Path filePath = Paths.get(user.getDniFilePath());
+            Path filePath = Paths.get("dni").resolve(user.getDniOriginalFilename());
+            if (!Files.exists(filePath)) {
+                return ResponseEntity.notFound().build();
+            }
             byte[] fileBytes = Files.readAllBytes(filePath);
 
             String contentType = Files.probeContentType(filePath);
@@ -176,7 +195,7 @@ public class UserWebController {
             }
 
             return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + user.getDniOriginalFilename() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + user.getDniOriginalFilename().replaceFirst("^\\d+_", "") + "\"")
                 .contentType(MediaType.parseMediaType(contentType))
                 .body(fileBytes);
         } catch (Exception e) {
@@ -218,9 +237,15 @@ public class UserWebController {
     }
 
     @PostMapping("/delete-user/")
-    public String deleteUser(HttpServletRequest request) {
+    public String deleteUser(HttpServletRequest request, Model model) {
         String currentUsername = userService.getLoggedInUsername(request);
         User user = userRepository.findByUsername(currentUsername).orElseThrow();
+
+        // Prevent admin from deleting their own account
+        if (user.getRoles() != null && user.getRoles().contains("ADMIN")) {
+            model.addAttribute("errorMessage", "No puedes eliminar tu propia cuenta siendo administrador.");
+            return "error";
+        }
 
         // Delete all orders of the user
         user.getOrders().forEach(order -> orderService.remove(order.getId()));
