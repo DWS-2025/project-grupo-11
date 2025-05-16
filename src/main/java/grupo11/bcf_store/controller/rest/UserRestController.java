@@ -78,10 +78,10 @@ public class UserRestController {
             user.setCart(new grupo11.bcf_store.model.Cart());
         }
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
-        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
-        return ResponseEntity.created(location).body(toDTO(user));
+        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
+        return ResponseEntity.created(location).body(toDTO(savedUser));
     }
 
     @PutMapping("/{id}/")

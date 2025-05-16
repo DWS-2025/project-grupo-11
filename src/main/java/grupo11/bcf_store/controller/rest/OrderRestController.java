@@ -51,11 +51,12 @@ public class OrderRestController {
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
         Order order = toDomain(orderDTO);
 
-        orderRepository.save(order);
+        // Guarda el pedido y usa el objeto guardado para el DTO y la URI
+        Order savedOrder = orderRepository.save(order);
 
-        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(order.getId()).toUri();
+        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedOrder.getId()).toUri();
 
-        return ResponseEntity.created(location).body(toDTO(order));
+        return ResponseEntity.created(location).body(toDTO(savedOrder));
     }
 
     @PutMapping("/{id}/")

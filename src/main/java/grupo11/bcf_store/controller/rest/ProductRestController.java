@@ -65,11 +65,11 @@ public class ProductRestController {
 
 		Product product = toDomain(productDTO);
 
-		productRepository.save(product);
+		Product savedProduct = productRepository.save(product);
 
-		URI location = fromCurrentRequest().path("/{id}").buildAndExpand(product.getId()).toUri();
+		URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedProduct.getId()).toUri();
 
-		return ResponseEntity.created(location).body(toDTO(product));
+		return ResponseEntity.created(location).body(toDTO(savedProduct));
 	}
 
     @PutMapping("/{id}/")

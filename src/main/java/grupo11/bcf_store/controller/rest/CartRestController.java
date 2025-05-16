@@ -51,11 +51,11 @@ public class CartRestController {
     public ResponseEntity<CartDTO> createCart(@RequestBody CartDTO cartDTO) {
         Cart cart = toDomain(cartDTO);
 
-        cartRepository.save(cart);
+        Cart savedCart = cartRepository.save(cart);
 
-        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(cart.getId()).toUri();
+        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedCart.getId()).toUri();
 
-        return ResponseEntity.created(location).body(toDTO(cart));
+        return ResponseEntity.created(location).body(toDTO(savedCart));
     }
 
     @PutMapping("/{id}/")
