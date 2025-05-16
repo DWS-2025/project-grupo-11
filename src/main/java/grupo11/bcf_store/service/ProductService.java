@@ -121,8 +121,11 @@ public class ProductService {
             // Save the product to generate an ID
             product = productRepository.save(product);
 
-            // Process the image file if it is not empty
             if (!imageFile.isEmpty()) {
+                String mimeType = imageFile.getContentType();
+                if (mimeType == null || !(mimeType.equals("image/png") || mimeType.equals("image/jpg") || mimeType.equals("image/jpeg") || mimeType.equals("image/webp"))) {
+                    throw new IllegalArgumentException("Solo se permiten imágenes.");
+                }
                 product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
                 product.setImage("http://localhost:8080/product-image/" + product.getId() + "/");
             }
@@ -142,8 +145,11 @@ public class ProductService {
             product.setDescription(description);
             product.setPrice(price);
 
-            // Process the image file if it is not empty
             if (!imageFile.isEmpty()) {
+                String mimeType = imageFile.getContentType();
+                if (mimeType == null || !(mimeType.equals("image/png") || mimeType.equals("image/jpg") || mimeType.equals("image/jpeg") || mimeType.equals("image/webp"))) {
+                    throw new IllegalArgumentException("Solo se permiten imágenes.");
+                }
                 product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
                 product.setImage("http://localhost:8080/product-image/" + product.getId() + "/");
             }
