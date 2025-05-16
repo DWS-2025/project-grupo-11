@@ -24,11 +24,9 @@ import grupo11.bcf_store.model.dto.OrderDTO;
 import grupo11.bcf_store.model.dto.ProductDTO;
 import grupo11.bcf_store.model.mapper.OrderMapper;
 import grupo11.bcf_store.model.mapper.ProductMapper;
-import grupo11.bcf_store.model.mapper.UserMapper;
 import grupo11.bcf_store.repository.CartRepository;
 import grupo11.bcf_store.repository.OrderRepository;
 import grupo11.bcf_store.repository.ProductRepository;
-import grupo11.bcf_store.repository.UserRepository;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 
@@ -43,12 +41,6 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserMapper userMapper;
 
     @Autowired
     private OrderMapper orderMapper;

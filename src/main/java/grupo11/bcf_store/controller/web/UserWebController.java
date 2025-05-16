@@ -15,6 +15,14 @@ import grupo11.bcf_store.model.Cart;
 import grupo11.bcf_store.service.OrderService;
 import grupo11.bcf_store.service.UserService;
 import grupo11.bcf_store.service.CartService;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import java.util.List;
 
@@ -106,7 +114,74 @@ public class UserWebController {
         model.addAttribute("admin", request.isUserInRole("ADMIN"));
         model.addAttribute("fullName", user.getFullName());
         model.addAttribute("description", user.getDescription() != null ? user.getDescription() : "");
+        model.addAttribute("dniOriginalFilename", user.getDniOriginalFilename());
         return "private";
+    }
+
+    @PostMapping("/upload-dni/")
+    public String uploadDni(@RequestParam("dniFile") MultipartFile dniFile, HttpServletRequest request, Model model) {
+        String currentUsername = userService.getLoggedInUsername(request);
+        User user = userRepository.findByUsername(currentUsername).orElseThrow();
+
+        if (dniFile.isEmpty()) {
+            model.addAttribute("errorMessage", "No se ha seleccionado ningún archivo.");
+            return "error";
+        }
+
+        try {
+            String dniDir = "dni";
+            Path dniDirPath = Paths.get(dniDir);
+            if (!Files.exists(dniDirPath)) {
+                Files.createDirectories(dniDirPath);
+            }
+            String originalFilename = dniFile.getOriginalFilename();
+            // Sanitize the filename to prevent directory traversal attacks
+            if (originalFilename == null || originalFilename.contains("..")) {
+                model.addAttribute("errorMessage", "Nombre de archivo no válido.");
+                return "error";
+            }
+            // Store the file with a unique name
+            String storedFilename = user.getId() + "_" + originalFilename;
+            Path filePath = dniDirPath.resolve(storedFilename);
+            dniFile.transferTo(filePath);
+
+            user.setDniFilePath(filePath.toString());
+            user.setDniOriginalFilename(originalFilename);
+            userRepository.save(user);
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Error al guardar el archivo: " + e.getMessage());
+            return "error";
+        }
+
+        return "redirect:/private/";
+    }
+
+    @GetMapping("/download-dni/")
+    @ResponseBody
+    public ResponseEntity<byte[]> downloadDni(HttpServletRequest request) {
+        String currentUsername = userService.getLoggedInUsername(request);
+        User user = userRepository.findByUsername(currentUsername).orElseThrow();
+
+        if (user.getDniFilePath() == null || user.getDniOriginalFilename() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            Path filePath = Paths.get(user.getDniFilePath());
+            byte[] fileBytes = Files.readAllBytes(filePath);
+
+            String contentType = Files.probeContentType(filePath);
+            if (contentType == null) {
+                contentType = "application/octet-stream";
+            }
+
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + user.getDniOriginalFilename() + "\"")
+                .contentType(MediaType.parseMediaType(contentType))
+                .body(fileBytes);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PostMapping("/update-user/")
@@ -165,6 +240,7 @@ public class UserWebController {
                 public final String fullName = user.getFullName();
                 public final String description = safeDescription;
                 public final String roles = user.getRoles() != null ? user.getRoles().toString() : "";
+                public final String dniOriginalFilename = user.getDniOriginalFilename();
             };
         }).toList();
         model.addAttribute("users", users);

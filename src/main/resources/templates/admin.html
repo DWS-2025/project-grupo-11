@@ -32,6 +32,7 @@
                         <th>Nombre completo</th>
                         <th>Descripción</th>
                         <th>Roles</th>
+                        <th>DNI</th>
                         <th>Acciones</th>
                     </tr>
                     {{#users}}
@@ -41,6 +42,14 @@
                         <td>{{fullName}}</td>
                         <td><span style="white-space:normal;">{{{description}}}</span></td>
                         <td>{{roles}}</td>
+                        <td>
+                            {{#dniOriginalFilename}}
+                                {{dniOriginalFilename}}
+                            {{/dniOriginalFilename}}
+                            {{^dniOriginalFilename}}
+                                <span style="color:#888;">No subido</span>
+                            {{/dniOriginalFilename}}
+                        </td>
                         <td>
                             <form action="/admin/delete-user/{{id}}/" method="post" style="display:inline;">
                                 <button type="submit" style="color:red;">Eliminar</button>

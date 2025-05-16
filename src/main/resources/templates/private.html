@@ -79,12 +79,21 @@
                     <div class="form_row">
                         <label><strong>Subir DNI:</strong></label>
                         <input type="file" name="dniFile" accept="application/pdf,image/*" required />
-                        <button type="submit">Subir DNI</button>
+                        <button type="submit">
+                            {{#dniOriginalFilename}}Reemplazar DNI{{/dniOriginalFilename}}
+                            {{^dniOriginalFilename}}Subir DNI{{/dniOriginalFilename}}
+                        </button>
                     </div>
                 </form>
                 {{#dniOriginalFilename}}
                 <div class="form_row">
-                    <a href="/download-dni/">Descargar DNI actual ({{dniOriginalFilename}})</a>
+                    <span>DNI actual: <strong>{{dniOriginalFilename}}</strong></span>
+                    <a href="/download-dni/" style="margin-left:10px;">Descargar DNI</a>
+                </div>
+                {{/dniOriginalFilename}}
+                {{^dniOriginalFilename}}
+                <div class="form_row">
+                    <span style="color: #888;">No hay DNI subido.</span>
                 </div>
                 {{/dniOriginalFilename}}
             </div>

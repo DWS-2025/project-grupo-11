@@ -155,6 +155,8 @@ public class SecurityConfiguration {
 					.requestMatchers("/private/**").hasRole("USER")
 					.requestMatchers("/update-user/**").hasRole("USER")
 					.requestMatchers("/delete-user/**").hasRole("USER")
+					.requestMatchers("/upload-dni/**").hasRole("USER")
+					.requestMatchers("/download-dni/**").hasRole("USER")
 
 					// ADMIN PAGES
 					.requestMatchers("/admin/**").hasRole("ADMIN")
