@@ -19,7 +19,6 @@ public class User {
     private String fullName;
     private String description;
 
-    private String dniFilePath;
     private String dniOriginalFilename;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -91,14 +90,6 @@ public class User {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getDniFilePath() {
-        return dniFilePath;
-    }
-
-    public void setDniFilePath(String dniFilePath) {
-        this.dniFilePath = dniFilePath;
     }
 
     public String getDniOriginalFilename() {
