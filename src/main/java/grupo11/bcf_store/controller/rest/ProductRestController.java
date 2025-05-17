@@ -89,9 +89,10 @@ public class ProductRestController {
 	@PostMapping("/{id}/image/")
 	public ResponseEntity<Object> createProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
 			throws IOException {
-		String mimeType = imageFile.getContentType();
-		if (mimeType == null || !(mimeType.equals("image/png") || mimeType.equals("image/jpg") || mimeType.equals("image/jpeg") || mimeType.equals("image/webp"))) {
-			return ResponseEntity.badRequest().body("Solo se permiten imágenes.");
+		try {
+			productService.validateImageFile(imageFile);
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 
 		String location_string = "http://localhost:8080/product-image/" + id + "/";
@@ -100,7 +101,6 @@ public class ProductRestController {
 		productService.createProductImage(id, location, imageFile.getInputStream(), imageFile.getSize());
 
 		return ResponseEntity.created(location).build();
-
 	}
 
 	@GetMapping("/{id}/image/")
@@ -116,10 +116,10 @@ public class ProductRestController {
 	@PutMapping("/{id}/image/")
 	public ResponseEntity<Object> replaceProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
 			throws IOException {
-
-		String mimeType = imageFile.getContentType();
-		if (mimeType == null || !(mimeType.equals("image/png") || mimeType.equals("image/jpg") || mimeType.equals("image/jpeg") || mimeType.equals("image/webp"))) {
-			return ResponseEntity.badRequest().body("Solo se permiten imágenes.");
+		try {
+			productService.validateImageFile(imageFile);
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 
 		productService.replaceProductImage(id, imageFile.getInputStream(), imageFile.getSize());

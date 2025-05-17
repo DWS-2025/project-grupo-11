@@ -25,6 +25,9 @@ import java.nio.file.Paths;
 
 import java.util.List;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+
 @Controller
 public class UserWebController {
 
@@ -82,12 +85,11 @@ public class UserWebController {
 
     @PostMapping("/register/")
     public String performRegister(
-        @RequestParam String username,
-        @RequestParam String password,
-        @RequestParam String fullName,
-        @RequestParam String description,
-        Model model
-    ) {
+            @RequestParam String username,
+            @RequestParam String password,
+            @RequestParam String fullName,
+            @RequestParam String description,
+            Model model) {
         if (userService.existsByUsername(username)) {
             model.addAttribute("errorMessage", "El usuario ya existe.");
             return "error";
@@ -112,7 +114,11 @@ public class UserWebController {
         model.addAttribute("admin", userService.isAdmin(request));
         model.addAttribute("fullName", user.getFullName());
         model.addAttribute("description", user.getDescription() != null ? user.getDescription() : "");
-        model.addAttribute("dniOriginalFilename", user.getDniOriginalFilename());
+        String dniOriginalFilename = user.getDniOriginalFilename();
+        String dniDisplayName = (dniOriginalFilename != null && dniOriginalFilename.contains("_"))
+                ? dniOriginalFilename.substring(dniOriginalFilename.indexOf('_') + 1)
+                : dniOriginalFilename;
+        model.addAttribute("dniOriginalFilename", dniDisplayName);
         return "private";
     }
 
@@ -126,37 +132,61 @@ public class UserWebController {
             return "error";
         }
 
-        String tempFilename = "temp_" + System.currentTimeMillis() + "_" + dniFile.getOriginalFilename();
+        // Limit the file size to 5 MB
+        if (dniFile.getSize() > 5 * 1024 * 1024) {
+            model.addAttribute("errorMessage", "El archivo es demasiado grande (máximo 5 MB).");
+            return "error";
+        }
+
+        String originalFilename = dniFile.getOriginalFilename();
+        // Sanitize the filename to prevent directory traversal attacks
+        if (originalFilename == null || originalFilename.contains("..")) {
+            model.addAttribute("errorMessage", "Nombre de archivo no válido.");
+            return "error";
+        }
+
+        originalFilename = originalFilename.replaceAll("[^a-zA-Z0-9._-]", "_");
+
+        String storedFilename = user.getId() + "_" + originalFilename;
+        String tempFilename = "temp_" + System.currentTimeMillis() + "_" + storedFilename;
         Path tempFilePath = Paths.get("dni").resolve(tempFilename);
 
         try {
-            String dniDir = "dni";
-            Path dniDirPath = Paths.get(dniDir);
+            Path dniDirPath = Paths.get("dni");
             if (!Files.exists(dniDirPath)) {
                 Files.createDirectories(dniDirPath);
             }
-            String originalFilename = dniFile.getOriginalFilename();
-            // Sanitize the filename to prevent directory traversal attacks
-            if (originalFilename == null || originalFilename.contains("..")) {
-                model.addAttribute("errorMessage", "Nombre de archivo no válido.");
-                return "error";
+
+            String previousDni = user.getDniOriginalFilename();
+            if (previousDni != null && !previousDni.isBlank()) {
+                Path previousFilePath = dniDirPath.resolve(previousDni);
+                try {
+                    Files.deleteIfExists(previousFilePath);
+                } catch (Exception ignore) {}
             }
 
             dniFile.transferTo(tempFilePath);
 
             String mimeType = Files.probeContentType(tempFilePath);
-            if (mimeType == null || 
-                !(mimeType.equals("image/png") || mimeType.equals("image/jpg") || mimeType.equals("image/jpeg") || mimeType.equals("image/webp"))) {
+            if (mimeType == null || !mimeType.equals("image/jpeg")) {
                 Files.deleteIfExists(tempFilePath);
                 model.addAttribute("errorMessage", "El archivo subido no es una imagen válida.");
                 return "error";
             }
 
-            Path filePath = dniDirPath.resolve(originalFilename);
+            BufferedImage image = ImageIO.read(tempFilePath.toFile());
+            if (image == null) {
+                Files.deleteIfExists(tempFilePath);
+                model.addAttribute("errorMessage", "El archivo subido no es una imagen válida.");
+                return "error";
+            }
+
+            Path filePath = dniDirPath.resolve(storedFilename);
             Files.move(tempFilePath, filePath);
 
-            user.setDniOriginalFilename(originalFilename);
+            user.setDniOriginalFilename(storedFilename);
             userService.saveUser(user);
+
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Error al guardar el archivo con ese nombre.");
             return "error";
@@ -192,10 +222,14 @@ public class UserWebController {
                 contentType = "application/octet-stream";
             }
 
+            // Remove the "{userId}_" prefix for download
+            String storedFilename = user.getDniOriginalFilename();
+            String originalFilename = storedFilename.substring(storedFilename.indexOf('_') + 1);
+
             return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + user.getDniOriginalFilename().replaceFirst("^\\d+_", "") + "\"")
-                .contentType(MediaType.parseMediaType(contentType))
-                .body(fileBytes);
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + originalFilename + "\"")
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .body(fileBytes);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
@@ -203,10 +237,9 @@ public class UserWebController {
 
     @PostMapping("/update-user/")
     public String updateUser(
-        @RequestParam(required = false) String fullName,
-        @RequestParam(required = false) String description,
-        HttpServletRequest request
-    ) {
+            @RequestParam(required = false) String fullName,
+            @RequestParam(required = false) String description,
+            HttpServletRequest request) {
         String currentUsername = userService.getLoggedInUsername(request);
         User user = userService.findByUsername(currentUsername);
 
@@ -219,10 +252,9 @@ public class UserWebController {
 
     @PostMapping("/update-credentials/")
     public String updateCredentials(
-        @RequestParam String username,
-        @RequestParam String password,
-        HttpServletRequest request
-    ) {
+            @RequestParam String username,
+            @RequestParam String password,
+            HttpServletRequest request) {
         String currentUsername = userService.getLoggedInUsername(request);
         User user = userService.findByUsername(currentUsername);
 
@@ -260,13 +292,17 @@ public class UserWebController {
 
         var users = userEntities.stream().map(user -> {
             String safeDescription = user.getDescription() != null ? user.getDescription() : "";
+            String dniOriginalFilename = user.getDniOriginalFilename();
+            String dniDisplayName = (dniOriginalFilename != null && dniOriginalFilename.contains("_"))
+                    ? dniOriginalFilename.substring(dniOriginalFilename.indexOf('_') + 1)
+                    : dniOriginalFilename;
             return new Object() {
                 public final long id = user.getId();
                 public final String username = user.getUsername();
                 public final String fullName = user.getFullName();
                 public final String description = safeDescription;
                 public final String roles = user.getRoles() != null ? user.getRoles().toString() : "";
-                public final String dniOriginalFilename = user.getDniOriginalFilename();
+                public final String dniOriginalFilename = dniDisplayName;
             };
         }).toList();
         model.addAttribute("users", users);
