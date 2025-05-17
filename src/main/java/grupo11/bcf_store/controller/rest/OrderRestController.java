@@ -1,6 +1,7 @@
 package grupo11.bcf_store.controller.rest;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -24,6 +25,7 @@ import grupo11.bcf_store.model.Order;
 import grupo11.bcf_store.model.dto.OrderDTO;
 import grupo11.bcf_store.model.mapper.OrderMapper;
 import grupo11.bcf_store.repository.OrderRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
 @RestController
@@ -48,12 +50,14 @@ public class OrderRestController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO, Principal principal, HttpServletRequest request) {
         Order order = toDomain(orderDTO);
-
+        request.getUserPrincipal();
+        //orderDTO.products()
+        //order.setUser(usuarioActual);
         // Guarda el pedido y usa el objeto guardado para el DTO y la URI
         Order savedOrder = orderRepository.save(order);
-
+        principal.getName();
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedOrder.getId()).toUri();
 
         return ResponseEntity.created(location).body(toDTO(savedOrder));

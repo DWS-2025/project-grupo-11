@@ -36,12 +36,6 @@ public class SecurityConfiguration {
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
-    //@Value("${security.user}")
-	private String username;
-
-	//@Value("${security.encodedPassword}")
-	private String encodedPassword;
-
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
