@@ -16,17 +16,10 @@ import grupo11.bcf_store.service.UserService;
 import grupo11.bcf_store.service.CartService;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import java.util.List;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 
 @Controller
 public class UserWebController {
@@ -126,77 +119,18 @@ public class UserWebController {
     public String uploadDni(@RequestParam("dniFile") MultipartFile dniFile, HttpServletRequest request, Model model) {
         String currentUsername = userService.getLoggedInUsername(request);
         User user = userService.findByUsername(currentUsername);
-
-        if (dniFile.isEmpty()) {
-            model.addAttribute("errorMessage", "No se ha seleccionado ningún archivo.");
-            return "error";
-        }
-
-        // Limit the file size to 5 MB
-        if (dniFile.getSize() > 5 * 1024 * 1024) {
-            model.addAttribute("errorMessage", "El archivo es demasiado grande (máximo 5 MB).");
-            return "error";
-        }
-
-        String originalFilename = dniFile.getOriginalFilename();
-        // Sanitize the filename to prevent directory traversal attacks
-        if (originalFilename == null || originalFilename.contains("..")) {
-            model.addAttribute("errorMessage", "Nombre de archivo no válido.");
-            return "error";
-        }
-
-        originalFilename = originalFilename.replaceAll("[^a-zA-Z0-9._-]", "_");
-
-        String storedFilename = user.getId() + "_" + originalFilename;
-        String tempFilename = "temp_" + System.currentTimeMillis() + "_" + storedFilename;
-        Path tempFilePath = Paths.get("dni").resolve(tempFilename);
-
         try {
-            Path dniDirPath = Paths.get("dni");
-            if (!Files.exists(dniDirPath)) {
-                Files.createDirectories(dniDirPath);
-            }
-
-            String previousDni = user.getDniOriginalFilename();
-            if (previousDni != null && !previousDni.isBlank()) {
-                Path previousFilePath = dniDirPath.resolve(previousDni);
-                try {
-                    Files.deleteIfExists(previousFilePath);
-                } catch (Exception ignore) {}
-            }
-
-            dniFile.transferTo(tempFilePath);
-
-            String mimeType = Files.probeContentType(tempFilePath);
-            if (mimeType == null || !mimeType.equals("image/jpeg")) {
-                Files.deleteIfExists(tempFilePath);
-                model.addAttribute("errorMessage", "El archivo subido no es una imagen válida.");
-                return "error";
-            }
-
-            BufferedImage image = ImageIO.read(tempFilePath.toFile());
-            if (image == null) {
-                Files.deleteIfExists(tempFilePath);
-                model.addAttribute("errorMessage", "El archivo subido no es una imagen válida.");
-                return "error";
-            }
-
-            Path filePath = dniDirPath.resolve(storedFilename);
-            Files.move(tempFilePath, filePath);
-
-            user.setDniOriginalFilename(storedFilename);
-            userService.saveUser(user);
-
+            userService.uploadDni(user.getId(), dniFile, request);
+        } catch (SecurityException e) {
+            model.addAttribute("errorMessage", "No autorizado.");
+            return "error";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error";
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Error al guardar el archivo con ese nombre.");
             return "error";
-        } finally {
-            // Delete the temporary file if it exists
-            try {
-                Files.deleteIfExists(tempFilePath);
-            } catch (Exception ignore) {}
         }
-
         return "redirect:/private/";
     }
 
@@ -205,31 +139,12 @@ public class UserWebController {
     public ResponseEntity<byte[]> downloadDni(HttpServletRequest request) {
         String currentUsername = userService.getLoggedInUsername(request);
         User user = userService.findByUsername(currentUsername);
-
-        if (user.getDniOriginalFilename() == null) {
-            return ResponseEntity.notFound().build();
-        }
-
         try {
-            Path filePath = Paths.get("dni").resolve(user.getDniOriginalFilename());
-            if (!Files.exists(filePath)) {
-                return ResponseEntity.notFound().build();
-            }
-            byte[] fileBytes = Files.readAllBytes(filePath);
-
-            String contentType = Files.probeContentType(filePath);
-            if (contentType == null) {
-                contentType = "application/octet-stream";
-            }
-
-            // Remove the "{userId}_" prefix for download
-            String storedFilename = user.getDniOriginalFilename();
-            String originalFilename = storedFilename.substring(storedFilename.indexOf('_') + 1);
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + originalFilename + "\"")
-                    .contentType(MediaType.parseMediaType(contentType))
-                    .body(fileBytes);
+            return userService.downloadDni(user.getId(), request);
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403).build();
+        } catch (java.util.NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }

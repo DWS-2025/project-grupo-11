@@ -23,8 +23,6 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 
 import grupo11.bcf_store.model.dto.OrderDTO;
 import grupo11.bcf_store.service.OrderService;
-import grupo11.bcf_store.service.ProductService;
-import grupo11.bcf_store.model.dto.ProductSimpleDTO;
 import jakarta.transaction.Transactional;
 
 @RestController
@@ -33,9 +31,6 @@ public class OrderRestController {
 
     @Autowired
     private OrderService orderService;
-
-    @Autowired
-    private ProductService productService;
 
     // API methods
     @GetMapping("/")

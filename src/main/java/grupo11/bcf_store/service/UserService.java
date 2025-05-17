@@ -5,6 +5,9 @@ import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -147,82 +150,94 @@ public class UserService {
 		return userRepository.findAll();
 	}
 
-    public void uploadDni(long userId, MultipartFile dniFile, HttpServletRequest request) throws Exception {
-        User user = userRepository.findById(userId).orElseThrow();
-        boolean isSelf = isSelf(request, userId);
-        boolean isAdmin = isAdmin(request);
-        if (!isSelf && !isAdmin) {
-            throw new SecurityException("No autorizado");
-        }
-
-        if (dniFile.isEmpty()) {
-            throw new IllegalArgumentException("No se ha seleccionado ningún archivo.");
-        }
-        if (dniFile.getSize() > 5 * 1024 * 1024) {
-            throw new IllegalArgumentException("El archivo es demasiado grande (máximo 5 MB).");
-        }
-        String originalFilename = dniFile.getOriginalFilename();
-        if (originalFilename == null || originalFilename.contains("..")) {
-            throw new IllegalArgumentException("Nombre de archivo no válido.");
-        }
-        originalFilename = originalFilename.replaceAll("[^a-zA-Z0-9._-]", "_");
-        String storedFilename = user.getId() + "_" + originalFilename;
-        String tempFilename = "temp_" + System.currentTimeMillis() + "_" + storedFilename;
-        Path dniDirPath = Paths.get("dni");
-        Path tempFilePath = dniDirPath.resolve(tempFilename);
-
-        if (!Files.exists(dniDirPath)) {
-            Files.createDirectories(dniDirPath);
-        }
-
-        dniFile.transferTo(tempFilePath);
-
-        String mimeType = Files.probeContentType(tempFilePath);
-        if (mimeType == null || !mimeType.equals("image/jpeg")) {
-            Files.deleteIfExists(tempFilePath);
-            throw new IllegalArgumentException("El archivo subido no es una imagen válida.");
-        }
-        BufferedImage image = ImageIO.read(tempFilePath.toFile());
-        if (image == null) {
-            Files.deleteIfExists(tempFilePath);
-            throw new IllegalArgumentException("El archivo subido no es una imagen válida.");
-        }
-
-        // Delete previous DNI file if exists
-        String previousDni = user.getDniOriginalFilename();
-        if (previousDni != null && !previousDni.isBlank()) {
-            Path previousFilePath = dniDirPath.resolve(previousDni);
-            try { Files.deleteIfExists(previousFilePath); } catch (Exception ignore) {}
-        }
-
-        Path filePath = dniDirPath.resolve(storedFilename);
-        Files.move(tempFilePath, filePath);
-
-        user.setDniOriginalFilename(storedFilename);
-        userRepository.save(user);
-
-        // Clean up temp file
-        try { Files.deleteIfExists(tempFilePath); } catch (Exception ignore) {}
-    }
-
-    public void deleteDni(long userId, HttpServletRequest request) throws Exception {
-        User user = userRepository.findById(userId).orElseThrow();
-        boolean isSelf = isSelf(request, userId);
-        boolean isAdmin = isAdmin(request);
-        if (!isSelf && !isAdmin) {
-            throw new SecurityException("No autorizado");
-        }
-        String dniFilename = user.getDniOriginalFilename();
-        if (dniFilename != null && !dniFilename.isBlank()) {
-            Path dniDirPath = Paths.get("dni");
-            Path filePath = dniDirPath.resolve(dniFilename);
-            try { Files.deleteIfExists(filePath); } catch (Exception ignore) {}
-            user.setDniOriginalFilename(null);
-            userRepository.save(user);
-        }
-    }
-
 	public boolean canAccessUser(HttpServletRequest request, long userId) {
 		return isSelf(request, userId) || isAdmin(request);
+	}
+
+	public void uploadDni(long userId, MultipartFile dniFile, jakarta.servlet.http.HttpServletRequest request) {
+		User user = userRepository.findById(userId).orElseThrow();
+		// Allow only the user to upload the DNI
+		if (!canAccessUser(request, userId)) {
+			throw new SecurityException("No autorizado");
+		}
+		if (dniFile.isEmpty()) {
+			throw new IllegalArgumentException("No se ha seleccionado ningún archivo.");
+		}
+		// Limit the file size to 5 MB
+		if (dniFile.getSize() > 5 * 1024 * 1024) {
+			throw new IllegalArgumentException("El archivo es demasiado grande (máximo 5 MB).");
+		}
+		String originalFilename = dniFile.getOriginalFilename();
+		if (originalFilename == null || originalFilename.contains("..")) {
+			throw new IllegalArgumentException("Nombre de archivo no válido.");
+		}
+		originalFilename = originalFilename.replaceAll("[^a-zA-Z0-9._-]", "_");
+		String storedFilename = user.getId() + "_" + originalFilename;
+		String tempFilename = "temp_" + System.currentTimeMillis() + "_" + storedFilename;
+		Path tempFilePath = Paths.get("dni").resolve(tempFilename);
+
+		try {
+			Path dniDirPath = Paths.get("dni");
+			if (!Files.exists(dniDirPath)) {
+				Files.createDirectories(dniDirPath);
+			}
+			String previousDni = user.getDniOriginalFilename();
+			if (previousDni != null && !previousDni.isBlank()) {
+				Path previousFilePath = dniDirPath.resolve(previousDni);
+				try {
+					Files.deleteIfExists(previousFilePath);
+				} catch (Exception ignore) {}
+			}
+			dniFile.transferTo(tempFilePath);
+			String mimeType = Files.probeContentType(tempFilePath);
+			if (mimeType == null || !mimeType.equals("image/jpeg")) {
+				Files.deleteIfExists(tempFilePath);
+				throw new IllegalArgumentException("El archivo subido no es una imagen válida.");
+			}
+			BufferedImage image = ImageIO.read(tempFilePath.toFile());
+			if (image == null) {
+				Files.deleteIfExists(tempFilePath);
+				throw new IllegalArgumentException("El archivo subido no es una imagen válida.");
+			}
+			Path filePath = dniDirPath.resolve(storedFilename);
+			Files.move(tempFilePath, filePath);
+			user.setDniOriginalFilename(storedFilename);
+			userRepository.save(user);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Error al guardar el archivo con ese nombre.");
+		} finally {
+			try {
+				Files.deleteIfExists(tempFilePath);
+			} catch (Exception ignore) {}
+		}
+	}
+
+	public ResponseEntity<byte[]> downloadDni(long userId, jakarta.servlet.http.HttpServletRequest request) {
+		User user = userRepository.findById(userId).orElseThrow();
+		if (!canAccessUser(request, userId)) {
+			throw new SecurityException("No autorizado");
+		}
+		if (user.getDniOriginalFilename() == null) {
+			throw new java.util.NoSuchElementException("DNI no encontrado");
+		}
+		try {
+			Path filePath = Paths.get("dni").resolve(user.getDniOriginalFilename());
+			if (!Files.exists(filePath)) {
+				throw new java.util.NoSuchElementException("DNI no encontrado");
+			}
+			byte[] fileBytes = Files.readAllBytes(filePath);
+			String contentType = Files.probeContentType(filePath);
+			if (contentType == null) {
+				contentType = "application/octet-stream";
+			}
+			String storedFilename = user.getDniOriginalFilename();
+			String originalFilename = storedFilename.substring(storedFilename.indexOf('_') + 1);
+			return ResponseEntity.ok()
+					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + originalFilename + "\"")
+					.contentType(MediaType.parseMediaType(contentType))
+					.body(fileBytes);
+		} catch (Exception e) {
+			throw new RuntimeException("Error al descargar el DNI");
+		}
 	}
 }

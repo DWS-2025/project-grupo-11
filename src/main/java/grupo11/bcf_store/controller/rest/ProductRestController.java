@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
-import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.model.dto.ProductDTO;
 import grupo11.bcf_store.service.ProductService;
 import jakarta.transaction.Transactional;

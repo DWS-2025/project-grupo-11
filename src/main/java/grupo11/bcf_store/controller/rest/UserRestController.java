@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.bind.annotation.RequestPart;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -94,20 +93,20 @@ public class UserRestController {
         }
     }
 
-    @DeleteMapping("/{id}/dni/")
-    public ResponseEntity<?> deleteDni(
-            @PathVariable long id,
-            HttpServletRequest request) {
+    @GetMapping("/{id}/dni/")
+    public ResponseEntity<?> getDni(@PathVariable long id, HttpServletRequest request) {
         if (!userService.canAccessUser(request, id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
         }
         try {
-            userService.deleteDni(id, request);
-            return ResponseEntity.ok().build();
+            // The method downloadDni() in UserService returns a ResponseEntity<byte[]>
+            return userService.downloadDni(id, request);
         } catch (SecurityException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("DNI no encontrado");
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error al borrar el DNI");
+            return ResponseEntity.internalServerError().body("Error al descargar el DNI");
         }
     }
 

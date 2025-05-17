@@ -85,8 +85,9 @@ public class SecurityConfiguration {
 					
 					.requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("USER")
 					.requestMatchers(HttpMethod.DELETE, "/api/users/{id}/").hasRole("USER")
+					.requestMatchers(HttpMethod.GET, "/api/users/{id}/dni/").hasRole("USER")
 					.requestMatchers(HttpMethod.POST, "/api/users/{id}/dni/").hasRole("USER")
-					.requestMatchers(HttpMethod.DELETE, "/api/users/{id}/dni/").hasRole("USER")
+					
 
 					// ADMIN ENDPOINTS
 					.requestMatchers(HttpMethod.POST, "/api/products/").hasRole("ADMIN")
@@ -101,8 +102,6 @@ public class SecurityConfiguration {
 
 					.requestMatchers(HttpMethod.POST, "/api/carts/").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.DELETE, "/api/carts/{id}/").hasRole("ADMIN")
-					
-					.requestMatchers(HttpMethod.PUT, "/api/users/{id}/").hasRole("ADMIN")
 			);
 		
         // Disable Form login Authentication
