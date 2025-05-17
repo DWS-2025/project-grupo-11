@@ -27,10 +27,9 @@
         <div class="clear"></div>
         <div class="login_form">
           <form id="productForm"
-            action="{{#product.id}}/edit-product/{{/product.id}}{{^product.id}}/add-product/{{/product.id}}" method="post"
+            action="{{#product.id}}/edit-product/{{product.id}}/{{/product.id}}{{^product.id}}/add-product/{{/product.id}}" method="post"
             enctype="multipart/form-data">
             {{#product.id}}
-            <input type="hidden" id="id" name="id" value="{{product.id}}" />
             {{/product.id}}
             <div class="form_row">
               <label class="contact"><strong>Nombre:</strong></label>
