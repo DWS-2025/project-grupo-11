@@ -8,11 +8,11 @@ import grupo11.bcf_store.model.dto.UserDTO;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {OrderMapper.class, CartMapper.class})
 public interface UserMapper {
 
-    @Mapping(target = "cart", ignore = true)
-    @Mapping(target = "orders", ignore = true)
+    @Mapping(source = "cart", target = "cart")
+    @Mapping(source = "orders", target = "orders")
     UserDTO toDTO(User user);
 
     List<UserDTO> toDTOs(List<User> users);

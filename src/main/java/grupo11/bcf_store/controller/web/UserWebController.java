@@ -97,6 +97,7 @@ public class UserWebController {
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRoles(List.of("USER"));
         newUser.setCart(new Cart());
+        newUser.getCart().setUser(newUser); // <-- Añadir esta línea
         newUser.setFullName(fullName);
         newUser.setDescription(description);
         userService.saveUser(newUser);

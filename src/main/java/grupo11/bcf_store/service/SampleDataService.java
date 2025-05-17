@@ -29,15 +29,21 @@ public class SampleDataService {
         user1.setFullName("Usuario Normal");
         user1.setDescription("Usuario de ejemplo para compras normales.");
         userRepository.save(user1);
+        user1.getCart().setUser(user1);
+        userRepository.save(user1);
 
         User admin = new User("admin", passwordEncoder.encode("adminpass"), "USER", "ADMIN");
         admin.setFullName("Administrador");
         admin.setDescription("Usuario con permisos de administración.");
         userRepository.save(admin);
+        admin.getCart().setUser(admin);
+        userRepository.save(admin);
 
         User prueba = new User("prueba", passwordEncoder.encode("prueba"), "USER");
         prueba.setFullName("Usuario Prueba");
         prueba.setDescription("Usuario de prueba para testear la aplicación.");
+        userRepository.save(prueba);
+        prueba.getCart().setUser(prueba);
         userRepository.save(prueba);
 
         // Default products

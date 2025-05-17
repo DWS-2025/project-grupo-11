@@ -50,6 +50,7 @@ public class UserRegisterService {
         // Create a new cart for the user
         Cart newCart = new Cart();
         newUser.setCart(newCart);
+        newCart.setUser(newUser);
 
         userRepository.save(newUser);
 

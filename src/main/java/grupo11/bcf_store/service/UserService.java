@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import grupo11.bcf_store.model.User;
@@ -20,6 +21,9 @@ public class UserService {
 
 	@Autowired
 	private UserMapper userMapper;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public List<UserDTO> getAllUsers() {
 		return userMapper.toDTOs(userRepository.findAll());
@@ -42,8 +46,9 @@ public class UserService {
 		if (isSelf(request, id)) {
 			User user = userRepository.findById(id).orElseThrow();
 			user.setUsername(updatedUser.getUsername());
-			user.setPassword(updatedUser.getPassword());
-			user.setRoles(updatedUser.getRoles());
+			user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+			user.setDescription(updatedUser.getDescription());
+			user.setFullName(updatedUser.getFullName());
 			userRepository.save(user);
 			return userMapper.toDTO(user);
 		}

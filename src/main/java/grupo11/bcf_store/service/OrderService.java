@@ -12,6 +12,7 @@ import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.model.User;
 import grupo11.bcf_store.model.dto.OrderDTO;
 import grupo11.bcf_store.model.dto.ProductDTO;
+import grupo11.bcf_store.model.dto.ProductSimpleDTO;
 import grupo11.bcf_store.model.mapper.OrderMapper;
 import grupo11.bcf_store.model.mapper.ProductMapper;
 import grupo11.bcf_store.repository.OrderRepository;
@@ -32,6 +33,9 @@ public class OrderService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProductService productService;
 
     public OrderDTO save(OrderDTO orderDTO) {
         Order order = orderMapper.toDomain(orderDTO);
@@ -131,6 +135,49 @@ public class OrderService {
         newOrder = orderRepository.save(newOrder); // Save the order to the database
 
         return orderMapper.toDTO(newOrder);
+    }
+
+    public OrderDTO createOrderFromDTO(OrderDTO orderDTO, Principal principal) {
+        Order order = orderMapper.toDomain(orderDTO);
+        if (principal != null) {
+            User user = userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new IllegalStateException("Usuario no encontrado: " + principal.getName()));
+            order.setUser(user);
+        }
+        // Asociar productos con el pedido (bidireccional)
+        for (Product product : order.getProducts()) {
+            product.getOrders().add(order);
+        }
+        order = orderRepository.save(order);
+        return orderMapper.toDTO(order);
+    }
+
+    public OrderDTO restCreateOrderFromDTO(OrderDTO orderDTO, Principal principal) {
+        // Recover the full product information for each product in the orderDTO
+        List<ProductSimpleDTO> fullProducts = orderDTO.products().stream()
+            .map(p -> {
+                var product = productService.getProduct(p.id());
+                if (product != null) {
+                    return new ProductSimpleDTO(
+                        product.id(),
+                        product.name(),
+                        product.price(),
+                        product.description(),
+                        product.image()
+                    );
+                } else {
+                    return p;
+                }
+            })
+            .toList();
+
+        OrderDTO fixedOrderDTO = new OrderDTO(
+            orderDTO.id(),
+            fullProducts,
+            orderDTO.userId()
+        );
+
+        return createOrderFromDTO(fixedOrderDTO, principal);
     }
 
     public void removeOrderFromUser(OrderDTO orderDTO) {

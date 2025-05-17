@@ -23,6 +23,8 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 
 import grupo11.bcf_store.model.dto.OrderDTO;
 import grupo11.bcf_store.service.OrderService;
+import grupo11.bcf_store.service.ProductService;
+import grupo11.bcf_store.model.dto.ProductSimpleDTO;
 import jakarta.transaction.Transactional;
 
 @RestController
@@ -31,6 +33,9 @@ public class OrderRestController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private ProductService productService;
 
     // API methods
     @GetMapping("/")
@@ -45,8 +50,7 @@ public class OrderRestController {
 
     @PostMapping("/")
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO, Principal principal) {
-        OrderDTO savedOrder = orderService.save(orderDTO);
-        orderService.assignOrderToUser(savedOrder, principal);
+        OrderDTO savedOrder = orderService.restCreateOrderFromDTO(orderDTO, principal);
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedOrder.id()).toUri();
         return ResponseEntity.created(location).body(savedOrder);
     }

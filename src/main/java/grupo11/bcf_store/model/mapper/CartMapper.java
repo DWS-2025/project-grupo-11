@@ -8,7 +8,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CartMapper {
-    @Mapping(target = "user", ignore = true)
+    @Mapping(source = "user.id", target = "userId")
     CartDTO toDTO(Cart cart);
 
     List<CartDTO> toDTOs(List<Cart> carts);

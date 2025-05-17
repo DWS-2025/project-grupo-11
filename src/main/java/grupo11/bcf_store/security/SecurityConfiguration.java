@@ -86,11 +86,11 @@ public class SecurityConfiguration {
 					.requestMatchers(HttpMethod.PUT, "/api/products/{id}/image/").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.DELETE, "/api/products/{id}/image/").hasRole("ADMIN")
 
-					.requestMatchers(HttpMethod.GET, "/api/orders/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/orders/**").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.POST, "/api/orders/").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.DELETE, "/api/orders/{id}/").hasRole("ADMIN")
 
-					.requestMatchers(HttpMethod.GET, "/api/carts/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/carts/**").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.POST, "/api/carts/").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.DELETE, "/api/carts/{id}/").hasRole("ADMIN")
 					
