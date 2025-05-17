@@ -1,6 +1,7 @@
 package grupo11.bcf_store.service;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -22,6 +23,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 
 @Service
 public class UserService {
@@ -57,8 +61,12 @@ public class UserService {
 			User user = userRepository.findById(id).orElseThrow();
 			user.setUsername(updatedUser.getUsername());
 			user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-			user.setDescription(updatedUser.getDescription());
-			user.setFullName(updatedUser.getFullName());
+			// Use the same validation as updateUserInfo
+			try {
+				updateUserInfo(user, updatedUser.getFullName(), updatedUser.getDescription());
+			} catch (IllegalArgumentException e) {
+				return null;
+			}
 			userRepository.save(user);
 			return userMapper.toDTO(user);
 		}
@@ -66,12 +74,39 @@ public class UserService {
 		return null;
 	}
 
+	public void updateUserInfo(User user, String fullName, String description) {
+		user.setFullName(fullName);
+
+		if (description != null) {
+			Pattern forbiddenPattern = Pattern.compile(
+					"(&#\\d+;|&#x[0-9a-fA-F]+;|\\\\u[0-9a-fA-F]{4}|\\+ADw-|\\+AD4-)",
+					Pattern.CASE_INSENSITIVE);
+
+			if (forbiddenPattern.matcher(description).find()) {
+				throw new IllegalArgumentException("La descripción contiene codificaciones no permitidas.");
+			}
+
+			Safelist safelist = Safelist.none()
+					.addTags("b", "i", "u", "a", "ul", "ol", "li", "strong", "em", "br")
+					.addAttributes("a", "target", "rel");
+
+			String safeDescription = Jsoup.clean(description, safelist);
+			
+			if (!safeDescription.equals(description)) {
+				throw new IllegalArgumentException("La descripción tiene cáracteres inválidos.");
+			}
+			user.setDescription(safeDescription);
+		} else {
+			user.setDescription(null);
+		}
+	}
+
 	public UserDTO deleteUserById(long id) {
 		User user = userRepository.findById(id).orElseThrow();
-		if(user.getOrders() != null) {
+		if (user.getOrders() != null) {
 			user.getOrders().forEach(order -> order.setUser(null));
 		}
-		if(user.getCart() != null) {
+		if (user.getCart() != null) {
 			user.getCart().setUser(null);
 		}
 		userRepository.deleteById(id);
@@ -97,7 +132,7 @@ public class UserService {
 		return 0;
 	}
 
-	//Get logged in user roles
+	// Get logged in user roles
 	public List<String> getLoggedInUserRoles(HttpServletRequest request) {
 		if (request.getUserPrincipal() != null) {
 			String name = request.getUserPrincipal().getName();
@@ -186,7 +221,8 @@ public class UserService {
 				Path previousFilePath = dniDirPath.resolve(previousDni);
 				try {
 					Files.deleteIfExists(previousFilePath);
-				} catch (Exception ignore) {}
+				} catch (Exception ignore) {
+				}
 			}
 			dniFile.transferTo(tempFilePath);
 			String mimeType = Files.probeContentType(tempFilePath);
@@ -208,7 +244,8 @@ public class UserService {
 		} finally {
 			try {
 				Files.deleteIfExists(tempFilePath);
-			} catch (Exception ignore) {}
+			} catch (Exception ignore) {
+			}
 		}
 	}
 
@@ -239,5 +276,9 @@ public class UserService {
 		} catch (Exception e) {
 			throw new RuntimeException("Error al descargar el DNI");
 		}
+	}
+
+	public String encodePassword(String rawPassword) {
+		return passwordEncoder.encode(rawPassword);
 	}
 }

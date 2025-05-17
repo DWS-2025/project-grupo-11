@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-
 @Controller
 public class UserWebController {
 
@@ -92,7 +91,7 @@ public class UserWebController {
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRoles(List.of("USER"));
         newUser.setCart(new Cart());
-        newUser.getCart().setUser(newUser); // <-- Añadir esta línea
+        newUser.getCart().setUser(newUser);
         newUser.setFullName(fullName);
         newUser.setDescription(description);
         userService.saveUser(newUser);
@@ -155,6 +154,7 @@ public class UserWebController {
             @RequestParam(required = false) String fullName,
             @RequestParam(required = false) String description,
             HttpServletRequest request, Model model) {
+
         String currentUsername = userService.getLoggedInUsername(request);
         User user = userService.findByUsername(currentUsername);
 
@@ -163,9 +163,13 @@ public class UserWebController {
             return "error";
         }
 
-        user.setFullName(fullName);
-        user.setDescription(description);
-        userService.saveUser(user);
+        try {
+            userService.updateUserInfo(user, fullName, description);
+            userService.saveUser(user);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error";
+        }
 
         return "redirect:/private/";
     }

@@ -52,16 +52,42 @@ public class UserRestController {
         return ResponseEntity.created(location).body(savedUser);
     }
 
-    @PutMapping("/{id}/")
-    public ResponseEntity<UserDTO> replaceUser(@PathVariable long id, @RequestBody UserDTO updatedUserDTO, HttpServletRequest request) {
+    @PutMapping("/{id}/info/")
+    public ResponseEntity<?> updateUserInfo(
+            @PathVariable long id,
+            @RequestBody UserDTO updatedUserDTO,
+            HttpServletRequest request) {
         if (!userService.canAccessUser(request, id)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
         }
-        UserDTO updatedUser = userService.updateUser(id, updatedUserDTO, request);
-        if (updatedUser == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        try {
+            var user = userService.findById(id);
+            if (user == null) return ResponseEntity.notFound().build();
+            userService.updateUserInfo(user, updatedUserDTO.fullName(), updatedUserDTO.description());
+            userService.saveUser(user);
+            return ResponseEntity.ok(userService.getUserById(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PutMapping("/{id}/credentials/")
+    public ResponseEntity<?> updateUserCredentials(
+            @PathVariable long id,
+            @RequestBody UserDTO updatedUserDTO,
+            HttpServletRequest request) {
+        if (!userService.canAccessUser(request, id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
+        }
+        var user = userService.findById(id);
+        if (user == null) return ResponseEntity.notFound().build();
+        if (updatedUserDTO.username() == null || updatedUserDTO.password() == null) {
+            return ResponseEntity.badRequest().body("Usuario y contraseña requeridos");
+        }
+        user.setUsername(updatedUserDTO.username());
+        user.setPassword(userService.encodePassword(updatedUserDTO.password()));
+        userService.saveUser(user);
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @Transactional
