@@ -59,7 +59,11 @@ public class ProductService {
     }
 
     public void save(ProductDTO productDTO) {
-        productRepository.save(productMapper.toDomain(productDTO));
+        if(productDTO != null) {
+            productRepository.save(productMapper.toDomain(productDTO));
+        } else {
+            throw new IllegalArgumentException("ProductDTO cannot be null");
+        }
     }
 
     public void save(Product product) {

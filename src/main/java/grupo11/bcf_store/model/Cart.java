@@ -34,6 +34,14 @@ public class Cart {
         this.id = id;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public void addProduct(Product product) {
         products.add(product);
     }

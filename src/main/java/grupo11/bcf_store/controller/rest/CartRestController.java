@@ -22,8 +22,7 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 
 import grupo11.bcf_store.model.Cart;
 import grupo11.bcf_store.model.dto.CartDTO;
-import grupo11.bcf_store.model.mapper.CartMapper;
-import grupo11.bcf_store.repository.CartRepository;
+import grupo11.bcf_store.service.CartService;
 import jakarta.transaction.Transactional;
 
 @RestController
@@ -31,68 +30,41 @@ import jakarta.transaction.Transactional;
 public class CartRestController {
 
     @Autowired
-    private CartRepository cartRepository;
-
-    @Autowired
-    private CartMapper mapper;
+    private CartService cartService;
 
     // API methods
     @GetMapping("/")
     public List<CartDTO> getCarts() {
-        return toDTOs(cartRepository.findAll());
+        return cartService.getCarts();
     }
 
     @GetMapping("/{id}/")
     public CartDTO getCart(@PathVariable long id) {
-        return toDTO(cartRepository.findById(id).orElseThrow());
+        return cartService.getCart(id);
     }
 
     @PostMapping("/")
     public ResponseEntity<CartDTO> createCart(@RequestBody CartDTO cartDTO) {
-        Cart cart = toDomain(cartDTO);
-
-        Cart savedCart = cartRepository.save(cart);
+        Cart savedCart = cartService.saveCart(cartDTO);
 
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedCart.getId()).toUri();
 
-        return ResponseEntity.created(location).body(toDTO(savedCart));
+        return ResponseEntity.created(location).body(cartService.getCart(savedCart.getId()));
     }
 
     @PutMapping("/{id}/")
     public CartDTO replaceCart(@PathVariable long id, @RequestBody CartDTO updatedCartDTO) {
-        if (cartRepository.existsById(id)) {
-            Cart updatedCart = toDomain(updatedCartDTO);
-
-            updatedCart.setId(id);
-            cartRepository.save(updatedCart);
-
-            return toDTO(updatedCart);
-        } else {
-            throw new NoSuchElementException();
-        }
+        return cartService.updateCartbyId(id, updatedCartDTO);
     }
 
     @Transactional
     @DeleteMapping("/{id}/")
     public CartDTO deleteCart(@PathVariable long id) {
-        Cart cart = cartRepository.findById(id).orElseThrow();
+        CartDTO cart = cartService.getCart(id);
 
-        cartRepository.deleteById(id);
+        cartService.deleteCartById(id);
 
-        return toDTO(cart);
-    }
-
-    // DTO methods
-    private CartDTO toDTO(Cart cart) {
-        return mapper.toDTO(cart);
-    }
-
-    private Cart toDomain(CartDTO cartDTO) {
-        return mapper.toDomain(cartDTO);
-    }
-
-    private List<CartDTO> toDTOs(List<Cart> carts) {
-        return mapper.toDTOs(carts);
+        return cart;
     }
 
     // Exception handling

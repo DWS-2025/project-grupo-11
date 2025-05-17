@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,10 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
-import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.model.dto.ProductDTO;
-import grupo11.bcf_store.model.mapper.ProductMapper;
-import grupo11.bcf_store.repository.ProductRepository;
 import grupo11.bcf_store.service.ProductService;
 import jakarta.transaction.Transactional;
 
@@ -41,58 +37,36 @@ public class ProductRestController {
 
 	@Autowired
 	private ProductService productService;
-	
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private ProductMapper mapper;
 
     // API methods
     @GetMapping("/")
     public Page<ProductDTO> getProducts(Pageable pageable, @RequestParam(defaultValue = "10") int size) {
         Pageable updatedPageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort());
-        return productRepository.findAll(updatedPageable).map(this::toDTO);
+        return productService.getProducts(updatedPageable);
     }
 
     @GetMapping("/{id}/")
 	public ProductDTO getProduct(@PathVariable long id) {
-        return toDTO(productRepository.findById(id).orElseThrow());	
-}
+        return productService.getProduct(id);
+    }
 
     @PostMapping("/")
 	public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
-
-		Product product = toDomain(productDTO);
-
-		Product savedProduct = productRepository.save(product);
-
-		URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedProduct.getId()).toUri();
-
-		return ResponseEntity.created(location).body(toDTO(savedProduct));
+		productService.save(productDTO);
+        ProductDTO savedProduct = productService.getProduct(productDTO.id());
+		URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedProduct.id()).toUri();
+		return ResponseEntity.created(location).body(savedProduct);
 	}
 
     @PutMapping("/{id}/")
 	public ProductDTO replaceProduct(@PathVariable long id, @RequestBody ProductDTO updatedProductDTO) {
-
-		if (productRepository.existsById(id)) {
-
-			Product updatedProduct = toDomain(updatedProductDTO);
-
-			updatedProduct.setId(id);
-			productRepository.save(updatedProduct);
-
-			return toDTO(updatedProduct);
-
-		} else {
-			throw new NoSuchElementException();
-		}
+		productService.save(updatedProductDTO);
+        return productService.getProduct(id);
 	}
 
 	@Transactional
     @DeleteMapping("/{id}/")
 	public ProductDTO deleteProduct(@PathVariable long id) {
-
 		ProductDTO product = productService.getProduct(id);
 		if (product != null) {
 			productService.removeProduct(product);
@@ -162,22 +136,11 @@ public class ProductRestController {
 		return ResponseEntity.noContent().build();
 	}
 
-
-    // DTO methods
-    private ProductDTO toDTO(Product product){
-		return mapper.toDTO(product);
-	}
-
-	private Product toDomain(ProductDTO productDTO){
-		return mapper.toDomain(productDTO);
-	}
-
-        
     // Exception handling
     @ControllerAdvice
     class NoSuchElementExceptionControllerAdvice {
 
-        @ResponseStatus(HttpStatus.NOT_FOUND)
+        @ResponseStatus(org.springframework.http.HttpStatus.NOT_FOUND)
         @ExceptionHandler(NoSuchElementException.class)
         public void handleNoTFound() {
         }

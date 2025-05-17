@@ -1,6 +1,7 @@
 package grupo11.bcf_store.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,10 +39,26 @@ public class CartService {
         return cartRepository.findAll().size();
     }
 
-    public void saveCart(CartDTO cartDTO) {
+    public Cart saveCart(CartDTO cartDTO) {
         if (cartDTO != null) {
             Cart cart = cartMapper.toDomain(cartDTO);
             cartRepository.save(cart);
+            return cart;
+        }
+
+        return null;
+    }
+
+    public CartDTO updateCartbyId(long id, CartDTO updatedCartDTO) {  
+        if (cartRepository.existsById(id)) {
+            Cart updatedCart = cartMapper.toDomain(updatedCartDTO);
+
+            updatedCart.setId(id);
+            cartRepository.save(updatedCart);
+
+            return cartMapper.toDTO(updatedCart);
+        } else {
+            throw new NoSuchElementException();
         }
     }
 

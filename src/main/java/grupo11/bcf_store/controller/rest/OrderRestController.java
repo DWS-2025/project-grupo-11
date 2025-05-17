@@ -21,11 +21,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
-import grupo11.bcf_store.model.Order;
 import grupo11.bcf_store.model.dto.OrderDTO;
-import grupo11.bcf_store.model.mapper.OrderMapper;
-import grupo11.bcf_store.repository.OrderRepository;
-import jakarta.servlet.http.HttpServletRequest;
+import grupo11.bcf_store.service.OrderService;
 import jakarta.transaction.Transactional;
 
 @RestController
@@ -33,71 +30,42 @@ import jakarta.transaction.Transactional;
 public class OrderRestController {
 
     @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private OrderMapper mapper;
+    private OrderService orderService;
 
     // API methods
     @GetMapping("/")
     public List<OrderDTO> getOrders() {
-        return toDTOs(orderRepository.findAll());
+        return orderService.getOrders();
     }
 
     @GetMapping("/{id}/")
     public OrderDTO getOrder(@PathVariable long id) {
-        return toDTO(orderRepository.findById(id).orElseThrow());
+        return orderService.getOrder(id);
     }
 
     @PostMapping("/")
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO, Principal principal, HttpServletRequest request) {
-        Order order = toDomain(orderDTO);
-        request.getUserPrincipal();
-        //orderDTO.products()
-        //order.setUser(usuarioActual);
-        // Guarda el pedido y usa el objeto guardado para el DTO y la URI
-        Order savedOrder = orderRepository.save(order);
-        principal.getName();
-        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedOrder.getId()).toUri();
-
-        return ResponseEntity.created(location).body(toDTO(savedOrder));
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
+        OrderDTO savedOrder = orderService.save(orderDTO);
+        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedOrder.id()).toUri();
+        return ResponseEntity.created(location).body(savedOrder);
     }
 
     @PutMapping("/{id}/")
     public OrderDTO replaceOrder(@PathVariable long id, @RequestBody OrderDTO updatedOrderDTO) {
-        if (orderRepository.existsById(id)) {
-            Order updatedOrder = toDomain(updatedOrderDTO);
-
-            updatedOrder.setId(id);
-            orderRepository.save(updatedOrder);
-
-            return toDTO(updatedOrder);
-        } else {
-            throw new NoSuchElementException();
-        }
+        // Save will update if id exists
+        return orderService.save(updatedOrderDTO);
     }
 
     @Transactional
     @DeleteMapping("/{id}/")
     public OrderDTO deleteOrder(@PathVariable long id) {
-        Order order = orderRepository.findById(id).orElseThrow();
-
-        orderRepository.deleteById(id);
-
-        return toDTO(order);
-    }
-
-    // DTO methods
-    private OrderDTO toDTO(Order order) {
-        return mapper.toDTO(order);
-    }
-
-    private Order toDomain(OrderDTO orderDTO) {
-        return mapper.toDomain(orderDTO);
-    }
-
-    private List<OrderDTO> toDTOs(List<Order> orders) {
-        return mapper.toDTOs(orders);
+        OrderDTO order = orderService.getOrder(id);
+        if (order != null) {
+            orderService.remove(id);
+            return order;
+        } else {
+            throw new NoSuchElementException();
+        }
     }
 
     // Exception handling
