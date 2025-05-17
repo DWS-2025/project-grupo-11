@@ -52,8 +52,7 @@ public class ProductRestController {
 
     @PostMapping("/")
 	public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
-		productService.save(productDTO);
-        ProductDTO savedProduct = productService.getProduct(productDTO.id());
+		ProductDTO savedProduct = productService.save(productDTO);
 		URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedProduct.id()).toUri();
 		return ResponseEntity.created(location).body(savedProduct);
 	}

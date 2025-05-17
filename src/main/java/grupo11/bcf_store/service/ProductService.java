@@ -58,9 +58,10 @@ public class ProductService {
                 .orElse(null);
     }
 
-    public void save(ProductDTO productDTO) {
+    public ProductDTO save(ProductDTO productDTO) {
         if(productDTO != null) {
-            productRepository.save(productMapper.toDomain(productDTO));
+            Product savedProduct = productRepository.save(productMapper.toDomain(productDTO));
+            return productMapper.toDTO(savedProduct);
         } else {
             throw new IllegalArgumentException("ProductDTO cannot be null");
         }
@@ -213,6 +214,15 @@ public class ProductService {
             byte[] bytes = inputStream.readAllBytes();
             return BlobProxy.generateProxy(bytes);
         }
+    }
+
+    // DTO methods
+    public ProductDTO toDTO (Product product) {
+        return productMapper.toDTO(product);
+    }
+
+    public Product toDomain (ProductDTO productDTO) {
+        return productMapper.toDomain(productDTO);
     }
 
     // Image methods

@@ -59,7 +59,7 @@ public class OrderWebController {
         if (cart != null) {
             List<ProductDTO> productsInCart = cartService.getProductsInCart(cart);
             if (productsInCart != null && !productsInCart.isEmpty()) {
-                OrderDTO newOrder = orderService.createOrderForUser(productsInCart, username); // Associate order with user
+                OrderDTO newOrder = orderService.createOrderForUser(productsInCart, request); // Associate order with user
                 cartService.clearCart(cart);
                 return "redirect:/view-order/" + newOrder.id() + "/";
             } else {

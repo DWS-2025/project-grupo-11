@@ -1,5 +1,6 @@
 package grupo11.bcf_store.service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import grupo11.bcf_store.model.mapper.OrderMapper;
 import grupo11.bcf_store.model.mapper.ProductMapper;
 import grupo11.bcf_store.repository.OrderRepository;
 import grupo11.bcf_store.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class OrderService {
@@ -34,6 +36,14 @@ public class OrderService {
     public OrderDTO save(OrderDTO orderDTO) {
         Order order = orderMapper.toDomain(orderDTO);
         return orderMapper.toDTO(orderRepository.save(order));
+    }
+
+    public void assignOrderToUser(OrderDTO orderDTO, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new IllegalStateException("Usuario no encontrado: " + principal.getName()));
+        Order order = orderMapper.toDomain(orderDTO);
+        order.setUser(user);
+        orderRepository.save(order);
     }
 
     public OrderDTO getOrder(long id) {
@@ -72,7 +82,7 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public OrderDTO createOrder(List<ProductDTO> productsDTO) {
+    public OrderDTO createOrder(List<ProductDTO> productsDTO, HttpServletRequest request) {
         List<Product> products = productMapper.toDomain(productsDTO);
 
         for (Product product : products) {
@@ -82,6 +92,8 @@ public class OrderService {
         }
 
         Order newOrder = new Order(products);
+        newOrder.setUser(userRepository.findByUsername(request.getUserPrincipal().getName()).orElseThrow(() -> 
+            new IllegalStateException("Usuario no encontrado: " + request.getUserPrincipal().getName())));
 
         for (Product product : products) {
             product.getOrders().add(newOrder);
@@ -92,7 +104,8 @@ public class OrderService {
         return orderMapper.toDTO(newOrder);
     }
 
-    public OrderDTO createOrderForUser(List<ProductDTO> productsDTO, String username) {
+    public OrderDTO createOrderForUser(List<ProductDTO> productsDTO, HttpServletRequest request) {
+        String username = request.getUserPrincipal().getName();
         User user = userRepository.findByUsername(username).orElseThrow(() -> 
             new IllegalStateException("Usuario no encontrado: " + username));
         
@@ -131,4 +144,5 @@ public class OrderService {
                 .map(order -> order.getUser().getUsername().equals(username))
                 .orElse(false);
     }
+
 }

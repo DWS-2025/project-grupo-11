@@ -44,8 +44,9 @@ public class OrderRestController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO, Principal principal) {
         OrderDTO savedOrder = orderService.save(orderDTO);
+        orderService.assignOrderToUser(savedOrder, principal);
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedOrder.id()).toUri();
         return ResponseEntity.created(location).body(savedOrder);
     }
