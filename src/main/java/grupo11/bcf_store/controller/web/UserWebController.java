@@ -239,9 +239,14 @@ public class UserWebController {
     public String updateUser(
             @RequestParam(required = false) String fullName,
             @RequestParam(required = false) String description,
-            HttpServletRequest request) {
+            HttpServletRequest request, Model model) {
         String currentUsername = userService.getLoggedInUsername(request);
         User user = userService.findByUsername(currentUsername);
+
+        if (!userService.canAccessUser(request, user.getId())) {
+            model.addAttribute("errorMessage", "No autorizado.");
+            return "error";
+        }
 
         user.setFullName(fullName);
         user.setDescription(description);
@@ -254,9 +259,14 @@ public class UserWebController {
     public String updateCredentials(
             @RequestParam String username,
             @RequestParam String password,
-            HttpServletRequest request) {
+            HttpServletRequest request, Model model) {
         String currentUsername = userService.getLoggedInUsername(request);
         User user = userService.findByUsername(currentUsername);
+
+        if (!userService.canAccessUser(request, user.getId())) {
+            model.addAttribute("errorMessage", "No autorizado.");
+            return "error";
+        }
 
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
@@ -270,6 +280,11 @@ public class UserWebController {
     public String deleteUser(HttpServletRequest request, Model model) {
         String currentUsername = userService.getLoggedInUsername(request);
         User user = userService.findByUsername(currentUsername);
+
+        if (!userService.canAccessUser(request, user.getId())) {
+            model.addAttribute("errorMessage", "No autorizado.");
+            return "error";
+        }
 
         // Prevent admin from deleting their own account
         if (user.getRoles() != null && user.getRoles().contains("ADMIN")) {

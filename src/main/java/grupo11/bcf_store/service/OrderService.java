@@ -37,6 +37,9 @@ public class OrderService {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private UserService userService;
+
     public OrderDTO save(OrderDTO orderDTO) {
         Order order = orderMapper.toDomain(orderDTO);
         return orderMapper.toDTO(orderRepository.save(order));
@@ -190,6 +193,22 @@ public class OrderService {
         return orderRepository.findById(orderId)
                 .map(order -> order.getUser().getUsername().equals(username))
                 .orElse(false);
+    }
+
+    public boolean isSelf(HttpServletRequest request, long userId) {
+        return userService.isSelf(request, userId);
+    }
+
+    public boolean isAdmin(HttpServletRequest request) {
+        return userService.isAdmin(request);
+    }
+
+    public boolean canAccessOrder(HttpServletRequest request, long orderId) {
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order == null) return false;
+        String username = userService.getLoggedInUsername(request);
+        if (username == null) return false;
+        return (order.getUser() != null && order.getUser().getUsername().equals(username)) || isAdmin(request);
     }
 
 }

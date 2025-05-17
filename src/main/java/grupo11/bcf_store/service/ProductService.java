@@ -60,6 +60,19 @@ public class ProductService {
 
     public ProductDTO save(ProductDTO productDTO) {
         if(productDTO != null) {
+            if (productDTO.id() != null) {
+                // Actualización: solo nombre, precio y descripción
+                Product existing = productRepository.findById(productDTO.id()).orElse(null);
+                if (existing != null) {
+                    existing.setName(productDTO.name());
+                    existing.setPrice(productDTO.price());
+                    existing.setDescription(productDTO.description());
+                    // No modificar imagen ni orders aquí
+                    productRepository.save(existing);
+                    return productMapper.toDTO(existing);
+                }
+            }
+            // Si no existe, crear nuevo
             Product savedProduct = productRepository.save(productMapper.toDomain(productDTO));
             return productMapper.toDTO(savedProduct);
         } else {
@@ -71,6 +84,17 @@ public class ProductService {
         productRepository.save(product);
         product.setImage("http://localhost:8080/product-image/" + product.getId() + "/");
         productRepository.save(product);
+    }
+
+    public ProductDTO updateProductREST (long id, ProductDTO updatedProductDTO) {
+        Product existingProduct = productRepository.findById(id).orElseThrow();
+        
+        existingProduct.setName(updatedProductDTO.name());
+        existingProduct.setDescription(updatedProductDTO.description());
+        existingProduct.setPrice(updatedProductDTO.price());
+
+        productRepository.save(existingProduct);
+        return productMapper.toDTO(existingProduct);
     }
 
     @Transactional

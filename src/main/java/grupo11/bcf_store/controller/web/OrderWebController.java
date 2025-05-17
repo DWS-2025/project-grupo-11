@@ -14,8 +14,8 @@ import grupo11.bcf_store.model.dto.OrderDTO;
 import grupo11.bcf_store.model.dto.ProductDTO;
 import grupo11.bcf_store.service.CartService;
 import grupo11.bcf_store.service.OrderService;
-import jakarta.servlet.http.HttpServletRequest;
 import grupo11.bcf_store.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class OrderWebController {
@@ -54,6 +54,10 @@ public class OrderWebController {
         }
 
         long cartId = userService.getCartIdByUsername(username); // Get cart ID for the user
+        if (!cartService.canAccessCart(request, cartId)) {
+            model.addAttribute("errorMessage", "No autorizado.");
+            return "error";
+        }
         CartDTO cart = cartService.getCart(cartId);
 
         if (cart != null) {
@@ -73,7 +77,11 @@ public class OrderWebController {
     }
 
     @PostMapping("/delete-order/{id}/")
-    public String deleteOrder(@PathVariable long id, Model model) {
+    public String deleteOrder(@PathVariable long id, Model model, HttpServletRequest request) {
+        if (!orderService.canAccessOrder(request, id)) {
+            model.addAttribute("errorMessage", "No autorizado.");
+            return "error";
+        }
         OrderDTO order_to_delete = orderService.getOrder(id);
 
         if (order_to_delete != null) {
@@ -97,7 +105,7 @@ public class OrderWebController {
         boolean isAdmin = userService.isAdmin(request);
         model.addAttribute("admin", isAdmin);
 
-        if (orderService.isOrderOwnedByUser(id, username) || isAdmin) {
+        if (orderService.canAccessOrder(request, id)) {
             OrderDTO order = orderService.getOrder(id);
             if(order != null) {
                 model.addAttribute("order", order);

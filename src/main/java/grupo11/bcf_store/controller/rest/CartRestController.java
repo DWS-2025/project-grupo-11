@@ -53,13 +53,19 @@ public class CartRestController {
     }
 
     @PutMapping("/{id}/")
-    public CartDTO replaceCart(@PathVariable long id, @RequestBody CartDTO updatedCartDTO) {
+    public CartDTO replaceCart(@PathVariable long id, @RequestBody CartDTO updatedCartDTO, jakarta.servlet.http.HttpServletRequest request) {
+        if (!cartService.canAccessCart(request, id)) {
+            throw new SecurityException("No autorizado");
+        }
         return cartService.updateCartbyId(id, updatedCartDTO);
     }
 
     @Transactional
     @DeleteMapping("/{id}/")
-    public CartDTO deleteCart(@PathVariable long id) {
+    public CartDTO deleteCart(@PathVariable long id, jakarta.servlet.http.HttpServletRequest request) {
+        if (!cartService.canAccessCart(request, id)) {
+            throw new SecurityException("No autorizado");
+        }
         CartDTO cart = cartService.getCart(id);
 
         cartService.deleteCartById(id);

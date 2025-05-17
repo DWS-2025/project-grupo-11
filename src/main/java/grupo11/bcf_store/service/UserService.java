@@ -7,11 +7,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import grupo11.bcf_store.model.User;
 import grupo11.bcf_store.model.dto.UserDTO;
 import grupo11.bcf_store.model.mapper.UserMapper;
 import grupo11.bcf_store.repository.UserRepository;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 
 @Service
 public class UserService {
@@ -138,5 +145,84 @@ public class UserService {
 
 	public List<User> findAll() {
 		return userRepository.findAll();
+	}
+
+    public void uploadDni(long userId, MultipartFile dniFile, HttpServletRequest request) throws Exception {
+        User user = userRepository.findById(userId).orElseThrow();
+        boolean isSelf = isSelf(request, userId);
+        boolean isAdmin = isAdmin(request);
+        if (!isSelf && !isAdmin) {
+            throw new SecurityException("No autorizado");
+        }
+
+        if (dniFile.isEmpty()) {
+            throw new IllegalArgumentException("No se ha seleccionado ningún archivo.");
+        }
+        if (dniFile.getSize() > 5 * 1024 * 1024) {
+            throw new IllegalArgumentException("El archivo es demasiado grande (máximo 5 MB).");
+        }
+        String originalFilename = dniFile.getOriginalFilename();
+        if (originalFilename == null || originalFilename.contains("..")) {
+            throw new IllegalArgumentException("Nombre de archivo no válido.");
+        }
+        originalFilename = originalFilename.replaceAll("[^a-zA-Z0-9._-]", "_");
+        String storedFilename = user.getId() + "_" + originalFilename;
+        String tempFilename = "temp_" + System.currentTimeMillis() + "_" + storedFilename;
+        Path dniDirPath = Paths.get("dni");
+        Path tempFilePath = dniDirPath.resolve(tempFilename);
+
+        if (!Files.exists(dniDirPath)) {
+            Files.createDirectories(dniDirPath);
+        }
+
+        dniFile.transferTo(tempFilePath);
+
+        String mimeType = Files.probeContentType(tempFilePath);
+        if (mimeType == null || !mimeType.equals("image/jpeg")) {
+            Files.deleteIfExists(tempFilePath);
+            throw new IllegalArgumentException("El archivo subido no es una imagen válida.");
+        }
+        BufferedImage image = ImageIO.read(tempFilePath.toFile());
+        if (image == null) {
+            Files.deleteIfExists(tempFilePath);
+            throw new IllegalArgumentException("El archivo subido no es una imagen válida.");
+        }
+
+        // Delete previous DNI file if exists
+        String previousDni = user.getDniOriginalFilename();
+        if (previousDni != null && !previousDni.isBlank()) {
+            Path previousFilePath = dniDirPath.resolve(previousDni);
+            try { Files.deleteIfExists(previousFilePath); } catch (Exception ignore) {}
+        }
+
+        Path filePath = dniDirPath.resolve(storedFilename);
+        Files.move(tempFilePath, filePath);
+
+        user.setDniOriginalFilename(storedFilename);
+        userRepository.save(user);
+
+        // Clean up temp file
+        try { Files.deleteIfExists(tempFilePath); } catch (Exception ignore) {}
+    }
+
+    public void deleteDni(long userId, HttpServletRequest request) throws Exception {
+        User user = userRepository.findById(userId).orElseThrow();
+        boolean isSelf = isSelf(request, userId);
+        boolean isAdmin = isAdmin(request);
+        if (!isSelf && !isAdmin) {
+            throw new SecurityException("No autorizado");
+        }
+        String dniFilename = user.getDniOriginalFilename();
+        if (dniFilename != null && !dniFilename.isBlank()) {
+            Path dniDirPath = Paths.get("dni");
+            Path filePath = dniDirPath.resolve(dniFilename);
+            try { Files.deleteIfExists(filePath); } catch (Exception ignore) {}
+            user.setDniOriginalFilename(null);
+            userRepository.save(user);
+        }
+    }
+
+	public boolean canAccessUser(HttpServletRequest request, long userId) {
+		return isSelf(request, userId) || isAdmin(request);
 	}
 }

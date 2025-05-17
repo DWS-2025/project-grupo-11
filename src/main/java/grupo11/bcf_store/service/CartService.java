@@ -3,6 +3,8 @@ package grupo11.bcf_store.service;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,9 @@ public class CartService {
 
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private UserService userService;
 
     public List<CartDTO> getCarts() {
         return cartMapper.toDTOs(cartRepository.findAll());
@@ -147,6 +152,22 @@ public class CartService {
             cartRepository.save(cart);
             cartRepository.deleteById(id);
         }
+    }
+
+    public boolean isSelf(HttpServletRequest request, long userId) {
+        return userService.isSelf(request, userId);
+    }
+
+    public boolean isAdmin(HttpServletRequest request) {
+        return userService.isAdmin(request);
+    }
+
+    public boolean canAccessCart(HttpServletRequest request, long cartId) {
+        CartDTO cart = getCart(cartId);
+        if (cart == null) return false;
+        String username = userService.getLoggedInUsername(request);
+        if (username == null) return false;
+        return (cart.userId() == userService.getLoggedInUserId(request)) || isAdmin(request);
     }
 
 }

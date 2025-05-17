@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
+import grupo11.bcf_store.model.Product;
 import grupo11.bcf_store.model.dto.ProductDTO;
 import grupo11.bcf_store.service.ProductService;
 import jakarta.transaction.Transactional;
@@ -59,8 +60,7 @@ public class ProductRestController {
 
     @PutMapping("/{id}/")
 	public ProductDTO replaceProduct(@PathVariable long id, @RequestBody ProductDTO updatedProductDTO) {
-		productService.save(updatedProductDTO);
-        return productService.getProduct(id);
+        return productService.updateProductREST(id, updatedProductDTO);
 	}
 
 	@Transactional
@@ -102,6 +102,7 @@ public class ProductRestController {
 
 		return ResponseEntity.created(location).build();
 	}
+
 
 	@GetMapping("/{id}/image/")
 	public ResponseEntity<Object> getProductImage(@PathVariable long id) throws SQLException, IOException {

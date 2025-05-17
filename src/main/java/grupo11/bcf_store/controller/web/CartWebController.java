@@ -35,6 +35,10 @@ public class CartWebController {
         }
 
         long cartId = userService.getCartIdByUsername(username); // Get cart ID for the user
+        if (!cartService.canAccessCart(request, cartId)) {
+            model.addAttribute("errorMessage", "No autorizado.");
+            return "error";
+        }
         CartDTO cart = cartService.getCart(cartId);
 
         if (cart != null) {
@@ -57,6 +61,10 @@ public class CartWebController {
         }
 
         long cartId = userService.getCartIdByUsername(username); // Get cart ID for the user
+        if (!cartService.canAccessCart(request, cartId)) {
+            model.addAttribute("errorMessage", "No autorizado.");
+            return "error";
+        }
         ProductDTO product = productService.getProduct(productId);
 
         if (product != null) {
@@ -83,6 +91,10 @@ public class CartWebController {
         }
 
         long cartId = userService.getCartIdByUsername(username); // Get cart ID for the user
+        if (!cartService.canAccessCart(request, cartId)) {
+            model.addAttribute("errorMessage", "No autorizado.");
+            return "error";
+        }
         ProductDTO product = productService.getProduct(productId);
 
         if (product != null) {

@@ -56,14 +56,20 @@ public class OrderRestController {
     }
 
     @PutMapping("/{id}/")
-    public OrderDTO replaceOrder(@PathVariable long id, @RequestBody OrderDTO updatedOrderDTO) {
+    public OrderDTO replaceOrder(@PathVariable long id, @RequestBody OrderDTO updatedOrderDTO, jakarta.servlet.http.HttpServletRequest request) {
+        if (!orderService.canAccessOrder(request, id)) {
+            throw new SecurityException("No autorizado");
+        }
         // Save will update if id exists
         return orderService.save(updatedOrderDTO);
     }
 
     @Transactional
     @DeleteMapping("/{id}/")
-    public OrderDTO deleteOrder(@PathVariable long id) {
+    public OrderDTO deleteOrder(@PathVariable long id, jakarta.servlet.http.HttpServletRequest request) {
+        if (!orderService.canAccessOrder(request, id)) {
+            throw new SecurityException("No autorizado");
+        }
         OrderDTO order = orderService.getOrder(id);
         if (order != null) {
             orderService.remove(id);

@@ -78,6 +78,16 @@ public class SecurityConfiguration {
 					.requestMatchers(HttpMethod.POST, "/api/auth/logout/").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/auth/register/").permitAll()
 
+					// USER ENDPOINTS
+					.requestMatchers(HttpMethod.GET, "/api/orders/**").hasRole("USER")
+
+					.requestMatchers(HttpMethod.GET, "/api/carts/**").hasRole("USER")
+					
+					.requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("USER")
+					.requestMatchers(HttpMethod.DELETE, "/api/users/{id}/").hasRole("USER")
+					.requestMatchers(HttpMethod.POST, "/api/users/{id}/dni/").hasRole("USER")
+					.requestMatchers(HttpMethod.DELETE, "/api/users/{id}/dni/").hasRole("USER")
+
 					// ADMIN ENDPOINTS
 					.requestMatchers(HttpMethod.POST, "/api/products/").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.PUT, "/api/products/{id}/").hasRole("ADMIN")
@@ -86,17 +96,13 @@ public class SecurityConfiguration {
 					.requestMatchers(HttpMethod.PUT, "/api/products/{id}/image/").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.DELETE, "/api/products/{id}/image/").hasRole("ADMIN")
 
-					.requestMatchers(HttpMethod.GET, "/api/orders/**").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.POST, "/api/orders/").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.DELETE, "/api/orders/{id}/").hasRole("ADMIN")
 
-					.requestMatchers(HttpMethod.GET, "/api/carts/**").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.POST, "/api/carts/").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.DELETE, "/api/carts/{id}/").hasRole("ADMIN")
 					
-					.requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.PUT, "/api/users/{id}/").hasRole("ADMIN")
-					.requestMatchers(HttpMethod.DELETE, "/api/users/{id}/").hasRole("ADMIN")
 			);
 		
         // Disable Form login Authentication
