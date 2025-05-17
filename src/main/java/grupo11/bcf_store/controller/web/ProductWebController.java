@@ -42,7 +42,7 @@ public class ProductWebController {
 
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("currentPage", page);
-        
+
         model.addAttribute("username", userService.getLoggedInUsername(request));
         model.addAttribute("admin", userService.isAdmin(request));
 
@@ -88,23 +88,16 @@ public class ProductWebController {
     public String addProduct(@RequestParam("name") String name,
             @RequestParam("description") String description,
             @RequestParam("price") double price,
-            @RequestParam("image") MultipartFile image, Model model) throws Exception {
-        if (image.isEmpty()) {
-            model.addAttribute("errorMessage", "Debe subir una imagen.");
-            return "error";
-        }
-        String mimeType = image.getContentType();
-        if (mimeType == null || !(mimeType.equals("image/png") || mimeType.equals("image/jpg") || mimeType.equals("image/jpeg") || mimeType.equals("image/webp"))) {
-            model.addAttribute("errorMessage", "Solo se permiten imágenes");
-            return "error";
-        }
-
-        productService.submitProductAdded(name, description, price, image);
-
-        if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
+            @RequestParam("image") MultipartFile image,
+            Model model) {
+        try {
+            productService.submitProductAdded(name, description, price, image);
             return "redirect:/clothes/";
-        } else {
-            model.addAttribute("errorMessage", "Error al añadir producto. Por favor, rellene todos los campos.");
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Error interno al añadir producto.");
             return "error";
         }
     }
@@ -114,21 +107,16 @@ public class ProductWebController {
             @RequestParam("name") String name,
             @RequestParam("description") String description,
             @RequestParam("price") double price,
-            @RequestParam("image") MultipartFile image, Model model) throws Exception {
-        if (!image.isEmpty()) {
-            String mimeType = image.getContentType();
-            if (mimeType == null || !(mimeType.equals("image/png") || mimeType.equals("image/jpg") || mimeType.equals("image/jpeg") || mimeType.equals("image/webp"))) {
-                model.addAttribute("errorMessage", "Solo se permiten imágenes.");
-                return "error";
-            }
-        }
-
-        productService.submitProductEdited(id, name, description, price, image);
-
-        if (!name.isEmpty() && !description.isEmpty() && price > 0) {
+            @RequestParam("image") MultipartFile image,
+            Model model) {
+        try {
+            productService.submitProductEdited(id, name, description, price, image);
             return "redirect:/clothes/";
-        } else {
-            model.addAttribute("errorMessage", "Error al editar producto. Por favor, rellene todos los campos.");
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Error interno al editar producto.");
             return "error";
         }
     }
@@ -138,9 +126,10 @@ public class ProductWebController {
         ProductDTO product_to_view = productService.getProduct(id);
         List<OrderDTO> productOrders = productService.getProductOrders(id);
         List<OrderDTO> uniqueProductOrders = productService.getUniqueProductOrders(id);
-        List<OrderDTO> userUniqueProductOrders = productService.getUserUniqueProductOrders(id, userService.getLoggedInUserId(request));
+        List<OrderDTO> userUniqueProductOrders = productService.getUserUniqueProductOrders(id,
+                userService.getLoggedInUserId(request));
         boolean isAdmin = userService.isAdmin(request);
-        
+
         model.addAttribute("username", userService.getLoggedInUsername(request));
         model.addAttribute("admin", userService.isAdmin(request));
 
@@ -148,20 +137,20 @@ public class ProductWebController {
             model.addAttribute("product", product_to_view);
 
             if (productOrders != null && !productOrders.isEmpty()) {
-                if(isAdmin) {
-                    if(uniqueProductOrders != null && !uniqueProductOrders.isEmpty()) {
+                if (isAdmin) {
+                    if (uniqueProductOrders != null && !uniqueProductOrders.isEmpty()) {
                         model.addAttribute("uniqueProductOrders", uniqueProductOrders);
                     } else {
                         model.addAttribute("uniqueProductOrders", null);
                     }
                 } else {
-                    if(userUniqueProductOrders != null && !userUniqueProductOrders.isEmpty()) {
+                    if (userUniqueProductOrders != null && !userUniqueProductOrders.isEmpty()) {
                         model.addAttribute("uniqueProductOrders", userUniqueProductOrders);
                     } else {
                         model.addAttribute("uniqueProductOrders", null);
                     }
                 }
-                
+
             }
             return "view";
         } else {
@@ -199,7 +188,6 @@ public class ProductWebController {
         Pageable pageable = PageRequest.of(page, size);
         return productService.searchProducts(name, description, price, pageable).getContent();
     }
-    
 
     @GetMapping("/product-image/{id}/")
     public ResponseEntity<byte[]> getProductImage(@PathVariable long id) throws Exception {

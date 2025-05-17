@@ -116,52 +116,80 @@ public class ProductService {
 
     public ProductDTO submitProductAdded(String name, String description, double price, MultipartFile imageFile)
             throws Exception {
-        Product product = new Product();
-
-        if (!name.isEmpty() && !description.isEmpty() && price > 0) {
-            product.setName(name);
-            product.setDescription(description);
-            product.setPrice(price);
-
-            // Save the product to generate an ID
-            product = productRepository.save(product);
-
-            if (!imageFile.isEmpty()) {
-                String mimeType = imageFile.getContentType();
-                if (mimeType == null || !(mimeType.equals("image/png") || mimeType.equals("image/jpg") || mimeType.equals("image/jpeg") || mimeType.equals("image/webp"))) {
-                    throw new IllegalArgumentException("Solo se permiten imágenes.");
-                }
-                product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
-                product.setImage("http://localhost:8080/product-image/" + product.getId() + "/");
-            }
-
-            // Save the product again to update the image
-            product = productRepository.save(product);
+        // Validate required fields
+        if (name == null || name.trim().isEmpty() ||
+            description == null || description.trim().isEmpty() ||
+            price <= 0 || imageFile == null || imageFile.isEmpty()) {
+            throw new IllegalArgumentException("Todos los campos son obligatorios y deben ser válidos.");
         }
+
+        // Validate image file
+        String mimeType = imageFile.getContentType();
+        if (mimeType == null || !mimeType.equals("image/jpeg")) {
+            throw new IllegalArgumentException("El archivo subido no es una imagen válida.");
+        }
+        try {
+            java.awt.image.BufferedImage bufferedImage = javax.imageio.ImageIO.read(imageFile.getInputStream());
+            if (bufferedImage == null) {
+                throw new IllegalArgumentException("El archivo no es una imagen válida.");
+            }
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Error al procesar la imagen.");
+        }
+
+        Product product = new Product();
+        product.setName(name.trim());
+        product.setDescription(description.trim());
+        product.setPrice(price);
+
+        // Save the product to generate an ID
+        product = productRepository.save(product);
+
+        product.setImageFile(org.hibernate.engine.jdbc.BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+        product.setImage("http://localhost:8080/product-image/" + product.getId() + "/");
+
+        // Save the product again to update the image
+        product = productRepository.save(product);
+
         return productMapper.toDTO(product);
     }
 
     public ProductDTO submitProductEdited(long id, String name, String description, double price, MultipartFile imageFile)
             throws Exception {
+        // Validate required fields
+        if (name == null || name.trim().isEmpty() ||
+            description == null || description.trim().isEmpty() ||
+            price <= 0) {
+            throw new IllegalArgumentException("Todos los campos son obligatorios y deben ser válidos.");
+        }
+
         Product product = productRepository.findById(id).orElse(new Product());
 
-        if (!name.isEmpty() && !description.isEmpty() && price > 0) {
-            product.setName(name);
-            product.setDescription(description);
-            product.setPrice(price);
+        product.setName(name.trim());
+        product.setDescription(description.trim());
+        product.setPrice(price);
 
-            if (!imageFile.isEmpty()) {
-                String mimeType = imageFile.getContentType();
-                if (mimeType == null || !(mimeType.equals("image/png") || mimeType.equals("image/jpg") || mimeType.equals("image/jpeg") || mimeType.equals("image/webp"))) {
-                    throw new IllegalArgumentException("Solo se permiten imágenes.");
-                }
-                product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
-                product.setImage("http://localhost:8080/product-image/" + product.getId() + "/");
+        // If a new image file is provided, validate and set it
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String mimeType = imageFile.getContentType();
+            if (mimeType == null || !mimeType.equals("image/jpeg")) {
+                throw new IllegalArgumentException("El archivo subido no es una imagen válida.");
             }
-
-            // Save the product
-            product = productRepository.save(product);
+            try {
+                java.awt.image.BufferedImage bufferedImage = javax.imageio.ImageIO.read(imageFile.getInputStream());
+                if (bufferedImage == null) {
+                    throw new IllegalArgumentException("El archivo no es una imagen válida.");
+                }
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Error al procesar la imagen.");
+            }
+            product.setImageFile(org.hibernate.engine.jdbc.BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+            product.setImage("http://localhost:8080/product-image/" + product.getId() + "/");
         }
+
+        // Save the product
+        product = productRepository.save(product);
+
         return productMapper.toDTO(product);
     }
 
@@ -281,6 +309,23 @@ public class ProductService {
         return null;
     }
     
+    public void validateImageFile(MultipartFile imageFile) {
+        if (imageFile == null || imageFile.isEmpty()) {
+            throw new IllegalArgumentException("El archivo de imagen es obligatorio.");
+        }
+        String mimeType = imageFile.getContentType();
+        if (mimeType == null || !mimeType.equals("image/jpeg")) {
+            throw new IllegalArgumentException("El archivo subido no es una imagen válida.");
+        }
+        try {
+            java.awt.image.BufferedImage bufferedImage = javax.imageio.ImageIO.read(imageFile.getInputStream());
+            if (bufferedImage == null) {
+                throw new IllegalArgumentException("El archivo no es una imagen válida.");
+            }
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Error al procesar la imagen.");
+        }
+    }
     
     public Page<ProductDTO> convertToDTOPage(Page<Product> productPage) {
         return new PageImpl<>(
