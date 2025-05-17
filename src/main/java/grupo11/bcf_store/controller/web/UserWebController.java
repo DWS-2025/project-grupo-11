@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import grupo11.bcf_store.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import grupo11.bcf_store.model.User;
 import grupo11.bcf_store.model.Cart;
@@ -28,8 +27,6 @@ import java.util.List;
 
 @Controller
 public class UserWebController {
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -45,7 +42,7 @@ public class UserWebController {
 
     @GetMapping("/users/")
     public String getUsers(Model model) {
-        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("users", userService.getAllUsers());
         return "users";
     }
 
@@ -63,7 +60,7 @@ public class UserWebController {
 
     @PostMapping("/login/")
     public String performLogin(@RequestParam String username, @RequestParam String password, Model model) {
-        User user = userRepository.findByUsername(username).orElse(null);
+        User user = userService.findByUsername(username);
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             return "redirect:/myaccount/";
         }
@@ -91,7 +88,7 @@ public class UserWebController {
         @RequestParam String description,
         Model model
     ) {
-        if (userRepository.findByUsername(username).isPresent()) {
+        if (userService.existsByUsername(username)) {
             model.addAttribute("errorMessage", "El usuario ya existe.");
             return "error";
         }
@@ -102,16 +99,16 @@ public class UserWebController {
         newUser.setCart(new Cart());
         newUser.setFullName(fullName);
         newUser.setDescription(description);
-        userRepository.save(newUser);
+        userService.saveUser(newUser);
         return "redirect:/myaccount/";
     }
 
     @GetMapping("/private/")
     public String privatePage(Model model, HttpServletRequest request) {
-        String name = request.getUserPrincipal().getName();
-        User user = userRepository.findByUsername(name).orElseThrow();
+        String name = userService.getLoggedInUsername(request);
+        User user = userService.findByUsername(name);
         model.addAttribute("username", user.getUsername());
-        model.addAttribute("admin", request.isUserInRole("ADMIN"));
+        model.addAttribute("admin", userService.isAdmin(request));
         model.addAttribute("fullName", user.getFullName());
         model.addAttribute("description", user.getDescription() != null ? user.getDescription() : "");
         model.addAttribute("dniOriginalFilename", user.getDniOriginalFilename());
@@ -121,7 +118,7 @@ public class UserWebController {
     @PostMapping("/upload-dni/")
     public String uploadDni(@RequestParam("dniFile") MultipartFile dniFile, HttpServletRequest request, Model model) {
         String currentUsername = userService.getLoggedInUsername(request);
-        User user = userRepository.findByUsername(currentUsername).orElseThrow();
+        User user = userService.findByUsername(currentUsername);
 
         if (dniFile.isEmpty()) {
             model.addAttribute("errorMessage", "No se ha seleccionado ningún archivo.");
@@ -158,7 +155,7 @@ public class UserWebController {
             Files.move(tempFilePath, filePath);
 
             user.setDniOriginalFilename(originalFilename);
-            userRepository.save(user);
+            userService.saveUser(user);
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Error al guardar el archivo con ese nombre.");
             return "error";
@@ -176,7 +173,7 @@ public class UserWebController {
     @ResponseBody
     public ResponseEntity<byte[]> downloadDni(HttpServletRequest request) {
         String currentUsername = userService.getLoggedInUsername(request);
-        User user = userRepository.findByUsername(currentUsername).orElseThrow();
+        User user = userService.findByUsername(currentUsername);
 
         if (user.getDniOriginalFilename() == null) {
             return ResponseEntity.notFound().build();
@@ -210,11 +207,11 @@ public class UserWebController {
         HttpServletRequest request
     ) {
         String currentUsername = userService.getLoggedInUsername(request);
-        User user = userRepository.findByUsername(currentUsername).orElseThrow();
+        User user = userService.findByUsername(currentUsername);
 
         user.setFullName(fullName);
         user.setDescription(description);
-        userRepository.save(user);
+        userService.saveUser(user);
 
         return "redirect:/private/";
     }
@@ -226,11 +223,11 @@ public class UserWebController {
         HttpServletRequest request
     ) {
         String currentUsername = userService.getLoggedInUsername(request);
-        User user = userRepository.findByUsername(currentUsername).orElseThrow();
+        User user = userService.findByUsername(currentUsername);
 
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
-        userRepository.save(user);
+        userService.saveUser(user);
 
         request.getSession().invalidate();
         return "redirect:/login/";
@@ -239,7 +236,7 @@ public class UserWebController {
     @PostMapping("/delete-user/")
     public String deleteUser(HttpServletRequest request, Model model) {
         String currentUsername = userService.getLoggedInUsername(request);
-        User user = userRepository.findByUsername(currentUsername).orElseThrow();
+        User user = userService.findByUsername(currentUsername);
 
         // Prevent admin from deleting their own account
         if (user.getRoles() != null && user.getRoles().contains("ADMIN")) {
@@ -257,7 +254,10 @@ public class UserWebController {
 
     @GetMapping("/admin/")
     public String adminPage(Model model) {
-        var users = userRepository.findAll().stream().map(user -> {
+        // Obtain the list of users
+        List<User> userEntities = userService.findAll(); // Ensure this method returns a list of User entities
+
+        var users = userEntities.stream().map(user -> {
             String safeDescription = user.getDescription() != null ? user.getDescription() : "";
             return new Object() {
                 public final long id = user.getId();
@@ -270,8 +270,7 @@ public class UserWebController {
         }).toList();
         model.addAttribute("users", users);
 
-        // Add cart information for each cart
-        var carts = userRepository.findAll().stream().map(user -> {
+        var carts = userEntities.stream().map(user -> {
             var cart = user.getCart();
             return new Object() {
                 public final long id = cart.getId();
@@ -290,7 +289,7 @@ public class UserWebController {
     public String adminDeleteUser(@PathVariable long id, HttpServletRequest request, Model model) {
         // Prevent admin from deleting their own account
         String currentUsername = userService.getLoggedInUsername(request);
-        User userToDelete = userRepository.findById(id).orElse(null);
+        User userToDelete = userService.findById(id);
         if (userToDelete == null) {
             model.addAttribute("errorMessage", "Usuario no encontrado.");
             return "error";

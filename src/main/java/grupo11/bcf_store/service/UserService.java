@@ -115,4 +115,23 @@ public class UserService {
 		return user.getCart().getId();
 	}
 
+	public User findByUsername(String username) {
+		return userRepository.findByUsername(username).orElse(null);
+	}
+
+	public boolean existsByUsername(String username) {
+		return userRepository.findByUsername(username).isPresent();
+	}
+
+	public void saveUser(User user) {
+		userRepository.save(user);
+	}
+
+	public User findById(long id) {
+		return userRepository.findById(id).orElse(null);
+	}
+
+	public List<User> findAll() {
+		return userRepository.findAll();
+	}
 }
