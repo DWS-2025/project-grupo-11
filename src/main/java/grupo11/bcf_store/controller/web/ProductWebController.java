@@ -89,6 +89,16 @@ public class ProductWebController {
             @RequestParam("description") String description,
             @RequestParam("price") double price,
             @RequestParam("image") MultipartFile image, Model model) throws Exception {
+        if (image.isEmpty()) {
+            model.addAttribute("errorMessage", "Debe subir una imagen.");
+            return "error";
+        }
+        String mimeType = image.getContentType();
+        if (mimeType == null || !(mimeType.equals("image/png") || mimeType.equals("image/jpg") || mimeType.equals("image/jpeg") || mimeType.equals("image/webp"))) {
+            model.addAttribute("errorMessage", "Solo se permiten imágenes");
+            return "error";
+        }
+
         productService.submitProductAdded(name, description, price, image);
 
         if (!name.isEmpty() && !description.isEmpty() && price > 0 && !image.isEmpty()) {
@@ -105,6 +115,16 @@ public class ProductWebController {
             @RequestParam("description") String description,
             @RequestParam("price") double price,
             @RequestParam("image") MultipartFile image, Model model) throws Exception {
+        // --- Protección contra archivos no imagen ---
+        if (!image.isEmpty()) {
+            String mimeType = image.getContentType();
+            if (mimeType == null || !(mimeType.equals("image/png") || mimeType.equals("image/jpg") || mimeType.equals("image/jpeg") || mimeType.equals("image/webp"))) {
+                model.addAttribute("errorMessage", "Solo se permiten imágenes.");
+                return "error";
+            }
+        }
+        // --- Fin protección ---
+
         productService.submitProductEdited(id, name, description, price, image);
 
         if (!name.isEmpty() && !description.isEmpty() && price > 0) {

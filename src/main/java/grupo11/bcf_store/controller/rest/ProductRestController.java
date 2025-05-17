@@ -116,6 +116,11 @@ public class ProductRestController {
 	@PostMapping("/{id}/image/")
 	public ResponseEntity<Object> createProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
 			throws IOException {
+		String mimeType = imageFile.getContentType();
+		if (mimeType == null || !(mimeType.equals("image/png") || mimeType.equals("image/jpg") || mimeType.equals("image/jpeg") || mimeType.equals("image/webp"))) {
+			return ResponseEntity.badRequest().body("Solo se permiten imágenes.");
+		}
+
 		String location_string = "http://localhost:8080/product-image/" + id + "/";
 		URI location = URI.create(location_string);
 
@@ -138,6 +143,11 @@ public class ProductRestController {
 	@PutMapping("/{id}/image/")
 	public ResponseEntity<Object> replaceProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile)
 			throws IOException {
+
+		String mimeType = imageFile.getContentType();
+		if (mimeType == null || !(mimeType.equals("image/png") || mimeType.equals("image/jpg") || mimeType.equals("image/jpeg") || mimeType.equals("image/webp"))) {
+			return ResponseEntity.badRequest().body("Solo se permiten imágenes.");
+		}
 
 		productService.replaceProductImage(id, imageFile.getInputStream(), imageFile.getSize());
 
