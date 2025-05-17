@@ -80,7 +80,6 @@ public class ProductWebController {
     public String editProductRedirect(@PathVariable long id, Model model) {
         ProductDTO product_to_edit = productService.getProduct(id);
         model.addAttribute("product", product_to_edit);
-
         return "add";
     }
 
@@ -102,8 +101,9 @@ public class ProductWebController {
         }
     }
 
-    @PostMapping("/edit-product/")
-    public String editProduct(@RequestParam("id") long id,
+    @PostMapping("/edit-product/{id}/")
+    public String editProduct(
+            @PathVariable long id,
             @RequestParam("name") String name,
             @RequestParam("description") String description,
             @RequestParam("price") double price,
