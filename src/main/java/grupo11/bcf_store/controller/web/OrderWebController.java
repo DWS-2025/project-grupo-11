@@ -102,19 +102,21 @@ public class OrderWebController {
             return "error";
         }
 
-        boolean isAdmin = userService.isAdmin(request);
-        model.addAttribute("admin", isAdmin);
-
         if (orderService.canAccessOrder(request, id)) {
             OrderDTO order = orderService.getOrder(id);
-            if(order != null) {
-                model.addAttribute("order", order);
-                model.addAttribute("products", orderService.getProductsInOrder(order));
-                return "viewOrder";            
-            } else {
-                model.addAttribute("errorMessage", "Pedido no encontrado.");
-                return "error";
+
+            String orderOwnerUsername = null;
+            if (order.userId() != 0) {
+                var user = userService.findById(order.userId());
+                if (user != null) {
+                    orderOwnerUsername = user.getUsername();
+                }
             }
+
+            model.addAttribute("order", order);
+            model.addAttribute("products", orderService.getProductsInOrder(order));
+            model.addAttribute("username", orderOwnerUsername != null ? orderOwnerUsername : "");
+            return "viewOrder";
         } else {
             model.addAttribute("errorMessage", "No tienes permiso para acceder a este pedido.");
             return "error";

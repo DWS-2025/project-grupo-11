@@ -28,6 +28,7 @@
             <div class="box_top"></div>
             <div class="box_center">
               <div class="prod_title">Pedido Nº{{order.id}}</div>
+              <div class="prod_title">Propiedad de {{username}}</div>
               <div class="details">
                 {{#products}}
                 <div class="product-item">
@@ -45,7 +46,6 @@
         </div>
       </div>
       <div class="right_content">
-        {{#admin}}
         <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>ELIMINAR PEDIDO</div>
         <div class="clear"></div>
         <div class="feat_prod_box">
@@ -58,7 +58,6 @@
           </div>
           <div class="clear"></div>
         </div>
-        {{/admin}}
       </div>
     </div>
     <div class="footer">

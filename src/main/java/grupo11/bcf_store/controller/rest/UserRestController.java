@@ -79,15 +79,15 @@ public class UserRestController {
         if (!userService.canAccessUser(request, id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
         }
-        var user = userService.findById(id);
-        if (user == null) return ResponseEntity.notFound().build();
         if (updatedUserDTO.username() == null || updatedUserDTO.password() == null) {
             return ResponseEntity.badRequest().body("Usuario y contraseña requeridos");
         }
-        user.setUsername(updatedUserDTO.username());
-        user.setPassword(userService.encodePassword(updatedUserDTO.password()));
-        userService.saveUser(user);
-        return ResponseEntity.ok(userService.getUserById(id));
+        var updated = userService.updateUser(id, updatedUserDTO, request);
+        if (updated == null) {
+            return ResponseEntity.badRequest().body("Error al actualizar usuario");
+        }
+        request.getSession().invalidate();
+        return ResponseEntity.ok(updated);
     }
 
     @Transactional

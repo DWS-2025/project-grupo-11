@@ -211,4 +211,12 @@ public class OrderService {
         return (order.getUser() != null && order.getUser().getUsername().equals(username)) || isAdmin(request);
     }
 
+    // DTO methods
+    public OrderDTO toDTO (Order order) {
+        return orderMapper.toDTO(order);
+    }
+
+    public Order toDomain (OrderDTO orderDTO) {
+        return orderMapper.toDomain(orderDTO);
+    }
 }

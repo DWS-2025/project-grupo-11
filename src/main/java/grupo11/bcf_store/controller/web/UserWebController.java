@@ -17,6 +17,7 @@ import grupo11.bcf_store.service.CartService;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -192,7 +193,8 @@ public class UserWebController {
         userService.saveUser(user);
 
         request.getSession().invalidate();
-        return "redirect:/login/";
+        SecurityContextHolder.clearContext();
+        return "redirect:/logout/";
     }
 
     @PostMapping("/delete-user/")
