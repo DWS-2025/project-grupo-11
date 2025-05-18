@@ -23,6 +23,8 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 
 import grupo11.bcf_store.model.dto.OrderDTO;
 import grupo11.bcf_store.service.OrderService;
+import grupo11.bcf_store.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
 @RestController
@@ -32,15 +34,36 @@ public class OrderRestController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private UserService userService;
+
     // API methods
     @GetMapping("/")
-    public List<OrderDTO> getOrders() {
-        return orderService.getOrders();
+    public List<OrderDTO> getOrders(HttpServletRequest request) {
+        String username = userService.getLoggedInUsername(request);
+        
+        if (username == null) {
+            throw new SecurityException("Usuario no autenticado.");
+        }
+
+        if(userService.isAdmin(request)) {
+            return orderService.getOrders();
+        } else {
+            return orderService.getOrdersByUsername(username);
+        }
     }
 
     @GetMapping("/{id}/")
-    public OrderDTO getOrder(@PathVariable long id) {
-        return orderService.getOrder(id);
+    public OrderDTO getOrder(@PathVariable long id, HttpServletRequest request) {
+        if(userService.isAdmin(request)) {
+            return orderService.getOrder(id);
+        } else {
+            if(orderService.canAccessOrder(request, id)) {
+                return orderService.getOrder(id);
+            } else {
+                throw new SecurityException("No autorizado");
+            }
+        }
     }
 
     @PostMapping("/")
@@ -61,7 +84,7 @@ public class OrderRestController {
 
     @Transactional
     @DeleteMapping("/{id}/")
-    public OrderDTO deleteOrder(@PathVariable long id, jakarta.servlet.http.HttpServletRequest request) {
+    public OrderDTO deleteOrder(@PathVariable long id, HttpServletRequest request) {
         if (!orderService.canAccessOrder(request, id)) {
             throw new SecurityException("No autorizado");
         }

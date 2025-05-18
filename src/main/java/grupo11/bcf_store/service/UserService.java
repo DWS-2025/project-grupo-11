@@ -151,6 +151,11 @@ public class UserService {
 		return false;
 	}
 
+	public boolean isAdmin(long id) {
+		User user = userRepository.findById(id).orElseThrow();
+		return user.getRoles().contains("ADMIN");
+	}
+
 	public boolean isSelf(HttpServletRequest request, long id) {
 		if (request.getUserPrincipal() != null) {
 			String name = request.getUserPrincipal().getName();

@@ -2,6 +2,7 @@ package grupo11.bcf_store.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -38,6 +39,21 @@ public class CartService {
     public CartDTO getCart(long id) {
         Cart cart = cartRepository.findById(id).orElse(null);
         return cart != null ? cartMapper.toDTO(cart) : null;
+    }
+
+    public List<CartDTO> getCartByUsername(String username) {
+        return cartRepository.findAll().stream()
+                .filter(cart -> cart.getUser().getUsername().equals(username))
+                .map(cartMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public CartDTO cartBelongsToUser(long cartId, String username) {
+        Cart cart = cartRepository.findById(cartId).orElse(null);
+        if (cart != null && cart.getUser().getUsername().equals(username)) {
+            return cartMapper.toDTO(cart);
+        }
+        return null;
     }
 
     public int getTotalItems() {
@@ -150,6 +166,7 @@ public class CartService {
         if (cart != null) {
             cart.getProducts().clear();
             cartRepository.save(cart);
+            cart.getUser().deleteCart();
             cartRepository.deleteById(id);
         }
     }

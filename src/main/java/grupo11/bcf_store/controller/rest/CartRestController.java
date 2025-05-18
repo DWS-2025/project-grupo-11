@@ -23,6 +23,8 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 import grupo11.bcf_store.model.Cart;
 import grupo11.bcf_store.model.dto.CartDTO;
 import grupo11.bcf_store.service.CartService;
+import grupo11.bcf_store.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
 @RestController
@@ -32,15 +34,34 @@ public class CartRestController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private UserService userService;
+
     // API methods
     @GetMapping("/")
-    public List<CartDTO> getCarts() {
-        return cartService.getCarts();
+    public List<CartDTO> getCarts(HttpServletRequest request) {
+        String username = userService.getLoggedInUsername(request);
+        
+        if (username == null) {
+            throw new SecurityException("Usuario no autenticado.");
+        }
+
+        if(cartService.isAdmin(request)) {
+            return cartService.getCarts();
+        } else {
+            return cartService.getCartByUsername(username);
+        }
     }
 
     @GetMapping("/{id}/")
-    public CartDTO getCart(@PathVariable long id) {
-        return cartService.getCart(id);
+    public CartDTO getCart(@PathVariable long id, HttpServletRequest request) {
+        String username = userService.getLoggedInUsername(request);
+
+        if(cartService.isAdmin(request)) {
+            return cartService.getCart(id);
+        } else {
+            return cartService.cartBelongsToUser(id, username);
+        }
     }
 
     @PostMapping("/")

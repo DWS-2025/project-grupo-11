@@ -80,15 +80,18 @@ public class SecurityConfiguration {
 
 					// USER ENDPOINTS
 					.requestMatchers(HttpMethod.GET, "/api/orders/**").hasRole("USER")
+					.requestMatchers(HttpMethod.POST, "/api/orders/").hasRole("USER")
+					.requestMatchers(HttpMethod.DELETE, "/api/orders/{id}/").hasRole("USER")
 
 					.requestMatchers(HttpMethod.GET, "/api/carts/**").hasRole("USER")
 					
 					.requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("USER")
-					.requestMatchers(HttpMethod.DELETE, "/api/users/{id}/").hasRole("USER")
+					.requestMatchers(HttpMethod.GET, "/api/users/{id}/").hasRole("USER")
 					.requestMatchers(HttpMethod.PUT, "/api/users/{id}/info/").hasRole("USER")
 					.requestMatchers(HttpMethod.PUT, "/api/users/{id}/credentials/").hasRole("USER")
 					.requestMatchers(HttpMethod.GET, "/api/users/{id}/dni/").hasRole("USER")
 					.requestMatchers(HttpMethod.POST, "/api/users/{id}/dni/").hasRole("USER")
+					.requestMatchers(HttpMethod.DELETE, "/api/users/{id}/").hasRole("USER")
 					
 
 					// ADMIN ENDPOINTS
@@ -98,9 +101,6 @@ public class SecurityConfiguration {
 					.requestMatchers(HttpMethod.POST, "/api/products/{id}/image/").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.PUT, "/api/products/{id}/image/").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.DELETE, "/api/products/{id}/image/").hasRole("ADMIN")
-
-					.requestMatchers(HttpMethod.POST, "/api/orders/").hasRole("ADMIN")
-					.requestMatchers(HttpMethod.DELETE, "/api/orders/{id}/").hasRole("ADMIN")
 
 					.requestMatchers(HttpMethod.POST, "/api/carts/").hasRole("ADMIN")
 					.requestMatchers(HttpMethod.DELETE, "/api/carts/{id}/").hasRole("ADMIN")

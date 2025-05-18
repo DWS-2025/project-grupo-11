@@ -95,6 +95,8 @@ public class UserRestController {
     public UserDTO deleteUser(@PathVariable long id, HttpServletRequest request) {
         if (!userService.canAccessUser(request, id)) {
             throw new SecurityException("No autorizado");
+        } else if (userService.isAdmin(request) && userService.isAdmin(id)) {
+            throw new SecurityException("Un administrador no puede eliminarse a sí mismo");
         }
         return userService.deleteUserById(id);
     }

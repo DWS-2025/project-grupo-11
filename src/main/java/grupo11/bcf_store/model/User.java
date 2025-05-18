@@ -116,6 +116,10 @@ public class User {
         this.cart = cart;
     }
 
+    public void deleteCart() {
+        this.cart = null;
+    }
+
     // Method to display user information
     public void displayUserInformation() {
         System.out.println("Username: " + username);
