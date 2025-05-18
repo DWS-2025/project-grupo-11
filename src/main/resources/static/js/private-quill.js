@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
         theme: 'snow'
     });
 
-    if (window.initialDescription) {
+    if (window.initialDescription && window.initialDescription.length > 0) {
         quill.root.innerHTML = window.initialDescription;
     }
 
