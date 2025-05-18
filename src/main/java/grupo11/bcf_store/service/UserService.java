@@ -48,6 +48,11 @@ public class UserService {
 		return userMapper.toDTO(user);
 	}
 
+	public List<UserDTO> getUsersByUsername(String username) {
+		User user = userRepository.findByUsername(username).orElseThrow();
+		return List.of(userMapper.toDTO(user));
+	}
+
 	public UserDTO createUser(UserDTO userDTO) {
 		User user = userMapper.toDomain(userDTO);
 		userRepository.save(user);

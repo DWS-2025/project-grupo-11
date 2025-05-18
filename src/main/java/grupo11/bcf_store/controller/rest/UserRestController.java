@@ -36,13 +36,31 @@ public class UserRestController {
 
     // API methods
     @GetMapping("/")
-    public List<UserDTO> getUsers() {
-        return userService.getAllUsers();
+    public List<UserDTO> getUsers(HttpServletRequest request) {
+        String username = userService.getLoggedInUsername(request);
+        
+        if (username == null) {
+            throw new SecurityException("Usuario no autenticado.");
+        }
+
+        if(userService.isAdmin(request)) {
+            return userService.getAllUsers();
+        } else {
+            return userService.getUsersByUsername(username);
+        }
     }
 
     @GetMapping("/{id}/")
-    public UserDTO getUser(@PathVariable long id) {
-        return userService.getUserById(id);
+    public UserDTO getUser(@PathVariable long id, HttpServletRequest request) {
+        if(userService.isAdmin(request)) {
+            return userService.getUserById(id);
+        } else {
+            if(userService.canAccessUser(request, id)) {
+                return userService.getUserById(id);
+            } else {
+                throw new SecurityException("No autorizado");
+            }
+        }
     }
 
     @PostMapping("/")
