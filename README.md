@@ -35,7 +35,7 @@ La aplicación gestiona las siguientes entidades:
 ---
 
 ### **🔐 Permisos de los usuarios**
-- **Usuario por defecto:**   
+- **Usuario anónimo:**   
   - ✅ Ver información general de la web.
   - ✅ Acceder a la página de contacto.
   - ✅ Visualizar productos.  
@@ -48,7 +48,7 @@ La aplicación gestiona las siguientes entidades:
   - ✅ Cambiar su usuario y contraseña.
   - ✅ Cambiar su nombre y su descripción.  
   - ✅ Subir y descargar una foto de su DNI.  
-  - **Administrador:**  
+  - **Usuario administrador:**  
   - ✅ Añadir, editar y borrar productos.  
   - ✅ Visualizar y eliminar pedidos de cualquier usuario.  
   - ✅ Visualizar carritos de compra de otros usuarios.  
