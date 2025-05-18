@@ -13,10 +13,6 @@
   📧 *c.gutierrezc.2023@alumnos.urjc.es*  
   🌐 [GitHub: @Carlosgcov](https://github.com/Carlosgcov)
 
-- 🧑‍💻 **Alejandro Torres Montes**  
-  📧 *a.torresmo.2023@alumnos.urjc.es*  
-  🌐 [GitHub: @Torressss7](https://github.com/Torressss7)
-
 ---
 
 ## 🌟 **Aspectos principales de la aplicación**
@@ -72,21 +68,21 @@ La aplicación gestiona las siguientes entidades:
 
 #### 🧑‍💻 **Mario Serrano García**  
 - **Tareas realizadas:**  
-  - Implementación de la API (RestControllers, Mappers y DTOs).
-  - Implementación de la BBDD utilizando Repositorios.
-  - Arreglos en el funcionamiento de la web, base de datos y API.
+  - Implementación de la seguridad de la API.
+  - Creación de métodos para las nuevas funcionalidades.
+  - Arreglo de errores en la web y API.
 - **Commits más significativos:**  
-  1. [RestControllers, DTOs y Mappers terminados](https://github.com/DWS-2025/project-grupo-11/commit/b0722ef9d8c5ea227cbe2784bea0a53a1bc6f6e2)  
-  2. [Cambios para comenzar a usar la BBDD](https://github.com/DWS-2025/project-grupo-11/commit/17547b6ce8c3227683883c94628d75c3c933b94a)  
-  3. [Adición SimpleDTOs para solucionar referencias circulares](https://github.com/DWS-2025/project-grupo-11/commit/ef6b1ffe7bde85881fc6e3dfa918f08f4498e21d)  
-  4. [Cambios en las clases para seguir integrando la base de datos](https://github.com/DWS-2025/project-grupo-11/commit/7e3293e5d3b69ed2d7716a7994e73282b50e7278)  
-  5. [Arreglo Funcionamiento Mappers](https://github.com/DWS-2025/project-grupo-11/commit/56827cdb21d13ea9aef59b9e9203ab57c0ae3dbf)  
+  1. [Adición archivos y cambios Rest Security](https://github.com/DWS-2025/project-grupo-11/commit/711db0c0c27dce7fdbfceee5cd3b3d02807c5685)
+  2. [Seguridad métodos API](https://github.com/DWS-2025/project-grupo-11/commit/85eec2b1271fa5f1b84fd9c88ea73d9c77d6d359)
+  3. [Inicio Spring Security](https://github.com/DWS-2025/project-grupo-11/commit/b1274404776fa0a5c7c19676d49f7536a855d461)
+  4. [Inicio Rest Security](https://github.com/DWS-2025/project-grupo-11/commit/a63d5f184c1d74155f0ca9b82edc285242dcbb63)
+  5. [Mejoras API Rest](https://github.com/DWS-2025/project-grupo-11/commit/59865e8813597365be18440fff018eaf62eab1ae)
 - **Ficheros más editados:**  
-  - `src/main/java/grupo11/bcf_store/controller/rest/ProductRestController.java`  
-  - `src/main/java/grupo11/bcf_store/service/ProductService.java`  
   - `src/main/java/grupo11/bcf_store/controller/rest/OrderRestController.java`  
-  - `src/main/java/grupo11/bcf_store/service/CartService.java`  
-  - `src/main/java/grupo11/bcf_store/model/Cart.java`
+  - `src/main/java/grupo11/bcf_store/controller/rest/UserRestController.java`  
+  - `src/main/java/grupo11/bcf_store/security/SecurityConfiguration.java`  
+  - `src/main/java/grupo11/bcf_store/service/UserService.java`  
+  - `src/main/java/grupo11/bcf_store/controller/web/UserWebController.java`
 
 #### 🧑‍💻 **Carlos Gutiérrez Carpintero**  
 - **Tareas realizadas:**  
@@ -94,11 +90,11 @@ La aplicación gestiona las siguientes entidades:
   - Creación de nuevos métodos de los usuarios.  
   - Corrección de errores y vulnerabilidades.  
 - **Commits más significativos:**  
-  1. [Comienzo funcionamiento de sesiones y usuarios](https://github.com/DWS-2025/project-grupo-11/commit/bc88239ee89f367ec101b5a688b3c92f88e06daf)  
-  2. [Asociación de carrito y pedido con el id del usuario. Registro de nuevos usuarios y su cartid. No mostrar botones si no se tiene permisos de ADMIN o si no se está registrado.](https://github.com/DWS-2025/project-grupo-11/commit/9b430a259d9e5dffa5e562c7049cdfbc6e9550bc)   
-  3.  [Añadida funcionalidad de subir DNI de un usuario como archivo en disco.](https://github.com/DWS-2025/project-grupo-11/commit/6bfd1ed176e214849d100effbfa3aba53d255a74)
-  4. [Mejora y protección de subida de imágenes en BBDD y en disco](https://github.com/DWS-2025/project-grupo-11/commit/f918932d96082cbc8df7531b7a25668f255a4efc)  
-  5. [Arreglada la modificación de credenciales e información de usuarios y corrección de problemas.](https://github.com/DWS-2025/project-grupo-11/commit/c96a5bc09c087c4abd74dae0fa04ef032449f99f)  
+  1. [Comienzo funcionamiento de sesiones y usuarios](https://github.com/DWS-2025/project-grupo-11/commit/bc88239ee89f367ec101b5a688b3c92f88e06daf)
+  2. [Asociación de carrito y pedido con el id del usuario. Registro de nuevos usuarios y su cartid. No mostrar botones si no se tiene permisos de ADMIN o si no se está registrado.](https://github.com/DWS-2025/project-grupo-11/commit/9b430a259d9e5dffa5e562c7049cdfbc6e9550bc)
+  3. [Añadida funcionalidad de subir DNI de un usuario como archivo en disco.](https://github.com/DWS-2025/project-grupo-11/commit/6bfd1ed176e214849d100effbfa3aba53d255a74)
+  4. [Mejora y protección de subida de imágenes en BBDD y en disco](https://github.com/DWS-2025/project-grupo-11/commit/f918932d96082cbc8df7531b7a25668f255a4efc)
+  5. [Arreglada la modificación de credenciales e información de usuarios y corrección de problemas.](https://github.com/DWS-2025/project-grupo-11/commit/c96a5bc09c087c4abd74dae0fa04ef032449f99f)
 - **Ficheros más editados:**  
   - `src/main/java/grupo11/bcf_store/security/SecurityConfiguration.java`  
   - `src/main/java/grupo11/bcf_store/controller/web/UserWebController.java`  
