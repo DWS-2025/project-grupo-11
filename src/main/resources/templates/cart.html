@@ -35,7 +35,9 @@
             <h2>{{name}}</h2>
             <img src="/product-image/{{id}}/" alt="{{name}}" class="product-image">
             <p>Price: {{price}}€</p>
-            <form action="/remove-from-cart/{{id}}/" method="post"><button type="submit">Eliminar del carrito</button>
+            <form action="/remove-from-cart/{{id}}/" method="post">
+              <input type="hidden" name="_csrf" value="{{token}}" />
+              <button type="submit">Eliminar del carrito</button>
             </form>
           </div>
           {{/cart}}
@@ -45,7 +47,10 @@
       <div class="right_content">
         <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>REALIZAR PEDIDO</div>
         <div class="clear"></div>
-        <form action="/create-order/" method="post"><button type="submit">Hacer pedido</button></form>
+        <form action="/create-order/" method="post">
+          <input type="hidden" name="_csrf" value="{{token}}" />
+          <button type="submit">Hacer pedido</button>
+        </form>
         <div class="clear"></div>
       </div>
     </div>

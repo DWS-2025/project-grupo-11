@@ -25,6 +25,7 @@
         <div class="center_content">
             <div class="login_form">
                 <form action="/register/" method="post" onsubmit="return submitDescription()">
+                    <input type="hidden" name="_csrf" value="{{token}}" />
                     <div class="form_row">
                         <label class="contact"><strong>Usuario:</strong></label>
                         <input type="text" name="username" class="contact_input" required />

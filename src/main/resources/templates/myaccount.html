@@ -32,7 +32,10 @@
           {{/username}}
           {{#username}}
           <button onclick="window.location.href='/private/'">Información personal</button>
-          <button onclick="window.location.href='/logout/'">Cerrar sesión</button>
+          <form action="/logout/" method="post" style="display:inline;">
+            <input type="hidden" name="_csrf" value="{{token}}" />
+            <button type="submit">Cerrar sesión</button>
+          </form>
           {{/username}}
         </div>
       </div>
