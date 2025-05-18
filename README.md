@@ -35,17 +35,30 @@ La aplicación gestiona las siguientes entidades:
 ---
 
 ### **🔐 Permisos de los usuarios**
-- **Usuario por defecto:**  
-  - ✅ Gestionar productos.  
+- **Usuario por defecto:**   
+  - ✅ Ver información general de la web.
+  - ✅ Acceder a la página de contacto.
+  - ✅ Visualizar productos.  
+  - ✅ Iniciar sesión de un usuario existente.  
+  - ✅ Registrarse como nuevo usuario.
+  - **Usuario registrado:**  
+  - ✅ Añadir y eliminar pedidos a su carrito.  
+  - ✅ Realizar y borrar sus pedidos.  
+  - ✅ Borrar su cuenta.
+  - ✅ Cambiar su usuario y contraseña.
+  - ✅ Cambiar su nombre y su descripción.  
+  - ✅ Subir y descargar una foto de su DNI.  
+  - **Administrador:**  
+  - ✅ Añadir, editar y borrar productos.  
   - ✅ Visualizar y eliminar pedidos de cualquier usuario.  
-  - ✅ Gestionar su carrito de compras.  
-  - ✅ Realizar pedidos.  
-  - ✅ Ser dueño de sus propios pedidos y carrito.  
+  - ✅ Visualizar carritos de compra de otros usuarios.  
+  - ✅ Eliminar cualquier usuario.  
 
 ---
 
 ### **🖼️ Imágenes**
 - Cada **Product** tiene asociada una imagen.  
+- Cada **User** puede subir una imágen de su DNI. 
 
 ---
 
@@ -77,18 +90,18 @@ La aplicación gestiona las siguientes entidades:
 
 #### 🧑‍💻 **Carlos Gutiérrez Carpintero**  
 - **Tareas realizadas:**  
-  - Creación, edición y eliminación de productos.  
-  - Migración a MySQL.  
-  - Corrección de errores en la web, base de datos y API.  
+  - Funcionalidades de texto enriquecido y ficheros guardados en disco.  
+  - Creación de nuevos métodos de los usuarios.  
+  - Corrección de errores y vulnerabilidades.  
 - **Commits más significativos:**  
-  1. [Solucionada la edición de productos](https://github.com/DWS-2025/project-grupo-11/commit/f54ab48a91bf0fe8cb5737a86a00d57c0f10656a)  
-  2. [Implementación de las imágenes de los productos almacenadas en la base de datos](https://github.com/DWS-2025/project-grupo-11/commit/9a14714f369487d03d81569e7129a712b32ff7c0)  
-  3. [Añadida funcionalidad de consultas de productos](https://github.com/DWS-2025/project-grupo-11/commit/584385d4179b5cf45435c781f220f0f5fae31223)  
-  4. [Mejora de paginación mediante JavaScript](https://github.com/DWS-2025/project-grupo-11/commit/618a357db346d1af5bf31bce511dbba1a502ef44)  
-  5. [Arreglo de acceso al carrito, borrado de productos y borrado de pedidos](https://github.com/DWS-2025/project-grupo-11/commit/195a26f25db4845e52c19701d47cbda8e941dca3)  
+  1. [Comienzo funcionamiento de sesiones y usuarios](https://github.com/DWS-2025/project-grupo-11/commit/bc88239ee89f367ec101b5a688b3c92f88e06daf)  
+  2. [Asociación de carrito y pedido con el id del usuario. Registro de nuevos usuarios y su cartid. No mostrar botones si no se tiene permisos de ADMIN o si no se está registrado.](https://github.com/DWS-2025/project-grupo-11/commit/9b430a259d9e5dffa5e562c7049cdfbc6e9550bc)   
+  3.  [Añadida funcionalidad de subir DNI de un usuario como archivo en disco.](https://github.com/DWS-2025/project-grupo-11/commit/6bfd1ed176e214849d100effbfa3aba53d255a74)
+  4. [Mejora y protección de subida de imágenes en BBDD y en disco](https://github.com/DWS-2025/project-grupo-11/commit/f918932d96082cbc8df7531b7a25668f255a4efc)  
+  5. [Arreglada la modificación de credenciales e información de usuarios y corrección de problemas.](https://github.com/DWS-2025/project-grupo-11/commit/c96a5bc09c087c4abd74dae0fa04ef032449f99f)  
 - **Ficheros más editados:**  
-  - `src/main/java/grupo11/bcf_store/controller/web/ProductWebController.java`  
-  - `src/main/java/grupo11/bcf_store/service/ProductService.java`  
-  - `src/main/java/grupo11/bcf_store/repository/ProductRepository.java`  
-  - `src/main/resources/static/js/clothes.js`  
-  - `src/main/resources/templates/clothes.html`
+  - `src/main/java/grupo11/bcf_store/security/SecurityConfiguration.java`  
+  - `src/main/java/grupo11/bcf_store/controller/web/UserWebController.java`  
+  - `src/main/resources/templates/private.html`  
+  - `src/main/resources/templates/admin.html`  
+  - `src/main/java/grupo11/bcf_store/service/UserService.java`
