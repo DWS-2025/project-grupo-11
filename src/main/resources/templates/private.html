@@ -32,6 +32,7 @@
                 <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>INFORMACIÓN
                     PERSONAL</div>
                 <form action="/update-user/" method="post" onsubmit="return submitDescription()">
+                    <input type="hidden" name="_csrf" value="{{token}}" />
                     <div class="form_row">
                         <label><strong>Nombre completo:</strong></label>
                         <input type="text" name="fullName" value="{{fullName}}" />
@@ -62,6 +63,7 @@
                 <div class="title"><span class="title_icon"><img src="/images/bullet0.png" alt="" /></span>CREDENCIALES
                 </div>
                 <form action="/update-credentials/" method="post">
+                    <input type="hidden" name="_csrf" value="{{token}}" />
                     <div class="form_row">
                         <label><strong>Usuario:</strong></label>
                         <input type="text" name="username" value="{{username}}" required />
@@ -78,6 +80,7 @@
                 <div class="clear"></div>
                 <p>Solo se aceptan archivos JPG o JPEG.</p>
                 <form action="/upload-dni/" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="_csrf" value="{{token}}" />
                     <div class="form_row">
                         <label><strong>Subir DNI:</strong></label>
                         <input type="file" name="dniFile" accept="application/image/*" required />
@@ -104,6 +107,7 @@
                 </div>
                 <div class="clear"></div>
                 <form action="/delete-user/" method="post">
+                    <input type="hidden" name="_csrf" value="{{token}}" />
                     <button type="submit" style="color: red;">Eliminar cuenta</button>
                 </form>
             </div>

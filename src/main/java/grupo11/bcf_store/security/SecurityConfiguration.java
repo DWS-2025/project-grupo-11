@@ -180,8 +180,8 @@ public class SecurityConfiguration {
 					.permitAll()
 			);
 		
-		// Disable CSRF protection
-		http.csrf(csrf -> csrf.disable());
+		// Delete or comment the following line to disable CSRF protection
+		// http.csrf(csrf -> csrf.disable());
 
 		return http.build();
 	}

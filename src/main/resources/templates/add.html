@@ -29,6 +29,7 @@
           <form id="productForm"
             action="{{#product.id}}/edit-product/{{product.id}}/{{/product.id}}{{^product.id}}/add-product/{{/product.id}}" method="post"
             enctype="multipart/form-data">
+            <input type="hidden" name="_csrf" value="{{token}}" />
             {{#product.id}}
             {{/product.id}}
             <div class="form_row">
