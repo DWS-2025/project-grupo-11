@@ -25,9 +25,9 @@ public class SampleDataService {
     @PostConstruct
     public void init() throws Exception {
         // Default users
-        User user1 = new User("user", passwordEncoder.encode("pass"), "USER");
-        user1.setFullName("Usuario Normal");
-        user1.setDescription("Usuario de ejemplo para compras normales.");
+        User user1 = new User("mario", passwordEncoder.encode("mariopass"), "USER");
+        user1.setFullName("Mario Serrano");
+        user1.setDescription("Usuario registrado.");
         userRepository.save(user1);
         user1.getCart().setUser(user1);
         userRepository.save(user1);
@@ -39,9 +39,9 @@ public class SampleDataService {
         admin.getCart().setUser(admin);
         userRepository.save(admin);
 
-        User prueba = new User("prueba", passwordEncoder.encode("prueba"), "USER");
-        prueba.setFullName("Usuario Prueba");
-        prueba.setDescription("Usuario de prueba para testear la aplicación.");
+        User prueba = new User("carlos", passwordEncoder.encode("carlospass"), "USER");
+        prueba.setFullName("Carlos Gutiérrez");
+        prueba.setDescription("Usuario registrado.");
         userRepository.save(prueba);
         prueba.getCart().setUser(prueba);
         userRepository.save(prueba);
