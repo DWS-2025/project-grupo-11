@@ -34,12 +34,16 @@
               <p class="details">{{product.description}}</p>
               <div class="price">Precio: {{product.price}}€</div>
               {{#username}}
-              <form action="/add-to-cart/{{product.id}}/" method="post"><button type="submit"
+              <form action="/add-to-cart/{{product.id}}/" method="post">
+                <input type="hidden" name="_csrf" value="{{token}}" />
+                <button type="submit"
                   class="button-spacing">Añadir al carrito</button></form>
               {{#admin}}
               <form action="/edit-product/{{product.id}}/" method="get"><button type="submit"
                   class="button-spacing">Editar producto</button></form>
-              <form action="/delete-product/{{product.id}}/" method="post"><button type="submit"
+              <form action="/delete-product/{{product.id}}/" method="post">
+                <input type="hidden" name="_csrf" value="{{token}}" />
+                <button type="submit"
                   class="button-spacing">Eliminar producto</button></form>
               {{/admin}}
               <div class="clear"></div>
