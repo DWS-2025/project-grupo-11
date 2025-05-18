@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import grupo11.bcf_store.security.jwt.UserRegisterService;
 import grupo11.bcf_store.security.jwt.RegisterRequest;
-
+import grupo11.bcf_store.service.UserService;
 import grupo11.bcf_store.security.jwt.*;
 import grupo11.bcf_store.security.jwt.AuthResponse.Status;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,10 +25,18 @@ public class LoginRestController {
 	@Autowired
 	private UserLoginService userLoginService;
 
+	@Autowired
+	private UserService userService;
+
     @PostMapping("/register/")
     public ResponseEntity<AuthResponse> register(
             @RequestBody RegisterRequest registerRequest,
             HttpServletResponse response) {
+        try {
+            userService.validateDescription(registerRequest.getDescription());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new AuthResponse(AuthResponse.Status.FAILURE, e.getMessage()));
+        }
         return userRegisterService.register(response, registerRequest);
     }
 

@@ -54,19 +54,25 @@ public class UserService {
 		return userMapper.toDTO(user);
 	}
 
-	public UserDTO updateUser(long id, UserDTO updatedUserDTO, HttpServletRequest request) {
+	public UserDTO updateUserCredentials(long id, UserDTO updatedUserDTO, HttpServletRequest request) {
 		User updatedUser = userMapper.toDomain(updatedUserDTO);
 
-		if (isSelf(request, id)) {
+		if (isSelf(request, id) || isAdmin(request)) {
 			User user = userRepository.findById(id).orElseThrow();
+			if (!user.getUsername().equals(updatedUser.getUsername())
+					&& userRepository.findByUsername(updatedUser.getUsername()).isPresent()) {
+				throw new IllegalArgumentException("El nombre de usuario ya existe.");
+			}
+			if (updatedUser.getUsername() == null || updatedUser.getUsername().isBlank()) {
+				throw new IllegalArgumentException("El nombre de usuario no puede estar vacío.");
+			}
+
+			if (updatedUser.getPassword() == null || updatedUser.getPassword().isBlank()) {
+				throw new IllegalArgumentException("La contraseña no puede estar vacía.");
+			}
+
 			user.setUsername(updatedUser.getUsername());
 			user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-			// Use the same validation as updateUserInfo
-			try {
-				updateUserInfo(user, updatedUser.getFullName(), updatedUser.getDescription());
-			} catch (IllegalArgumentException e) {
-				return null;
-			}
 			userRepository.save(user);
 			return userMapper.toDTO(user);
 		}
@@ -74,28 +80,35 @@ public class UserService {
 		return null;
 	}
 
-	public void updateUserInfo(User user, String fullName, String description) {
-		user.setFullName(fullName);
-
+	public void validateDescription(String description) {
 		if (description != null) {
 			Pattern forbiddenPattern = Pattern.compile(
-					"(&#\\d+;|&#x[0-9a-fA-F]+;|\\\\u[0-9a-fA-F]{4}|\\+ADw-|\\+AD4-)",
-					Pattern.CASE_INSENSITIVE);
+				"(&#\\d+;|&#x[0-9a-fA-F]+;|\\\\u[0-9a-fA-F]{4}|\\+ADw-|\\+AD4-)",
+				Pattern.CASE_INSENSITIVE);
 
 			if (forbiddenPattern.matcher(description).find()) {
 				throw new IllegalArgumentException("La descripción contiene codificaciones no permitidas.");
 			}
 
 			Safelist safelist = Safelist.none()
-					.addTags("b", "i", "u", "a", "ul", "ol", "li", "strong", "em", "br")
-					.addAttributes("a", "target", "rel");
+				.addTags("b", "i", "u", "a", "ul", "ol", "li", "strong", "em", "br")
+				.addAttributes("a", "target", "rel");
 
 			String safeDescription = Jsoup.clean(description, safelist);
-			
+
 			if (!safeDescription.equals(description)) {
 				throw new IllegalArgumentException("La descripción tiene cáracteres inválidos.");
 			}
-			user.setDescription(safeDescription);
+		}
+	}
+
+	public void updateUserInfo(User user, String fullName, String description) {
+		user.setFullName(fullName);
+
+		validateDescription(description);
+
+		if (description != null) {
+			user.setDescription(description);
 		} else {
 			user.setDescription(null);
 		}

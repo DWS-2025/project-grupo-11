@@ -83,8 +83,23 @@ public class UserWebController {
             @RequestParam String fullName,
             @RequestParam String description,
             Model model) {
+        if (username == null || username.isBlank()) {
+            model.addAttribute("errorMessage", "El nombre de usuario no puede estar vacío.");
+            return "error";
+        }
+        if (password == null || password.isBlank()) {
+            model.addAttribute("errorMessage", "La contraseña no puede estar vacía.");
+            return "error";
+        }
+        
         if (userService.existsByUsername(username)) {
             model.addAttribute("errorMessage", "El usuario ya existe.");
+            return "error";
+        }
+        try {
+            userService.validateDescription(description);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
             return "error";
         }
         User newUser = new User();
@@ -165,6 +180,7 @@ public class UserWebController {
         }
 
         try {
+            userService.validateDescription(description);
             userService.updateUserInfo(user, fullName, description);
             userService.saveUser(user);
         } catch (IllegalArgumentException e) {
@@ -185,6 +201,21 @@ public class UserWebController {
 
         if (!userService.canAccessUser(request, user.getId())) {
             model.addAttribute("errorMessage", "No autorizado.");
+            return "error";
+        }
+
+        if (username == null || username.isBlank()) {
+            model.addAttribute("errorMessage", "El nombre de usuario no puede estar vacío.");
+            return "error";
+        }
+        
+        if (password == null || password.isBlank()) {
+            model.addAttribute("errorMessage", "La contraseña no puede estar vacía.");
+            return "error";
+        }
+
+        if (!user.getUsername().equals(username) && userService.existsByUsername(username)) {
+            model.addAttribute("errorMessage", "El nombre de usuario ya existe.");
             return "error";
         }
 

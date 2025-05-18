@@ -82,12 +82,16 @@ public class UserRestController {
         if (updatedUserDTO.username() == null || updatedUserDTO.password() == null) {
             return ResponseEntity.badRequest().body("Usuario y contraseña requeridos");
         }
-        var updated = userService.updateUser(id, updatedUserDTO, request);
-        if (updated == null) {
-            return ResponseEntity.badRequest().body("Error al actualizar usuario");
+        try {
+            var updated = userService.updateUserCredentials(id, updatedUserDTO, request);
+            if (updated == null) {
+                return ResponseEntity.badRequest().body("Error al actualizar usuario");
+            }
+            request.getSession().invalidate();
+            return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        request.getSession().invalidate();
-        return ResponseEntity.ok(updated);
     }
 
     @Transactional
