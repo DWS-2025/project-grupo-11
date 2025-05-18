@@ -189,13 +189,13 @@ public class UserService {
 		return isSelf(request, userId) || isAdmin(request);
 	}
 
-	public void uploadDni(long userId, MultipartFile dniFile, jakarta.servlet.http.HttpServletRequest request) {
+	public void uploadDni(long userId, MultipartFile dniFile, HttpServletRequest request) {
 		User user = userRepository.findById(userId).orElseThrow();
 		// Allow only the user to upload the DNI
 		if (!canAccessUser(request, userId)) {
 			throw new SecurityException("No autorizado");
 		}
-		if (dniFile.isEmpty()) {
+		if (dniFile == null || dniFile.isEmpty()) {
 			throw new IllegalArgumentException("No se ha seleccionado ningún archivo.");
 		}
 		// Limit the file size to 5 MB
